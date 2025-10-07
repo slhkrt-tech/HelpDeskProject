@@ -1,29 +1,35 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
+#ticket_list → kullanıcıya ticket listesi gösterir, yetki kontrolü vardır
+#ticket_detail → ticket detayları, yorum ekleme, status/atama işlemleri (admin için)
+#ticket_create → yeni ticket oluşturma formu
+#@login_required → tüm view’lar için giriş zorunlu
+#yetki kontrolü sayesinde normal kullanıcı sadece kendi ticket’ını, agent/admin tüm ticketları görür
+
+from django.shortcuts import render, get_object_or_404, redirect #HTML şablonunu verilerle döndürür,veritabanında nesne yoksa 404 döndürür, başka URL’ye yönlendirir
+from django.contrib.auth.decorators import login_required #kullanıcı giriş yapmamışsa login sayfasına yönlendirir
 from .models import Ticket
 from .forms import TicketForm, CommentForm
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model #django’nun user modelini alır
 
 User = get_user_model()
 
-@login_required
+@login_required #login zorunlu
 def ticket_list(request):
-    # Eğer kullanıcı admin/agent ise tüm ticket'ları görsün, normal kullanıcıysa sadece kendi ticket'larını görsün.
-    if request.user.is_staff:  # basit: staff -> agent/admin
+    #eğer kullanıcı admin/agent ise tüm ticket'ları görsün, normal kullanıcıysa sadece kendi ticket'larını görsün
+    if request.user.is_staff:  #basit: staff -> agent/admin
         tickets = Ticket.objects.all().order_by('-created_at')
     else:
         tickets = Ticket.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'tickets/ticket_list.html', {'tickets': tickets})
 
 @login_required
-def ticket_detail(request, pk):
-    ticket = get_object_or_404(Ticket, pk=pk)
-    # yetki kontrolü: normal kullanıcı sadece kendi ticket'ını görsün
+def ticket_detail(request, pk): #parametresi URL’den gelir
+    ticket = get_object_or_404(Ticket, pk=pk) #ticket veritabanından çekilir, yoksa 404
+    #yetki kontrolü: normal kullanıcı sadece kendi ticket'ını görsün
     if not request.user.is_staff and ticket.user != request.user:
         return redirect('ticket_list')
     comment_form = CommentForm()
     if request.method == 'POST':
-        # comment ekleme veya atama/durum güncelleme
+        #comment ekleme veya atama/durum güncelleme
         if 'comment_submit' in request.POST:
             comment_form = CommentForm(request.POST)
             if comment_form.is_valid():
@@ -32,7 +38,7 @@ def ticket_detail(request, pk):
                 c.user = request.user
                 c.save()
                 return redirect('ticket_detail', pk=pk)
-        # agent işlemleri: status/assigned_to
+        #agent işlemleri: status/assigned_to
         if request.user.is_staff:
             if 'status' in request.POST:
                 ticket.status = request.POST.get('status')

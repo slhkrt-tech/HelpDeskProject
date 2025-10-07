@@ -1,16 +1,11 @@
-"""
-ASGI config for helpdesk project.
+#bu dosya, Django uygulamanızın bir ASGI sunucusu tarafından çalıştırılabilmesi için gerekli başlangıç noktasıdır
+#django’nun asenkron sunucularla çalışmasını sağlayan standart
 
-It exposes the ASGI callable as a module-level variable named ``application``.
+import os #modülü, ortam değişkenlerini yönetmek için kullanılır
 
-For more information on this file, see
-https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
-"""
+from django.core.asgi import get_asgi_application #django uygulamasının ASGI uyumlu bir callable (çağrılabilir obje) olarak kullanılmasını sağlar
 
-import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'helpdesk.settings') #django’ya hangi ayar dosyasını (settings.py) kullanacağını söyler, boşsa helpdesk settings default döner
 
-from django.core.asgi import get_asgi_application
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'helpdesk.settings')
-
-application = get_asgi_application()
+application = get_asgi_application() #application değişkeni, ASGI sunucusu tarafından kullanılacak ana giriş noktasıdır
+                                     #bu değişken sayesinde sunucu, gelen HTTP veya WebSocket isteklerini Django uygulamasına iletebilir

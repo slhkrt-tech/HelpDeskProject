@@ -1,16 +1,11 @@
-"""
-WSGI config for helpdesk project.
+#bu dosya, Django uygulamanızın bir WSGI sunucusu tarafından çalıştırılabilmesi için gerekli başlangıç noktasıdır
+#django’nun synchronous (normal) sunucularla çalışmasını sağlayan standart
 
-It exposes the WSGI callable as a module-level variable named ``application``.
+import os #ortam değişkenlerini yönetmek için kullanılır.
 
-For more information on this file, see
-https://docs.djangoproject.com/en/5.2/howto/deployment/wsgi/
-"""
+from django.core.wsgi import get_wsgi_application #django uygulamasını WSGI uyumlu callable olarak alır
 
-import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'helpdesk.settings') #django’ya hangi ayar dosyasını (settings.py) kullanacağını söyler, boşsa helpdesk settings default döner
 
-from django.core.wsgi import get_wsgi_application
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'helpdesk.settings')
-
-application = get_wsgi_application()
+application = get_wsgi_application() #WSGI sunucusu tarafından kullanılacak ana giriş noktasıdır
+                                     #sunucu, gelen HTTP isteklerini bu callable aracılığıyla Django uygulamasına iletir

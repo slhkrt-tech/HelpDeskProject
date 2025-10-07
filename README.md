@@ -1,2 +1,2 @@
 # Helpdesk Project
-Django tabanlı basit ticket yönetim sistemi.
+Django tabanlı ticket yönetim sistemi.
