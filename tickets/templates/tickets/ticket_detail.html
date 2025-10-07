@@ -1,0 +1,53 @@
+{% extends "tickets/base.html" %}
+{% block title %}Ticket #{{ ticket.pk }}{% endblock %}
+{% block content %}
+<h3>{{ ticket.title }} <small class="text-muted">#{{ ticket.pk }}</small></h3>
+<p><strong>Durum:</strong> {{ ticket.get_status_display }} | <strong>Öncelik:</strong> {{ ticket.get_priority_display }}</p>
+<p><strong>Kategori:</strong> {{ ticket.category }} | <strong>SLA:</strong> {{ ticket.sla }}</p>
+<hr>
+<p>{{ ticket.description|linebreaks }}</p>
+
+<h5>Yorumlar</h5>
+<ul class="list-group mb-3">
+  {% for c in ticket.comments.all %}
+    <li class="list-group-item"><strong>{{ c.user.username }}</strong> <small class="text-muted">{{ c.created_at|date:"Y-m-d H:i" }}</small><br>{{ c.message|linebreaks }}</li>
+  {% empty %}
+    <li class="list-group-item">Yorum yok.</li>
+  {% endfor %}
+</ul>
+
+<form method="post">
+  {% csrf_token %}
+  {{ comment_form.as_p }}
+  <button type="submit" name="comment_submit" class="btn btn-primary">Yorum Ekle</button>
+</form>
+
+{% if user.is_staff %}
+<hr>
+<h5>Agent Kontrolleri</h5>
+<form method="post" class="row g-2">
+  {% csrf_token %}
+  <div class="col-auto">
+    <label for="status" class="form-label">Durum</label>
+    <select name="status" id="status" class="form-select">
+      <option value="new" {% if ticket.status=='new' %}selected{% endif %}>Yeni</option>
+      <option value="open" {% if ticket.status=='open' %}selected{% endif %}>Açık</option>
+      <option value="pending" {% if ticket.status=='pending' %}selected{% endif %}>Beklemede</option>
+      <option value="closed" {% if ticket.status=='closed' %}selected{% endif %}>Kapatıldı</option>
+    </select>
+  </div>
+  <div class="col-auto">
+    <label for="assign_to" class="form-label">Atama</label>
+    <select name="assign_to" id="assign_to" class="form-select">
+      <option value="">(Seçiniz)</option>
+      {% for u in users %}
+        <option value="{{ u.pk }}" {% if ticket.assigned_to and ticket.assigned_to.pk == u.pk %}selected{% endif %}>{{ u.username }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto align-self-end">
+    <button type="submit" name="assign" class="btn btn-success">Güncelle</button>
+  </div>
+</form>
+{% endif %}
+{% endblock %}

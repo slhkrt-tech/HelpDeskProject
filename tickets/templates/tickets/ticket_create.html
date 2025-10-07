@@ -1,0 +1,10 @@
+{% extends "tickets/base.html" %}
+{% block title %}Yeni Talep{% endblock %}
+{% block content %}
+<h3>Yeni Talep Oluştur</h3>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">Gönder</button>
+</form>
+{% endblock %}
