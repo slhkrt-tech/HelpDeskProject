@@ -17,7 +17,13 @@
       <ul class="navbar-nav">
         {% if user.is_authenticated %}
           <li class="nav-item"><span class="nav-link">Hoşgeldin, {{ user.username }}</span></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Çıkış</a></li>
+          <li class="nav-item">
+  <form method="post" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-link nav-link" style="display:inline; padding:0; border:none; background:none;">Çıkış</button>
+  </form>
+</li>
+
         {% else %}
           <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Giriş</a></li>
         {% endif %}

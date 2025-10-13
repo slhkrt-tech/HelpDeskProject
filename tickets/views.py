@@ -9,16 +9,20 @@ from django.contrib.auth.decorators import login_required #kullanıcı giriş ya
 from .models import Ticket
 from .forms import TicketForm, CommentForm
 from django.contrib.auth import get_user_model #django’nun user modelini alır
+from django.contrib.auth.decorators import login_required
 
 User = get_user_model()
 
 @login_required #login zorunlu
 def ticket_list(request):
-    #eğer kullanıcı admin/agent ise tüm ticket'ları görsün, normal kullanıcıysa sadece kendi ticket'larını görsün
-    if request.user.is_staff:  #basit: staff -> agent/admin
+     # Supervisor tüm ticketları görsün
+    if request.user.groups.filter(name='supervisor').exists():
         tickets = Ticket.objects.all().order_by('-created_at')
     else:
-        tickets = Ticket.objects.filter(user=request.user).order_by('-created_at')
+        # Normal kullanıcı sadece kendi grubundaki ticketlar
+        user_groups = request.user.groups.all()
+        tickets = Ticket.objects.filter(user__groups__in=user_groups).distinct().order_by('-created_at')
+
     return render(request, 'tickets/ticket_list.html', {'tickets': tickets})
 
 @login_required

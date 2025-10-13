@@ -1,21 +1,51 @@
 {% extends "tickets/base.html" %}
 {% block title %}Ticket Listesi{% endblock %}
+
 {% block content %}
 <h3>Ticket Listesi</h3>
+
+{% load tz %}
 <table class="table table-striped">
-  <thead><tr><th>ID</th><th>Başlık</th><th>Durum</th><th>Öncelik</th><th>Kullanıcı</th><th>Tarih</th></tr></thead>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Başlık</th>
+      <th>Durum</th>
+      <th>Öncelik</th>
+      <th>Kullanıcı</th>
+      <th>Oluşturulma Tarihi</th>
+    </tr>
+  </thead>
   <tbody>
     {% for t in tickets %}
     <tr>
       <td><a href="{% url 'ticket_detail' t.pk %}">#{{ t.pk }}</a></td>
       <td>{{ t.title }}</td>
-      <td>{{ t.get_status_display }}</td>
+      <td>
+        {% if t.status == 'new' %}
+          Alındı
+        {% elif t.status == 'open' %}
+          Görüldü
+        {% elif t.status == 'pending' %}
+          Beklemede
+        {% elif t.status == 'closed' %}
+          Kapatıldı
+        {% else %}
+          {{ t.status }}
+        {% endif %}
+      </td>
       <td>{{ t.get_priority_display }}</td>
       <td>{{ t.user.username }}</td>
-      <td>{{ t.created_at|date:"Y-m-d H:i" }}</td>
+      <td>
+        {% localtime on %}
+          {{ t.created_at|date:"Y-m-d H:i" }}
+        {% endlocaltime %}
+      </td>
     </tr>
     {% empty %}
-    <tr><td colspan="6">Henüz talep yok.</td></tr>
+    <tr>
+      <td colspan="6">Henüz talep yok.</td>
+    </tr>
     {% endfor %}
   </tbody>
 </table>

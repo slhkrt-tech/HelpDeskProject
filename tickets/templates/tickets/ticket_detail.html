@@ -1,8 +1,28 @@
 {% extends "tickets/base.html" %}
 {% block title %}Ticket #{{ ticket.pk }}{% endblock %}
+
 {% block content %}
 <h3>{{ ticket.title }} <small class="text-muted">#{{ ticket.pk }}</small></h3>
-<p><strong>Durum:</strong> {{ ticket.get_status_display }} | <strong>Öncelik:</strong> {{ ticket.get_priority_display }}</p>
+
+{% load tz %}
+{% localtime on %}
+<p><strong>Oluşturulma Tarihi:</strong> {{ ticket.created_at|date:"Y-m-d H:i" }}</p>
+{% endlocaltime %}
+
+<p><strong>Durum:</strong>
+{% if ticket.status == 'new' %}
+    Ticket alındı
+{% elif ticket.status == 'open' %}
+    Ticket görüldü
+{% elif ticket.status == 'pending' %}
+    Ticket beklemeye alındı
+{% elif ticket.status == 'closed' %}
+    Ticket kapatıldı
+{% else %}
+    {{ ticket.status }}
+{% endif %}
+| <strong>Öncelik:</strong> {{ ticket.get_priority_display }}</p>
+
 <p><strong>Kategori:</strong> {{ ticket.category }} | <strong>SLA:</strong> {{ ticket.sla }}</p>
 <hr>
 <p>{{ ticket.description|linebreaks }}</p>
@@ -10,7 +30,15 @@
 <h5>Yorumlar</h5>
 <ul class="list-group mb-3">
   {% for c in ticket.comments.all %}
-    <li class="list-group-item"><strong>{{ c.user.username }}</strong> <small class="text-muted">{{ c.created_at|date:"Y-m-d H:i" }}</small><br>{{ c.message|linebreaks }}</li>
+    <li class="list-group-item">
+      <strong>{{ c.user.username }}</strong>
+      <small class="text-muted">
+        {% localtime on %}
+          {{ c.created_at|date:"Y-m-d H:i" }}
+        {% endlocaltime %}
+      </small><br>
+      {{ c.message|linebreaks }}
+    </li>
   {% empty %}
     <li class="list-group-item">Yorum yok.</li>
   {% endfor %}

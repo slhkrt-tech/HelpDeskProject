@@ -93,11 +93,11 @@ AUTH_PASSWORD_VALIDATORS = [ #kullanıcı şifrelerinin güvenliğini sağlamak 
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Istanbul'
 
 USE_I18N = True #çok dilli destek
 
-USE_TZ = True #zamanlar UTC bazlı tutulur
+USE_TZ = True #UTC ile kaydedip template’de localtime göstermek için
 
 STATIC_URL = '/static/' #statik dosyaların URL yolu
 STATICFILES_DIRS = [BASE_DIR / 'static'] #projede ekstra statik dosya klasörleri
