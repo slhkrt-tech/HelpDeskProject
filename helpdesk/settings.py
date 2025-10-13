@@ -7,12 +7,14 @@ from pathlib import Path
 #projenin ana klasörünü tutar
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-i8$43=o4)s_tguv2ff)jve+lze-8mx#3@^sfcv+w7@!k(u69t2' #django’nun şifreleme ve güvenlik işlemlerinde kullandığı gizli anahtar
+import os
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-secret-key')
+
                                                                                   #production için farklı tut
 
-DEBUG = True #ise hata mesajları ve debug bilgileri gösterilir, production’da false olmalı
+DEBUG = False #ise hata mesajları ve debug bilgileri gösterilir, production’da false olmalı
 
-ALLOWED_HOSTS = [] #projeyi hangi domain veya IP’lerin kullanabileceğini belirler
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     #django’nun hazır uygulamaları (admin, auth, sessions) ve kendi uygulamalar (tickets) burada listelenir
@@ -61,17 +63,19 @@ TEMPLATES = [
 #WSGI sunucusunun (production için) Django uygulamasını çalıştırmasını sağlayan ana giriş noktasıdır
 WSGI_APPLICATION = 'helpdesk.wsgi.application'
 
-
-
-
-# Basit SQLite
-#production’da PostgreSQL veya MySQL gibi daha güçlü bir veritabanı kullanılabilir
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'helpdesk_db',
+        'USER': 'postgres',
+        'PASSWORD': '123456',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+
+
+
 
 AUTH_PASSWORD_VALIDATORS = [ #kullanıcı şifrelerinin güvenliğini sağlamak için çeşitli doğrulamalar yapılır
     {
@@ -106,3 +110,7 @@ LOGOUT_REDIRECT_URL = '/' #logout sonrası yönlendirilecek sayfa
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField' #django modellerinde ID alanı için varsayılan olarak BigAutoField (64-bit integer) kullanılır
                                                      #böylece büyük veritabanlarında ID taşması sorunları önlenir
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Django 4.x
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
