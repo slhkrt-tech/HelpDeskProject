@@ -10,8 +10,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 import os
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-secret-key')
 
-                                                                                  #production için farklı tut
-
 DEBUG = False #ise hata mesajları ve debug bilgileri gösterilir, production’da false olmalı
 
 ALLOWED_HOSTS = ['*']
@@ -74,9 +72,6 @@ DATABASES = {
     }
 }
 
-
-
-
 AUTH_PASSWORD_VALIDATORS = [ #kullanıcı şifrelerinin güvenliğini sağlamak için çeşitli doğrulamalar yapılır
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -91,9 +86,6 @@ AUTH_PASSWORD_VALIDATORS = [ #kullanıcı şifrelerinin güvenliğini sağlamak 
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-
-
 
 LANGUAGE_CODE = 'en-us'
 
