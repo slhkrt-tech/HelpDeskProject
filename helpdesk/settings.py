@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'tickets', #bu app
     'crispy_forms',  #opsiyonel
     'crispy_bootstrap5',  #opsiyonel
+    'accounts',
 ]
 #crispy forms’un hangi stil paketini kullanacağını belirler
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -106,3 +107,5 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Django 4.x
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+AUTH_USER_MODEL = 'accounts.CustomUser'

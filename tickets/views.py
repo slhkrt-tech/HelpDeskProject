@@ -71,3 +71,23 @@ def ticket_create(request):
     else:
         form = TicketForm()
     return render(request, 'tickets/ticket_create.html', {'form': form})
+
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+def admin_required(user):
+    return user.is_admin()
+
+def support_required(user):
+    return user.is_support()
+
+@login_required
+@user_passes_test(admin_required)
+def admin_dashboard(request):
+    # sadece admin görebilir
+    return render(request, 'admin_dashboard.html')
+
+@login_required
+@user_passes_test(support_required)
+def support_dashboard(request):
+    # sadece destek personeli görebilir
+    return render(request, 'support_dashboard.html')
