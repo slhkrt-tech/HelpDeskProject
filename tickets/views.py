@@ -15,25 +15,35 @@ User = get_user_model()
 
 @login_required #login zorunlu
 def ticket_list(request):
-     # Supervisor tüm ticketları görsün
+    # Önce tüm ilişkileri select_related ile yükle
+    tickets = Ticket.objects.select_related('user', 'assigned_to', 'category', 'sla')
+
+    # Supervisor tüm ticketları görsün
     if request.user.groups.filter(name='supervisor').exists():
-        tickets = Ticket.objects.all().order_by('-created_at')
+        tickets = tickets.all().order_by('-created_at')
     else:
         # Normal kullanıcı sadece kendi grubundaki ticketlar
         user_groups = request.user.groups.all()
-        tickets = Ticket.objects.filter(user__groups__in=user_groups).distinct().order_by('-created_at')
+        tickets = tickets.filter(user__groups__in=user_groups).distinct().order_by('-created_at')
 
     return render(request, 'tickets/ticket_list.html', {'tickets': tickets})
 
 @login_required
-def ticket_detail(request, pk): #parametresi URL’den gelir
-    ticket = get_object_or_404(Ticket, pk=pk) #ticket veritabanından çekilir, yoksa 404
-    #yetki kontrolü: normal kullanıcı sadece kendi ticket'ını görsün
+def ticket_detail(request, pk):
+    # ticket + ilişkili alanları önceden çek
+    ticket = get_object_or_404(
+        Ticket.objects.select_related('user', 'assigned_to', 'category', 'sla'),
+        pk=pk
+    )
+
+    # Yetki kontrolü: normal kullanıcı sadece kendi ticket'ını görsün
     if not request.user.is_staff and ticket.user != request.user:
         return redirect('ticket_list')
+
     comment_form = CommentForm()
+
     if request.method == 'POST':
-        #comment ekleme veya atama/durum güncelleme
+        # Comment ekleme
         if 'comment_submit' in request.POST:
             comment_form = CommentForm(request.POST)
             if comment_form.is_valid():
@@ -42,7 +52,8 @@ def ticket_detail(request, pk): #parametresi URL’den gelir
                 c.user = request.user
                 c.save()
                 return redirect('ticket_detail', pk=pk)
-        #agent işlemleri: status/assigned_to
+
+        # Agent işlemleri: status/assigned_to
         if request.user.is_staff:
             if 'status' in request.POST:
                 ticket.status = request.POST.get('status')
@@ -57,7 +68,14 @@ def ticket_detail(request, pk): #parametresi URL’den gelir
                     except User.DoesNotExist:
                         pass
                 return redirect('ticket_detail', pk=pk)
-    return render(request, 'tickets/ticket_detail.html', {'ticket': ticket, 'comment_form': comment_form, 'users': User.objects.filter(is_staff=True)})
+
+    # Kullanıcıları sadece staff olarak template’e gönder
+    staff_users = User.objects.filter(is_staff=True)
+    return render(request, 'tickets/ticket_detail.html', {
+        'ticket': ticket,
+        'comment_form': comment_form,
+        'users': staff_users
+    })
 
 @login_required
 def ticket_create(request):

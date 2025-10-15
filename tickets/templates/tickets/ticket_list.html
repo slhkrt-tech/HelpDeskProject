@@ -13,6 +13,8 @@
       <th>Durum</th>
       <th>Öncelik</th>
       <th>Kullanıcı</th>
+      <th>Atanan</th>
+      <th>Kategori</th>
       <th>Oluşturulma Tarihi</th>
     </tr>
   </thead>
@@ -36,6 +38,14 @@
       </td>
       <td>{{ t.get_priority_display }}</td>
       <td>{{ t.user.username }}</td>
+      <td>{{ t.assigned_to_name }}</td>
+      <td>
+        {% if t.category %}
+          {{ t.category.name }}
+        {% else %}
+          Kategori yok
+        {% endif %}
+      </td>
       <td>
         {% localtime on %}
           {{ t.created_at|date:"Y-m-d H:i" }}
@@ -44,7 +54,7 @@
     </tr>
     {% empty %}
     <tr>
-      <td colspan="6">Henüz talep yok.</td>
+      <td colspan="8">Henüz talep yok.</td>
     </tr>
     {% endfor %}
   </tbody>

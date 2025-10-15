@@ -9,21 +9,27 @@
 <p><strong>Oluşturulma Tarihi:</strong> {{ ticket.created_at|date:"Y-m-d H:i" }}</p>
 {% endlocaltime %}
 
-<p><strong>Durum:</strong>
-{% if ticket.status == 'new' %}
-    Ticket alındı
-{% elif ticket.status == 'open' %}
-    Ticket görüldü
-{% elif ticket.status == 'pending' %}
-    Ticket beklemeye alındı
-{% elif ticket.status == 'closed' %}
-    Ticket kapatıldı
-{% else %}
-    {{ ticket.status }}
-{% endif %}
-| <strong>Öncelik:</strong> {{ ticket.get_priority_display }}</p>
+<p>
+  <strong>Durum:</strong>
+  {% if ticket.status == 'new' %}
+      Alındı
+  {% elif ticket.status == 'open' %}
+      Görüldü
+  {% elif ticket.status == 'pending' %}
+      Beklemede
+  {% elif ticket.status == 'closed' %}
+      Kapatıldı
+  {% else %}
+      {{ ticket.status }}
+  {% endif %}
+  | <strong>Öncelik:</strong> {{ ticket.get_priority_display }}
+</p>
 
-<p><strong>Kategori:</strong> {{ ticket.category }} | <strong>SLA:</strong> {{ ticket.sla }}</p>
+<p>
+  <strong>Kategori:</strong> {{ ticket.category.name if ticket.category else "Kategori yok" }} |
+  <strong>SLA:</strong> {{ ticket.sla.name if ticket.sla else "SLA yok" }} |
+  <strong>Atanan:</strong> {{ ticket.assigned_to.username if ticket.assigned_to else "Atanmamış" }}
+</p>
 <hr>
 <p>{{ ticket.description|linebreaks }}</p>
 
