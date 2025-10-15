@@ -15,18 +15,16 @@ DEBUG = False #ise hata mesajları ve debug bilgileri gösterilir, production’
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
-    #django’nun hazır uygulamaları (admin, auth, sessions) ve kendi uygulamalar (tickets) burada listelenir
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'tickets', #bu app
-    'crispy_forms',  #opsiyonel
-    'crispy_bootstrap5',  #opsiyonel
+    'tickets',
     'accounts',
 ]
+
 #crispy forms’un hangi stil paketini kullanacağını belirler
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
@@ -109,3 +107,5 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage' #whitenoise ayarları
