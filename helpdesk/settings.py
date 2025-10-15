@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 import os
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-secret-key')
 
-DEBUG = False #ise hata mesajları ve debug bilgileri gösterilir, production’da false olmalı
+DEBUG = True #ise hata mesajları ve debug bilgileri gösterilir, production’da false olmalı
 
 ALLOWED_HOSTS = ['*']
 

@@ -42,10 +42,21 @@ class Ticket(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return f"[{self.pk}] {self.title}"
+    # Ardışık ticket numarası (silinmelerden etkilenmez)
+    ticket_number = models.PositiveIntegerField(unique=True, blank=True, null=True)
 
-    #yeni property
+    def save(self, *args, **kwargs):
+        if not self.ticket_number:
+            last_ticket = Ticket.objects.order_by('-ticket_number').first()
+            if last_ticket and last_ticket.ticket_number is not None:
+                self.ticket_number = last_ticket.ticket_number + 1
+            else:
+                self.ticket_number = 1
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"[{self.ticket_number}] {self.title}"
+
     @property
     def assigned_to_name(self):
         return self.assigned_to.username if self.assigned_to else "Atanmamış"
