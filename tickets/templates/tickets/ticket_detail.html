@@ -5,21 +5,38 @@
 {% block content %}
 <div class="container mt-4" style="max-width: 800px;">
 
-  <!-- Başlık ve temel bilgiler -->
+  <!-- Başlık ve badge: Eğer ticket yanlış bölümden açılmışsa kullanıcıya göster -->
 
-  <h3>{{ ticket.title }} <small class="text-muted">#{{ ticket.pk }}</small></h3>
+  <h3>
+    {% if "[Yanlış Bölüm]" in ticket.title %}
+      <span class="badge bg-danger" title="Yanlış bölümden açılmış ticket">Yanlış Bölüm</span>
+    {% endif %}
+
+    <!-- Başlıktan "[Yanlış Bölüm]" ifadesini kaldırıyoruz sadece gösterim için badge kullanıyoruz -->
+
+    {{ ticket.title|replace:"[Yanlış Bölüm] ","" }}
+    <small class="text-muted">#{{ ticket.pk }}</small>
+  </h3>
+
+  <!-- Oluşturulma tarihi -->
 
   <p><strong>Oluşturulma Tarihi:</strong> {{ ticket.created_at|date:"Y-m-d H:i" }}</p>
+
+  <!-- Durum ve öncelik -->
 
   <p>
     <strong>Durum:</strong>
     {% if ticket.status == 'new' %}Alındı
     {% elif ticket.status == 'open' %}Görüldü
     {% elif ticket.status == 'pending' %}Beklemede
-    {% elif ticket.status == 'closed' %}Kapatıldı
+    {% elif ticket.status == 'closed' %}
+      {% if "[Yanlış Bölüm]" in ticket.title %}Yanlış Bölüm / Kapatıldı
+      {% else %}Kapatıldı{% endif %}
     {% else %}{{ ticket.status }}{% endif %}
     | <strong>Öncelik:</strong> {{ ticket.get_priority_display }}
   </p>
+
+  <!-- Kategori, SLA ve atanan kullanıcı bilgisi -->
 
   <p>
     <strong>Kategori:</strong> {{ ticket.category.name if ticket.category else "Kategori yok" }} |
@@ -28,6 +45,8 @@
   </p>
 
   <hr>
+
+  <!-- Ticket açıklaması -->
 
   <p>{{ ticket.description|linebreaks }}</p>
 
@@ -54,8 +73,8 @@
     <button type="submit" name="comment_submit" class="btn btn-primary">Yorum Ekle</button>
   </form>
 
-  <!-- Agent kontrolleri (sadece staff) -->
-
+  <!-- Staff kullanıcı kontrolleri -->
+   
   {% if user.is_staff %}
     <hr>
     <h5>Agent Kontrolleri</h5>

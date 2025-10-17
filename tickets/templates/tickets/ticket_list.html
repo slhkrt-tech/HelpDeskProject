@@ -6,8 +6,8 @@
 <div class="container mt-4">
   <h3 class="mb-4">Ticket Listesi</h3>
 
-  {% load tz %} {# Zaman dilimi filtreleri için #}
-  
+  {% load tz %}
+
   <div class="table-responsive">
     <table class="table table-striped table-hover align-middle">
       <thead class="table-light">
@@ -27,19 +27,27 @@
         <tr>
           <td><a href="{% url 'ticket_detail' t.pk %}">#{{ t.pk }}</a></td>
           <td>{{ t.title }}</td>
+
           <td>
-            {# Status değerlerini kullanıcı dostu şekilde göster #}
-            {% if t.status == 'new' %}Alındı
-            {% elif t.status == 'open' %}Görüldü
-            {% elif t.status == 'pending' %}Beklemede
-            {% elif t.status == 'closed' %}Kapatıldı
-            {% else %}{{ t.status }}{% endif %}
+            {% if t.status == 'new' %}
+              Alındı
+            {% elif t.status == 'open' %}
+              Görüldü
+            {% elif t.status == 'pending' %}
+              Beklemede
+            {% elif t.status == 'closed' %}
+              Kapatıldı
+            {% elif t.status == 'wrong_section' %}
+              Kapatıldı (Yanlış Bölüm)
+            {% else %}
+              {{ t.status }}
+            {% endif %}
           </td>
-          <td>{{ t.get_priority_display }}</td> {# Modelde tanımlı choice gösterimi #}
+
+          <td>{{ t.get_priority_display }}</td>
           <td>{{ t.user.username }}</td>
           <td>{{ t.assigned_to_name }}</td>
-          
-          {# Kategori kontrolü: boşsa "Kategori yok" göster #}
+
           <td>
             {% if t.category %}
               {{ t.category.name }}
@@ -47,7 +55,7 @@
               Kategori yok
             {% endif %}
           </td>
-          
+
           <td>{{ t.created_at|date:"Y-m-d H:i" }}</td>
         </tr>
         {% empty %}

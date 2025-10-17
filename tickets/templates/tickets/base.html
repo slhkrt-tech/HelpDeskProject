@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  {% load static %}
   <meta charset="utf-8">
   <title>{% block title %}Help Desk{% endblock %}</title>
 
   <!-- Bootstrap CSS -->
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Tema CSS -->
+  <!-- Başlangıçta koyu tema yüklenecek, JS ile geçiş yapılabilir -->
+
+  <link id="theme-link" rel="stylesheet" href="{% static 'css/dark-theme.css' %}">
 </head>
 <body>
 
@@ -24,14 +30,14 @@
 
     <div class="collapse navbar-collapse" id="navbarContent">
 
-      <!-- Left menu -->
+      <!-- Sol menü -->
 
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item"><a class="nav-link" href="{% url 'ticket_list' %}">Ticketlar</a></li>
         <li class="nav-item"><a class="nav-link" href="{% url 'ticket_create' %}">Yeni Talep</a></li>
       </ul>
 
-      <!-- Right menu: login/logout -->
+      <!-- Sağ menü: giriş/çıkış -->
 
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         {% if user.is_authenticated %}
@@ -45,6 +51,12 @@
         {% else %}
           <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Giriş</a></li>
         {% endif %}
+
+        <!-- Tema değiştirme butonu -->
+
+        <li class="nav-item ms-3">
+          <button id="toggle-theme" class="btn btn-outline-primary btn-sm">Tema Değiştir</button>
+        </li>
       </ul>
     </div>
   </div>
@@ -56,8 +68,37 @@
   {% block content %}{% endblock %}
 </div>
 
-<!-- Bootstrap JS (collapse vs için gerekli) -->
+<!-- Bootstrap JS -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Tema JS -->
+
+<script>
+  const toggle = document.getElementById('toggle-theme');
+  const themeLink = document.getElementById('theme-link');
+
+  // Tema geçişi
+
+  toggle.addEventListener('click', () => {
+    if (themeLink.getAttribute('href').includes('dark-theme')) {
+      themeLink.href = "{% static 'css/light-theme.css' %}";
+      localStorage.setItem('theme', 'light');
+    } else {
+      themeLink.href = "{% static 'css/dark-theme.css' %}";
+      localStorage.setItem('theme', 'dark');
+    }
+  });
+
+  // Sayfa yüklenince kaydedilmiş temayı uygula
+
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    themeLink.href = savedTheme === 'dark' 
+      ? "{% static 'css/dark-theme.css' %}" 
+      : "{% static 'css/light-theme.css' %}";
+  }
+</script>
+
 </body>
 </html>

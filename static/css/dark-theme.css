@@ -1,0 +1,33 @@
+:root {
+    --bg-color: #131515;
+    --text-color: #fffafb;
+    --primary-color: #339989;
+    --accent-color: #7de2d1;
+    --secondary-bg: #2b2c28;
+}
+
+/* Genel gövde ve arka plan */
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* Başlıklar */
+
+h1, h2, h3 {
+    color: var(--primary-color);
+}
+
+/* Linkler */
+
+a {
+    color: var(--accent-color);
+}
+
+/* Butonlar */
+
+button {
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+}

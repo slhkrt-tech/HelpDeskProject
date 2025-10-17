@@ -1,0 +1,25 @@
+:root {
+    --bg-color: #fffafb;
+    --text-color: #131515;
+    --primary-color: #339989;
+    --accent-color: #7de2d1;
+    --secondary-bg: #2b2c28;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+h1, h2, h3 {
+    color: var(--primary-color);
+}
+
+a {
+    color: var(--accent-color);
+}
+
+button {
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+}

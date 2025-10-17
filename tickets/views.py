@@ -4,10 +4,11 @@ from django.contrib.auth import get_user_model
 from .models import Ticket
 from .forms import TicketForm, CommentForm
 
-User = get_user_model()  # Django'nun kullanıcı modelini al
+User = get_user_model()  # Django'nun mevcut kullanıcı modelini al
 
 @login_required
 def ticket_list(request):
+
     """
     Ticket listesi sayfası
     - Supervisor grubu tüm ticketları görebilir
@@ -98,6 +99,7 @@ def ticket_detail(request, pk):
 
 @login_required
 def ticket_create(request):
+
     """
     Yeni ticket oluşturma sayfası
     - Form gönderildiğinde ticket kaydedilir
@@ -109,6 +111,7 @@ def ticket_create(request):
         if form.is_valid():
             t = form.save(commit=False)
             t.user = request.user
+            # TODO: Yanlış bölüm senaryosu burada işlenebilir
             t.save()
             return redirect('ticket_list')
     else:
@@ -119,44 +122,54 @@ def ticket_create(request):
 # Admin kontrol fonksiyonu
 
 def admin_required(user):
+
     """
     Kullanıcının admin olup olmadığını kontrol eder
     """
+
     return user.is_admin()
 
 # Support kontrol fonksiyonu
 
 def support_required(user):
+
     """
     Kullanıcının destek personeli olup olmadığını kontrol eder
     """
+
     return user.is_support()
 
 @login_required
 @user_passes_test(admin_required)
 def admin_dashboard(request):
+
     """
     Admin paneli sayfası
     - Sadece admin kullanıcılar görebilir
     """
+
     return render(request, 'admin_dashboard.html')
 
 @login_required
 @user_passes_test(support_required)
 def support_dashboard(request):
+
     """
     Support paneli sayfası
     - Sadece destek personeli görebilir
     """
+    
     return render(request, 'support_dashboard.html')
 
 # Yeni kullanıcı kaydı için signup view
 
 def signup(request):
+
     """
     Kullanıcı kayıt sayfası
     - Kayıt sonrası otomatik giriş yapılır
     """
+
     from django.contrib.auth.forms import UserCreationForm
     from django.contrib.auth import login
 
