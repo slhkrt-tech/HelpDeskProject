@@ -1,11 +1,17 @@
-#bu dosya, Django uygulamanızın bir WSGI sunucusu tarafından çalıştırılabilmesi için gerekli başlangıç noktasıdır
-#django’nun synchronous (normal) sunucularla çalışmasını sağlayan standart
+"""
+wsgi.py
+Django uygulamasının WSGI uyumlu sunucular (örneğin Gunicorn, uWSGI) tarafından çalıştırılmasını sağlayan giriş noktasıdır.
+Bu dosya, Django’yu synchronous (senkron) ortamda çalıştırmak için standart arayüzü tanımlar.
+"""
 
-import os #ortam değişkenlerini yönetmek için kullanılır.
+import os
+from django.core.wsgi import get_wsgi_application
 
-from django.core.wsgi import get_wsgi_application #django uygulamasını WSGI uyumlu callable olarak alır
+# Django'nun hangi ayar dosyasını kullanacağını belirtir.
+# Eğer ortam değişkeni tanımlı değilse varsayılan olarak helpdesk.settings kullanılır.
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'helpdesk.settings') #django’ya hangi ayar dosyasını (settings.py) kullanacağını söyler, boşsa helpdesk settings default döner
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'helpdesk.settings')
 
-application = get_wsgi_application() #WSGI sunucusu tarafından kullanılacak ana giriş noktasıdır
-                                     #sunucu, gelen HTTP isteklerini bu callable aracılığıyla Django uygulamasına iletir
+# WSGI sunucusu (örneğin Gunicorn), bu nesne üzerinden Django uygulamasını çağırır.
+
+application = get_wsgi_application()

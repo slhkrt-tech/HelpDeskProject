@@ -1,10 +1,31 @@
 {% extends "tickets/base.html" %}
+
 {% block title %}Yeni Talep{% endblock %}
+
 {% block content %}
-<h3>Yeni Talep Oluştur</h3>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn btn-primary">Gönder</button>
-</form>
+<div class="container mt-5" style="max-width: 600px;">
+
+  <!-- Başlık -->
+
+  <h3 class="mb-4 text-center">Yeni Talep Oluştur</h3>
+
+  <!-- Talep formu -->
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <!-- Gönder butonu -->
+
+    <div class="d-grid mt-3">
+      <button type="submit" class="btn btn-primary btn-block">Gönder</button>
+    </div>
+  </form>
+
+  <!-- İsteğe bağlı: Tüm talepler linki -->
+
+  <div class="mt-3 text-center">
+    <a href="{% url 'ticket_list' %}">Tüm Talepler</a>
+  </div>
+</div>
 {% endblock %}

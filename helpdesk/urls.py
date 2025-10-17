@@ -1,12 +1,28 @@
-#urls.py, gelen isteğin hangi view’a veya uygulamaya gideceğini belirleyen yönlendirme haritasıdır
+"""
+urls.py
+Gelen HTTP isteklerinin hangi view veya uygulamaya yönlendirileceğini belirler.
+Proje genelinde URL haritası burada tanımlanır.
+"""
 
-from django.contrib import admin #django’nun admin panelini kullanmak için
-from django.urls import include, path #URL desenlerini tanımlamak için kullanılan fonksiyon
+from django.contrib import admin
+from django.urls import include, path
 from django.views.generic import TemplateView
 
-urlpatterns = [ #django’nun URL yönlendirme listesi
-    path('admin/', admin.site.urls), #URL’sine gelen istekleri Django admin paneline yönlendirir, http://localhost:8000/admin/
+urlpatterns = [
+
+    # Django yönetim paneli
+
+    path('admin/', admin.site.urls),
+
+    # Ana sayfa yönlendirmesi (şu an sabit bir template gösteriyor)
+
     path('', TemplateView.as_view(template_name='tickets/home.html'), name='home'),
+
+    # Tickets uygulamasına ait URL’ler
+
     path('tickets/', include('tickets.urls')),
+
+    # Django’nun yerleşik kimlik doğrulama URL’leri (login, logout, password_reset vb.)
+
     path('accounts/', include('django.contrib.auth.urls')),
-]                                   
+]

@@ -1,13 +1,22 @@
-from django import forms #django’nun form kütüphanesi
-from .models import Ticket, Comment #aynı uygulamadaki Ticket ve Comment modelleri
+from django import forms
+from .models import Ticket, Comment
 
-class TicketForm(forms.ModelForm): #ticket modeli için ModelForm olarak tanımlanır
+class TicketForm(forms.ModelForm):
+
+    """Ticket modeli için form"""
+
     class Meta:
         model = Ticket
-        fields = ['title','description','priority','category','sla']
+        fields = ['title', 'description', 'priority', 'category', 'sla']
 
-class CommentForm(forms.ModelForm): #comment modeli için ModelForm olarak tanımlanır
+
+class CommentForm(forms.ModelForm):
+
+    """Comment modeli için form"""
+
     class Meta:
         model = Comment
         fields = ['message']
-        widgets = {'message': forms.Textarea(attrs={'rows':3})}
+        widgets = {
+            'message': forms.Textarea(attrs={'rows': 3})
+        }

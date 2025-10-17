@@ -1,9 +1,32 @@
 {% extends "tickets/base.html" %}
+
+{% block title %}Giriş{% endblock %}
+
 {% block content %}
-<h3>Giriş</h3>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn btn-primary">Giriş</button>
-</form>
+<div class="container mt-5" style="max-width: 400px;">
+
+  <!-- Sayfa başlığı -->
+
+  <h3 class="mb-4 text-center">Giriş</h3>
+
+  <!-- Login formu -->
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <!-- Submit butonu -->
+
+    <div class="d-grid mt-3">
+      <button type="submit" class="btn btn-primary btn-block">Giriş</button>
+    </div>
+  </form>
+
+  <!-- Yardımcı linkler -->
+
+  <div class="mt-3 text-center">
+    <a href="{% url 'password_reset' %}">Şifremi Unuttum?</a> |
+    <a href="{% url 'signup' %}">Kayıt Ol</a>
+  </div>
+</div>
 {% endblock %}

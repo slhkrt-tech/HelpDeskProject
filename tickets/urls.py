@@ -1,12 +1,28 @@
-#django.contrib.auth.urls sayesinde login/ logout/ password view'ları hazır kullanılır.
-#from django.contrib import admin #django admin paneli
-
-from django.urls import path #URL tanımlama ve başka URLconf’leri dahil etme
+from django.urls import path
 from . import views
-from django.views.generic import TemplateView #statik bir HTML sayfası göstermek için
 
 urlpatterns = [
-    path("", views.ticket_list, name="ticket_list"), #tüm ticket’ları listeleyen view
-    path("create/", views.ticket_create, name="ticket_create"), #yeni ticket oluşturma formu
-    path("<int:pk>/", views.ticket_detail, name="ticket_detail"), #ID’ye göre ticket detay sayfası
+
+    # Ticket listesi sayfası
+    # - Supervisor grubu tüm ticketları görebilir
+    # - Normal kullanıcı sadece kendi grubundaki ticketları görebilir
+
+    path("", views.ticket_list, name="ticket_list"),
+
+    # Yeni ticket oluşturma sayfası
+    # - Form gönderildiğinde ticket kaydedilir
+    # - Oluşturan kullanıcı otomatik atanır
+
+    path("create/", views.ticket_create, name="ticket_create"),
+
+    # Ticket detay sayfası
+    # - Normal kullanıcı sadece kendi ticketını görebilir
+    # - Staff kullanıcılar status ve atama güncelleyebilir
+
+    path("<int:pk>/", views.ticket_detail, name="ticket_detail"),
+
+    # Kullanıcı kayıt (signup) sayfası
+    # - Kayıt sonrası kullanıcı otomatik giriş yapar
+    
+    path("signup/", views.signup, name="signup"),
 ]

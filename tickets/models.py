@@ -41,17 +41,12 @@ class Ticket(models.Model):
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="assigned_tickets")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    # Ardışık ticket numarası (silinmelerden etkilenmez)
-    ticket_number = models.PositiveIntegerField(unique=True, blank=True, null=True)
+    ticket_number = models.PositiveIntegerField(unique=True, blank=True, null=True)  # Ardışık ticket numarası
 
     def save(self, *args, **kwargs):
         if not self.ticket_number:
             last_ticket = Ticket.objects.order_by('-ticket_number').first()
-            if last_ticket and last_ticket.ticket_number is not None:
-                self.ticket_number = last_ticket.ticket_number + 1
-            else:
-                self.ticket_number = 1
+            self.ticket_number = last_ticket.ticket_number + 1 if last_ticket and last_ticket.ticket_number else 1
         super().save(*args, **kwargs)
 
     def __str__(self):

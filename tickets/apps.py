@@ -1,9 +1,8 @@
-#apps.py, django uygulamasının proje içindeki yapılandırma noktasıdır
-#ID alanları ve uygulama adı gibi temel ayarları belirler
+# apps.py, Django uygulamasının proje içindeki yapılandırma noktasıdır
+# ID alanları ve uygulama adı gibi temel ayarları belirler
 
-from django.apps import AppConfig #django uygulamaları için temel konfigürasyon sınıfıdır
+from django.apps import AppConfig
 
-
-class TicketsConfig(AppConfig): #tickets uygulaması için bir konfigürasyon sınıfı
-    default_auto_field = 'django.db.models.BigAutoField' #bu uygulamadaki modellerin ID alanları için varsayılan tip, 64-bit integer, büyük veritabanları için güvenli
-    name = 'tickets' #uygulamanın proje içindeki ad, django bu isimle uygulamayı tanır ve INSTALLED_APPS’e eklenir
+class TicketsConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'  # Modellerde varsayılan ID tipi (64-bit integer)
+    name = 'tickets'  # Uygulamanın proje içindeki adı

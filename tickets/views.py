@@ -1,49 +1,65 @@
-#ticket_list → kullanıcıya ticket listesi gösterir, yetki kontrolü vardır
-#ticket_detail → ticket detayları, yorum ekleme, status/atama işlemleri (admin için)
-#ticket_create → yeni ticket oluşturma formu
-#@login_required → tüm view’lar için giriş zorunlu
-#yetki kontrolü sayesinde normal kullanıcı sadece kendi ticket’ını, agent/admin tüm ticketları görür
-
-from django.shortcuts import render, get_object_or_404, redirect #HTML şablonunu verilerle döndürür,veritabanında nesne yoksa 404 döndürür, başka URL’ye yönlendirir
-from django.contrib.auth.decorators import login_required #kullanıcı giriş yapmamışsa login sayfasına yönlendirir
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth import get_user_model
 from .models import Ticket
 from .forms import TicketForm, CommentForm
-from django.contrib.auth import get_user_model #django’nun user modelini alır
-from django.contrib.auth.decorators import login_required
 
-User = get_user_model()
+User = get_user_model()  # Django'nun kullanıcı modelini al
 
-@login_required #login zorunlu
+@login_required
 def ticket_list(request):
-    # Önce tüm ilişkileri select_related ile yükle
-    tickets = Ticket.objects.select_related('user', 'assigned_to', 'category', 'sla')
+    """
+    Ticket listesi sayfası
+    - Supervisor grubu tüm ticketları görebilir
+    - Normal kullanıcı sadece kendi grubundaki ticketları görebilir
+    """
 
-    # Supervisor tüm ticketları görsün
+    # Ticketları ilişkili alanlarıyla birlikte önceden çek
+
+    tickets = Ticket.objects.select_related('user', 'assigned_to', 'category', 'sla')
+    
     if request.user.groups.filter(name='supervisor').exists():
+
+        # Supervisor tüm ticketları görür
+
         tickets = tickets.all().order_by('-created_at')
     else:
-        # Normal kullanıcı sadece kendi grubundaki ticketlar
+
+        # Normal kullanıcı sadece kendi grubu içindeki ticketları görür
+
         user_groups = request.user.groups.all()
         tickets = tickets.filter(user__groups__in=user_groups).distinct().order_by('-created_at')
-
+    
     return render(request, 'tickets/ticket_list.html', {'tickets': tickets})
 
 @login_required
 def ticket_detail(request, pk):
-    # ticket + ilişkili alanları önceden çek
+
+    """
+    Ticket detay sayfası
+    - Normal kullanıcı sadece kendi ticketını görebilir
+    - Yorum ekleme işlemi yapılabilir
+    - Staff kullanıcılar status ve atama güncelleyebilir
+    """
+
+    # Ticket ve ilişkili alanları getir
+
     ticket = get_object_or_404(
         Ticket.objects.select_related('user', 'assigned_to', 'category', 'sla'),
         pk=pk
     )
 
-    # Yetki kontrolü: normal kullanıcı sadece kendi ticket'ını görsün
+    # Yetki kontrolü: normal kullanıcı sadece kendi ticketını görebilir
+
     if not request.user.is_staff and ticket.user != request.user:
         return redirect('ticket_list')
 
     comment_form = CommentForm()
 
     if request.method == 'POST':
-        # Comment ekleme
+
+        # Yorum ekleme işlemi
+
         if 'comment_submit' in request.POST:
             comment_form = CommentForm(request.POST)
             if comment_form.is_valid():
@@ -53,7 +69,8 @@ def ticket_detail(request, pk):
                 c.save()
                 return redirect('ticket_detail', pk=pk)
 
-        # Agent işlemleri: status/assigned_to
+        # Staff kullanıcı işlemleri: status veya atama güncelleme
+
         if request.user.is_staff:
             if 'status' in request.POST:
                 ticket.status = request.POST.get('status')
@@ -69,8 +86,10 @@ def ticket_detail(request, pk):
                         pass
                 return redirect('ticket_detail', pk=pk)
 
-    # Kullanıcıları sadece staff olarak template’e gönder
+    # Staff kullanıcıları template'e gönder
+
     staff_users = User.objects.filter(is_staff=True)
+    
     return render(request, 'tickets/ticket_detail.html', {
         'ticket': ticket,
         'comment_form': comment_form,
@@ -79,6 +98,12 @@ def ticket_detail(request, pk):
 
 @login_required
 def ticket_create(request):
+    """
+    Yeni ticket oluşturma sayfası
+    - Form gönderildiğinde ticket kaydedilir
+    - Oluşturan kullanıcı otomatik atanır
+    """
+
     if request.method == 'POST':
         form = TicketForm(request.POST)
         if form.is_valid():
@@ -88,24 +113,59 @@ def ticket_create(request):
             return redirect('ticket_list')
     else:
         form = TicketForm()
+    
     return render(request, 'tickets/ticket_create.html', {'form': form})
 
-from django.contrib.auth.decorators import login_required, user_passes_test
+# Admin kontrol fonksiyonu
 
 def admin_required(user):
+    """
+    Kullanıcının admin olup olmadığını kontrol eder
+    """
     return user.is_admin()
 
+# Support kontrol fonksiyonu
+
 def support_required(user):
+    """
+    Kullanıcının destek personeli olup olmadığını kontrol eder
+    """
     return user.is_support()
 
 @login_required
 @user_passes_test(admin_required)
 def admin_dashboard(request):
-    # sadece admin görebilir
+    """
+    Admin paneli sayfası
+    - Sadece admin kullanıcılar görebilir
+    """
     return render(request, 'admin_dashboard.html')
 
 @login_required
 @user_passes_test(support_required)
 def support_dashboard(request):
-    # sadece destek personeli görebilir
+    """
+    Support paneli sayfası
+    - Sadece destek personeli görebilir
+    """
     return render(request, 'support_dashboard.html')
+
+# Yeni kullanıcı kaydı için signup view
+
+def signup(request):
+    """
+    Kullanıcı kayıt sayfası
+    - Kayıt sonrası otomatik giriş yapılır
+    """
+    from django.contrib.auth.forms import UserCreationForm
+    from django.contrib.auth import login
+
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('ticket_list')
+    else:
+        form = UserCreationForm()
+    return render(request, 'tickets/signup.html', {'form': form})
