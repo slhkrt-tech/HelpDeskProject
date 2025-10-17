@@ -1,12 +1,12 @@
 # admin.py
 # ---------------------------------------------------------------------
-# Bu dosya modellerin Django admin panelinde nasıl görüneceğini ve
-# yönetileceğini tanımlar.
+# Bu dosya modellerin Django admin panelinde nasıl yönetileceğini tanımlar.
+# Modeller: Category, SLA, Talep, Comment
 # ---------------------------------------------------------------------
 
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
-from .models import Category, SLA, Ticket, Comment
+from .models import Category, SLA, Talep, Comment  # Ticket yerine Talep
 
 # ---------------------------------------------------------------------
 # Category (Kategori) Modeli
@@ -14,7 +14,7 @@ from .models import Category, SLA, Ticket, Comment
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name')  # Listede gösterilecek sütunlar
+    list_display = ('id', 'name')
     list_display_links = ('id', 'name')
     search_fields = ('name',)
     ordering = ('id',)
@@ -34,14 +34,11 @@ class SLAAdmin(admin.ModelAdmin):
     verbose_name_plural = _("SLA'lar")
 
 # ---------------------------------------------------------------------
-# Ticket (Talep) Modeli
+# Talep (Ticket) Modeli
 # ---------------------------------------------------------------------
 
-@admin.register(Ticket)
-class TicketAdmin(admin.ModelAdmin):
-
-    # Liste görünümünde gösterilecek sütunlar
-    
+@admin.register(Talep)
+class TalepAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'title',
@@ -53,14 +50,8 @@ class TicketAdmin(admin.ModelAdmin):
         'created_at',
         'get_description',
     )
-
-    # Sağ kenar filtre alanları
     list_filter = ('status', 'priority', 'category')
-
-    # Arama yapılacak alanlar
     search_fields = ('title', 'description')
-
-    # Özelleştirilmiş işlemler (actions)
     actions = [
         'mark_as_closed',
         'mark_as_pending',
@@ -69,7 +60,7 @@ class TicketAdmin(admin.ModelAdmin):
     ]
 
     # -----------------------------------------------------------------
-    # Özel işlemler (Custom Admin Actions)
+    # Özel İşlemler (Custom Admin Actions)
     # -----------------------------------------------------------------
 
     def mark_as_closed(self, request, queryset):
@@ -96,15 +87,9 @@ class TicketAdmin(admin.ModelAdmin):
     # Yardımcı Fonksiyonlar
     # -----------------------------------------------------------------
 
-    # Açıklamayı 75 karakterle kısaltarak göster
-
     def get_description(self, obj):
         return (obj.description[:75] + "...") if len(obj.description) > 75 else obj.description
     get_description.short_description = "Açıklama"
-
-    # -----------------------------------------------------------------
-    # Salt Okunur Alanlar
-    # -----------------------------------------------------------------
 
     readonly_fields = (
         'title',
@@ -116,15 +101,9 @@ class TicketAdmin(admin.ModelAdmin):
         'created_at',
     )
 
-    # -----------------------------------------------------------------
-    # Silme Yetkisi
-    # -----------------------------------------------------------------
-    # Admin her zaman silebilir
-
     def has_delete_permission(self, request, obj=None):
         return True
 
-    # "delete_selected" eylemini Türkçeleştir
     def get_actions(self, request):
         actions = super().get_actions(request)
         if 'delete_selected' in actions:
@@ -141,7 +120,7 @@ class TicketAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'ticket', 'user', 'created_at')
+    list_display = ('id', 'talep', 'user', 'created_at')  # ticket -> talep
     search_fields = ('message',)
     ordering = ('-created_at',)
     verbose_name = _("Yorum")

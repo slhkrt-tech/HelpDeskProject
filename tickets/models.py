@@ -1,47 +1,62 @@
+# models.py
+# ---------------------------------------------------------------------
+# Bu dosya HelpDesk uygulamasının veri modellerini içerir.
+# Her model veritabanında bir tabloyu temsil eder.
+#   - Category (Kategori)
+#   - SLA (Servis Düzeyi Anlaşması)
+#   - Talep (Ticket)
+#   - Comment (Yorum)
+# ---------------------------------------------------------------------
+
 from django.db import models
 from django.contrib.auth import get_user_model
 
-User = get_user_model()  # Django'nun mevcut user modelini al
+User = get_user_model()  # Django’nun aktif kullanıcı modelini alır
 
-# ---------------------------
-# Kategori modeli
-# ---------------------------
+# ---------------------------------------------------------------------
+# Kategori Modeli
+# ---------------------------------------------------------------------
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, unique=True)  # Kategori adı, benzersiz
-
-    def __str__(self):
-        return self.name  # Admin panel ve diğer yerlerde okunabilir isim
-
-# ---------------------------
-# SLA (Service Level Agreement) modeli
-# ---------------------------
-
-class SLA(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    response_time = models.IntegerField(help_text="Yanıt süresi (saat)")  # Yanıt süresi
-    resolve_time = models.IntegerField(help_text="Çözüm süresi (saat)")   # Çözüm süresi
+    name = models.CharField(max_length=100, unique=True, verbose_name="Kategori Adı")
 
     def __str__(self):
         return self.name
 
-# ---------------------------
-# Ticket modeli
-# ---------------------------
+    class Meta:
+        verbose_name = "Kategori"
+        verbose_name_plural = "Kategoriler"
 
-class Ticket(models.Model):
 
-    # Ticket durum seçenekleri (admin ve template’de human-readable olacak)
+# ---------------------------------------------------------------------
+# SLA (Servis Düzeyi Anlaşması) Modeli
+# ---------------------------------------------------------------------
 
+class SLA(models.Model):
+    name = models.CharField(max_length=100, unique=True, verbose_name="SLA Adı")
+    response_time = models.IntegerField(help_text="Yanıt süresi (saat)", verbose_name="Yanıt Süresi (saat)")
+    resolve_time = models.IntegerField(help_text="Çözüm süresi (saat)", verbose_name="Çözüm Süresi (saat)")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Servis Düzeyi Anlaşması (SLA)"
+        verbose_name_plural = "Servis Düzeyi Anlaşmaları"
+
+
+# ---------------------------------------------------------------------
+# Talep (Ticket) Modeli
+# ---------------------------------------------------------------------
+
+class Talep(models.Model):
     STATUS_CHOICES = [
         ('new', 'Yeni'),
         ('open', 'Açık'),
         ('pending', 'Beklemede'),
         ('closed', 'Kapatıldı'),
-        ('wrong_section', 'Yanlış Bölüm / Kapatıldı'),  # ← Yeni: Yanlış bölüm durumunu human-readable yaptık
+        ('wrong_section', 'Yanlış Bölüm / Kapatıldı'),
     ]
-
-    # Öncelik seçenekleri
 
     PRIORITY_CHOICES = [
         ('low', 'Düşük'),
@@ -50,49 +65,56 @@ class Ticket(models.Model):
         ('urgent', 'Acil'),
     ]
 
-    # Ticket alanları
-    
-    title = models.CharField(max_length=200)
-    description = models.TextField()
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')  # Durum
-    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='normal')
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
-    sla = models.ForeignKey(SLA, on_delete=models.SET_NULL, null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tickets")  # Oluşturan kullanıcı
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="assigned_tickets")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    # Ardışık ticket numarası (silinmelerden etkilenmez)
-
-    ticket_number = models.PositiveIntegerField(unique=True, blank=True, null=True)
-
-    # Ticket kaydedilirken ardışık numara mantığı
+    title = models.CharField(max_length=200, verbose_name="Talep Başlığı")
+    description = models.TextField(verbose_name="Açıklama")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new', verbose_name="Durum")
+    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='normal', verbose_name="Öncelik")
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Kategori")
+    sla = models.ForeignKey(SLA, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="SLA")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="talepler", verbose_name="Oluşturan Kullanıcı")
+    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="atanan_talepler", verbose_name="Atanan Kullanıcı")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
+    talep_numarasi = models.PositiveIntegerField(unique=True, blank=True, null=True, verbose_name="Talep Numarası")
 
     def save(self, *args, **kwargs):
-        if not self.ticket_number:
-            last_ticket = Ticket.objects.order_by('-ticket_number').first()
-            self.ticket_number = last_ticket.ticket_number + 1 if last_ticket and last_ticket.ticket_number else 1
+        if not self.talep_numarasi:
+            last_talep = Talep.objects.order_by('-talep_numarasi').first()
+            self.talep_numarasi = last_talep.talep_numarasi + 1 if last_talep and last_talep.talep_numarasi else 1
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"[{self.ticket_number}] {self.title}"  # Admin panelde okunabilir
-
-    # Atanmış kullanıcı adını göster
+        return f"[{self.talep_numarasi}] {self.title}"
 
     @property
     def assigned_to_name(self):
         return self.assigned_to.username if self.assigned_to else "Atanmamış"
 
-# ---------------------------
-# Ticket yorum modeli
-# ---------------------------
+    class Meta:
+        verbose_name = "Talep"
+        verbose_name_plural = "Talepler"
+
+
+# ---------------------------------------------------------------------
+# Comment (Yorum) Modeli
+# ---------------------------------------------------------------------
 
 class Comment(models.Model):
-    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="comments")  # Hangi ticket'a ait
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    message = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    talep = models.ForeignKey(
+        Talep,
+        on_delete=models.CASCADE,
+        related_name="yorumlar",
+        verbose_name="Talep",
+        null=True,       # nullable yaptık
+        blank=True
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Kullanıcı")
+    message = models.TextField(verbose_name="Mesaj")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
 
     def __str__(self):
-        return f"Comment {self.pk} by {self.user}"
+        return f"Yorum {self.pk} - {self.user}"
+
+    class Meta:
+        verbose_name = "Yorum"
+        verbose_name_plural = "Yorumlar"

@@ -1,19 +1,18 @@
 from django import forms
-from .models import Ticket, Comment
+from .models import Talep, Comment  # Ticket -> Talep
 
 class TicketForm(forms.ModelForm):
 
-    """Ticket modeli için form"""
+    """Talep modeli için form (eski Ticket)"""
 
     class Meta:
-        model = Ticket
-        fields = ['title', 'description', 'priority', 'category', 'sla']
-
+        model = Talep
+        fields = ['title', 'description', 'priority', 'category', 'sla', 'assigned_to']
 
 class CommentForm(forms.ModelForm):
 
     """Comment modeli için form"""
-
+    
     class Meta:
         model = Comment
         fields = ['message']
