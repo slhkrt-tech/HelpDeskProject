@@ -3,29 +3,70 @@
 {% block title %}Yeni Talep{% endblock %}
 
 {% block content %}
-<div class="container mt-5" style="max-width: 600px;">
+{# Sayfayı tam ortalamak için d-flex ve align-items/justify-content-center kullandık #}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+  <div class="col-md-6 text-center">
+    <h3 class="mb-4">Yeni Talep Oluştur</h3>
 
-  <!-- Başlık -->
+    <form method="post" novalidate>
+      {% csrf_token %}
 
-  <h3 class="mb-4 text-center">Yeni Talep Oluştur</h3>
+      <p class="mb-3">
+        <label for="{{ form.title.id_for_label }}" class="form-label d-block">{{ form.title.label }}</label>
+        {{ form.title }}
+        {% if form.title.errors %}
+          <div class="text-danger small mt-1">{{ form.title.errors|striptags }}</div>
+        {% endif %}
+      </p>
 
-  <!-- Talep formu -->
+      <p class="mb-3">
+        <label for="{{ form.description.id_for_label }}" class="form-label d-block">{{ form.description.label }}</label>
+        {{ form.description }}
+        {% if form.description.errors %}
+          <div class="text-danger small mt-1">{{ form.description.errors|striptags }}</div>
+        {% endif %}
+      </p>
 
-  <form method="post" novalidate>
-    {% csrf_token %}
-    {{ form.as_p }}
+      <p class="mb-3">
+        <label for="{{ form.priority.id_for_label }}" class="form-label d-block">{{ form.priority.label }}</label>
+        {{ form.priority }}
+        {% if form.priority.errors %}
+          <div class="text-danger small mt-1">{{ form.priority.errors|striptags }}</div>
+        {% endif %}
+      </p>
 
-    <!-- Gönder butonu -->
+      <p class="mb-3">
+        <label for="{{ form.category.id_for_label }}" class="form-label d-block">{{ form.category.label }}</label>
+        {{ form.category }}
+        {% if form.category.errors %}
+          <div class="text-danger small mt-1">{{ form.category.errors|striptags }}</div>
+        {% endif %}
+      </p>
 
-    <div class="d-grid mt-3">
-      <button type="submit" class="btn btn-primary btn-block">Gönder</button>
+      <p class="mb-3">
+        <label for="{{ form.sla.id_for_label }}" class="form-label d-block">{{ form.sla.label }}</label>
+        {{ form.sla }}
+        {% if form.sla.errors %}
+          <div class="text-danger small mt-1">{{ form.sla.errors|striptags }}</div>
+        {% endif %}
+      </p>
+
+      <p class="mb-3">
+        <label for="{{ form.assigned_to.id_for_label }}" class="form-label d-block">{{ form.assigned_to.label }}</label>
+        {{ form.assigned_to }}
+        {% if form.assigned_to.errors %}
+          <div class="text-danger small mt-1">{{ form.assigned_to.errors|striptags }}</div>
+        {% endif %}
+      </p>
+
+      <div class="d-grid mt-3">
+        <button type="submit" class="btn btn-primary">Gönder</button>
+      </div>
+    </form>
+
+    <div class="mt-3">
+      <a href="{% url 'ticket_list' %}">Tüm Talepler</a>
     </div>
-  </form>
-
-  <!-- İsteğe bağlı: Tüm talepler linki -->
-
-  <div class="mt-3 text-center">
-    <a href="{% url 'ticket_list' %}">Tüm Talepler</a>
   </div>
 </div>
 {% endblock %}

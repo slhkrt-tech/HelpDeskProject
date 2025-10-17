@@ -1,0 +1,66 @@
+{% extends "tickets/base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}Kayıt{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+  <div class="col-md-6 text-center">
+
+    <h3 class="mb-4" style="color: var(--bs-body-color);">Kayıt Ol</h3>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <!-- Kullanıcı Adı -->
+       
+      <p class="mb-3 text-start">
+        <label for="{{ form.username.id_for_label }}" class="form-label d-block" style="color: var(--bs-body-color);">{{ form.username.label }}</label>
+        {{ form.username|add_class:"form-control bg-body text-body" }}
+        {% if form.username.errors %}
+          <div class="text-danger small mt-1">{{ form.username.errors|striptags }}</div>
+        {% endif %}
+      </p>
+
+      <!-- E-posta -->
+
+      <p class="mb-3 text-start">
+        <label for="{{ form.email.id_for_label }}" class="form-label d-block" style="color: var(--bs-body-color);">{{ form.email.label }}</label>
+        {{ form.email|add_class:"form-control bg-body text-body" }}
+        {% if form.email.errors %}
+          <div class="text-danger small mt-1">{{ form.email.errors|striptags }}</div>
+        {% endif %}
+      </p>
+
+      <!-- Şifre -->
+
+      <p class="mb-3 text-start">
+        <label for="{{ form.password1.id_for_label }}" class="form-label d-block" style="color: var(--bs-body-color);">{{ form.password1.label }}</label>
+        {{ form.password1|add_class:"form-control bg-body text-body" }}
+        {% if form.password1.errors %}
+          <div class="text-danger small mt-1">{{ form.password1.errors|striptags }}</div>
+        {% endif %}
+      </p>
+
+      <!-- Şifre Tekrar -->
+
+      <p class="mb-3 text-start">
+        <label for="{{ form.password2.id_for_label }}" class="form-label d-block" style="color: var(--bs-body-color);">{{ form.password2.label }}</label>
+        {{ form.password2|add_class:"form-control bg-body text-body" }}
+        {% if form.password2.errors %}
+          <div class="text-danger small mt-1">{{ form.password2.errors|striptags }}</div>
+        {% endif %}
+      </p>
+
+      <div class="d-grid mt-3">
+        <button type="submit" class="btn btn-primary">Kayıt Ol</button>
+      </div>
+    </form>
+
+    <div class="mt-3">
+      <a href="{% url 'login' %}">Zaten hesabım var?</a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

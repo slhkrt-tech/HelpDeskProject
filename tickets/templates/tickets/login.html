@@ -1,32 +1,47 @@
 {% extends "tickets/base.html" %}
+{% load widget_tweaks %}
 
 {% block title %}Giriş{% endblock %}
 
 {% block content %}
-<div class="container mt-5" style="max-width: 400px;">
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+  <div class="col-md-6 text-center">
 
-  <!-- Sayfa başlığı -->
+    <h3 class="mb-4" style="color: var(--bs-body-color);">Giriş Yap</h3>
 
-  <h3 class="mb-4 text-center">Giriş</h3>
+    <form method="post" novalidate>
+      {% csrf_token %}
 
-  <!-- Login formu -->
+      <!-- Kullanıcı Adı -->
+       
+      <p class="mb-3 text-start">
+        <label for="{{ form.username.id_for_label }}" class="form-label d-block" style="color: var(--bs-body-color);">{{ form.username.label }}</label>
+        {{ form.username|add_class:"form-control bg-body text-body" }}
+        {% if form.username.errors %}
+          <div class="text-danger small mt-1">{{ form.username.errors|striptags }}</div>
+        {% endif %}
+      </p>
 
-  <form method="post" novalidate>
-    {% csrf_token %}
-    {{ form.as_p }}
+      <!-- Parola -->
 
-    <!-- Submit butonu -->
+      <p class="mb-3 text-start">
+        <label for="{{ form.password.id_for_label }}" class="form-label d-block" style="color: var(--bs-body-color);">{{ form.password.label }}</label>
+        {{ form.password|add_class:"form-control bg-body text-body" }}
+        {% if form.password.errors %}
+          <div class="text-danger small mt-1">{{ form.password.errors|striptags }}</div>
+        {% endif %}
+      </p>
 
-    <div class="d-grid mt-3">
-      <button type="submit" class="btn btn-primary btn-block">Giriş</button>
+      <div class="d-grid mt-3">
+        <button type="submit" class="btn btn-primary">Giriş Yap</button>
+      </div>
+    </form>
+
+    <div class="mt-3 text-center">
+      <a href="{% url 'password_reset' %}" class="text-decoration-none" style="color: var(--bs-body-color);">Şifremi Unuttum?</a> |
+      <a href="{% url 'signup' %}" class="text-decoration-none" style="color: var(--bs-body-color);">Kayıt Ol</a>
     </div>
-  </form>
 
-  <!-- Yardımcı linkler -->
-
-  <div class="mt-3 text-center">
-    <a href="{% url 'password_reset' %}">Şifremi Unuttum?</a> |
-    <a href="{% url 'signup' %}">Kayıt Ol</a>
   </div>
 </div>
 {% endblock %}
