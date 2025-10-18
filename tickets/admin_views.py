@@ -7,6 +7,11 @@ from django.views.decorators.http import require_POST
 from .models import Talep, Category
 import logging
 from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
+from .models import Comment
+
+User = get_user_model()
 
 logger = logging.getLogger('helpdesk.admin_actions')
 
@@ -121,3 +126,33 @@ def panel_detail(request, pk):
         return redirect('admin_panel_detail', pk=pk)
 
     return render(request, 'tickets/admin_panel/detail.html', {'ticket': ticket})
+
+
+@user_passes_test(staff_required)
+def admin_index(request):
+    """Özel admin panelinin ana sayfası - sekmeli gezinme için küçük index."""
+    counts = {
+        'tickets': Talep.objects.filter(is_deleted=False).count(),
+        'users': User.objects.count(),
+        'groups': Group.objects.count(),
+        'comments': Comment.objects.count(),
+    }
+    return render(request, 'tickets/admin_panel/index.html', {'counts': counts})
+
+
+@user_passes_test(staff_required)
+def users_list(request):
+    users = User.objects.all().order_by('id')
+    return render(request, 'tickets/admin_panel/users.html', {'users': users})
+
+
+@user_passes_test(staff_required)
+def groups_list(request):
+    groups = Group.objects.all().order_by('id')
+    return render(request, 'tickets/admin_panel/groups.html', {'groups': groups})
+
+
+@user_passes_test(staff_required)
+def comments_list(request):
+    comments = Comment.objects.select_related('talep', 'user').order_by('-created_at')
+    return render(request, 'tickets/admin_panel/comments.html', {'comments': comments})

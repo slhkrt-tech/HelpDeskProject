@@ -1,0 +1,10 @@
+{% extends 'tickets/base.html' %}
+{% block content %}
+<h1>Admin Panel</h1>
+<div class="list-group">
+  <a href="{% url 'admin_tickets' %}" class="list-group-item list-group-item-action">Talepler ({{ counts.tickets }})</a>
+  <a href="{% url 'admin_users' %}" class="list-group-item list-group-item-action">Kullanıcılar ({{ counts.users }})</a>
+  <a href="{% url 'admin_groups' %}" class="list-group-item list-group-item-action">Gruplar ({{ counts.groups }})</a>
+  <a href="{% url 'admin_comments' %}" class="list-group-item list-group-item-action">Yorumlar ({{ counts.comments }})</a>
+</div>
+{% endblock %}

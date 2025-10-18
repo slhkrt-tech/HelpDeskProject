@@ -1,0 +1,17 @@
+{% extends 'tickets/base.html' %}
+{% block content %}
+<h1>Kullanıcılar</h1>
+<table class="table">
+  <thead><tr><th>ID</th><th>Kullanıcı adı</th><th>Email</th><th>Gruplar</th></tr></thead>
+  <tbody>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.id }}</td>
+      <td>{{ u.get_full_name|default:u.username }}</td>
+      <td>{{ u.email }}</td>
+      <td>{% for g in u.groups.all %}{{ g.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

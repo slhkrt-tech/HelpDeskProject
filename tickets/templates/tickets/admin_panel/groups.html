@@ -1,0 +1,15 @@
+{% extends 'tickets/base.html' %}
+{% block content %}
+<h1>Gruplar</h1>
+<table class="table">
+  <thead><tr><th>ID</th><th>Gruup Adı</th></tr></thead>
+  <tbody>
+    {% for g in groups %}
+    <tr>
+      <td>{{ g.id }}</td>
+      <td>{{ g.name }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

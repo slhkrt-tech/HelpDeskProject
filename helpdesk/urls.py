@@ -12,11 +12,22 @@ from django.contrib.auth import views as auth_views
 from django.urls import include, path
 from django.views.generic import TemplateView, RedirectView
 
+from tickets import admin_views as admin_panel_views
+
 urlpatterns = [
 
     # Admin paneli (varsayılan /admin/ yolunu özel panele yönlendiriyoruz)
     # Not: admin uygulaması hâlâ kurulu, sadece URL yönlendirmesi yapıyoruz.
-    path('admin/', RedirectView.as_view(url='/tickets/panel/', permanent=False)),
+    # Yönlendirme artık yeni özel admin paneline
+    path('admin/', RedirectView.as_view(url='/admin-panel/', permanent=False)),
+
+    # Yeni özel admin paneli (bağımsız): index + alt bölümler
+    path('admin-panel/', admin_panel_views.admin_index, name='admin_index'),
+    path('admin-panel/tickets/', admin_panel_views.panel_list, name='admin_tickets'),
+    path('admin-panel/tickets/<int:pk>/', admin_panel_views.panel_detail, name='admin_ticket_detail'),
+    path('admin-panel/users/', admin_panel_views.users_list, name='admin_users'),
+    path('admin-panel/groups/', admin_panel_views.groups_list, name='admin_groups'),
+    path('admin-panel/comments/', admin_panel_views.comments_list, name='admin_comments'),
 
     # Ana sayfa
 
