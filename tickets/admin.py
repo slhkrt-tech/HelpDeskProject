@@ -1,15 +1,13 @@
 # admin.py
-# ---------------------------------------------------------------------
-# Bu dosya modellerin Django admin panelinde nasıl yönetileceğini tanımlar.
-# Modeller: Category, SLA, Talep, Comment
-# ---------------------------------------------------------------------
 
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
-from .models import Category, SLA, Talep, Comment  # Ticket yerine Talep
+from django.utils.html import format_html
+from django.db import models
+from .models import Category, SLA, Talep, Comment
 
 # ---------------------------------------------------------------------
-# Category (Kategori) Modeli
+# Category
 # ---------------------------------------------------------------------
 
 @admin.register(Category)
@@ -22,7 +20,7 @@ class CategoryAdmin(admin.ModelAdmin):
     verbose_name_plural = _("Kategoriler")
 
 # ---------------------------------------------------------------------
-# SLA (Servis Düzeyi Anlaşması) Modeli
+# SLA
 # ---------------------------------------------------------------------
 
 @admin.register(SLA)
@@ -34,7 +32,7 @@ class SLAAdmin(admin.ModelAdmin):
     verbose_name_plural = _("SLA'lar")
 
 # ---------------------------------------------------------------------
-# Talep (Ticket) Modeli
+# Talep
 # ---------------------------------------------------------------------
 
 @admin.register(Talep)
@@ -42,13 +40,14 @@ class TalepAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'title',
-        'get_status_display',  # Durumun okunabilir hali
+        'get_status_display',
         'priority',
         'user',
         'assigned_to',
         'category',
         'created_at',
         'get_description',
+        'view_detail',
     )
     list_filter = ('status', 'priority', 'category')
     search_fields = ('title', 'description')
@@ -59,9 +58,7 @@ class TalepAdmin(admin.ModelAdmin):
         'mark_as_wrong_section'
     ]
 
-    # -----------------------------------------------------------------
-    # Özel İşlemler (Custom Admin Actions)
-    # -----------------------------------------------------------------
+    # Admin işlemleri
 
     def mark_as_closed(self, request, queryset):
         updated = queryset.update(status='closed')
@@ -83,13 +80,34 @@ class TalepAdmin(admin.ModelAdmin):
         self.message_user(request, f"{updated} talep 'Yanlış Bölüm / Kapatıldı' olarak işaretlendi.")
     mark_as_wrong_section.short_description = "Seçilen talepleri (Yanlış Bölüm / Kapatıldı) olarak işaretle"
 
-    # -----------------------------------------------------------------
-    # Yardımcı Fonksiyonlar
-    # -----------------------------------------------------------------
+    # Kısa açıklama
 
     def get_description(self, obj):
         return (obj.description[:75] + "...") if len(obj.description) > 75 else obj.description
     get_description.short_description = "Açıklama"
+
+    # Detay linki (modal)
+
+    def view_detail(self, obj):
+        return format_html(
+            '<a href="#" onclick="openModal(\'/admin/tickets/talep/{}/change/\'); return false;">Detay</a>',
+            obj.id
+        )
+    view_detail.short_description = "📄"
+
+    # Collapsible textarea
+
+    formfield_overrides = {
+        models.TextField: {'widget': admin.widgets.AdminTextareaWidget(attrs={'class': 'collapsible-textarea'})},
+    }
+
+    # CSS ve JS
+
+    class Media:
+        css = {'all': ('admin/css/custom_admin.css',)}
+        js = ('admin/js/custom_admin.js',)
+
+    # Diğer ayarlar
 
     readonly_fields = (
         'title',
@@ -115,21 +133,21 @@ class TalepAdmin(admin.ModelAdmin):
         return actions
 
 # ---------------------------------------------------------------------
-# Comment (Yorum) Modeli
+# Comment
 # ---------------------------------------------------------------------
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'talep', 'user', 'created_at')  # ticket -> talep
+    list_display = ('id', 'talep', 'user', 'created_at')
     search_fields = ('message',)
     ordering = ('-created_at',)
     verbose_name = _("Yorum")
     verbose_name_plural = _("Yorumlar")
 
 # ---------------------------------------------------------------------
-# Genel Admin Başlıkları
+# Genel admin başlıkları
 # ---------------------------------------------------------------------
 
 admin.site.site_header = "Yönetim Paneli"
-admin.site.site_title = "HelpDesk Yönetimi"
+admin.site.site_title = "Yardım Masası Yönetimi"
 admin.site.index_title = "Hoşgeldiniz - HelpDesk Admin"
