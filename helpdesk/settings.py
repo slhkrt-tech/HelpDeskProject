@@ -13,12 +13,24 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ============================================================
-# GÜVENLİK AYARLARI
+# GÜVENLİK AYARLARI (ORTAM DEĞİŞKENLERİYLE)
 # ============================================================
 
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-secret-key')
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+# SECRET_KEY üretimde zorunlu olacak şekilde ortamdan alınır. Geliştirme için
+# fallback 'dev-secret-key' kullanılabilir, ancak prod'ta bu kabul edilemez.
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+if not SECRET_KEY:
+    # Eğer production olarak işaretlenmişse SECRET_KEY yoksa hata fırlat
+    if os.getenv('ENV', 'development') == 'production':
+        raise RuntimeError('DJANGO_SECRET_KEY environment variable must be set in production')
+    SECRET_KEY = 'dev-secret-key'
+
+# DEBUG: environment üzerinden okunur. Varsayılan geliştirme modu (True).
+DEBUG = os.getenv('DJANGO_DEBUG', 'True').lower() in ('1', 'true', 'yes')
+
+# ALLOWED_HOSTS: virgülle ayrılmış host listesi veya varsayılan localhost
+raw_allowed = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1')
+ALLOWED_HOSTS = [h.strip() for h in raw_allowed.split(',') if h.strip()]
 
 # ============================================================
 # UYGULAMALAR
@@ -160,6 +172,29 @@ SESSION_COOKIE_SECURE = False
 CSRF_USE_SESSIONS = True
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SAMESITE = 'Lax'
+
+# Güvenlik iyileştirmeleri: DEBUG False ise https cookie'leri ve HSTS etkinleştirilir
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
+SECURE_SSL_REDIRECT = not DEBUG
+X_FRAME_OPTIONS = 'DENY'
+
+# Basit logging konfigürasyonu (konsola yazma) - gerektiğinde genişletin
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+    },
+}
 
 # ============================================================
 # DİĞER
