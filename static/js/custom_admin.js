@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // -----------------------------------------------------------------
     // Collapsible textarea
     // -----------------------------------------------------------------
-    
+
     setTimeout(function() {
         const textareas = document.querySelectorAll('.collapsible-textarea');
         textareas.forEach(textarea => {

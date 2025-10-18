@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'crispy_forms',
 
     # Yerel uygulamalar
-    
+
     'tickets',
     'accounts',
 ]

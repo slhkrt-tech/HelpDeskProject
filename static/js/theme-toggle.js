@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const body = document.body;
 
     // Kaydedilmiş tema varsa uygula, yoksa dark mode
-    
+
     const savedTheme = localStorage.getItem('theme') || 'dark';
     body.setAttribute('data-theme', savedTheme);
 

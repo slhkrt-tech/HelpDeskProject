@@ -1,8 +1,9 @@
 from django.urls import path
+
 from . import views
 
 urlpatterns = [
-    
+
     # Ticket listesi
     # - Supervisor grubu veya admin tüm ticketları görebilir
     # - Normal kullanıcı sadece kendi grubundaki ticketları görebilir

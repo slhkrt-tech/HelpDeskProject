@@ -13,7 +13,7 @@
           {% csrf_token %}
 
           <!-- Kullanıcı Adı -->
-           
+
           <div class="form-floating mb-3">
               {{ form.username|add_class:"form-control" |attr:"placeholder:Kullanıcı Adı" }}
               <label for="{{ form.username.id_for_label }}">Kullanıcı Adı</label>

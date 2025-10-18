@@ -1,10 +1,11 @@
 # admin.py
 
 from django.contrib import admin
-from django.utils.translation import gettext_lazy as _
-from django.utils.html import format_html
 from django.db import models
-from .models import Category, SLA, Talep, Comment
+from django.utils.html import format_html
+from django.utils.translation import gettext_lazy as _
+
+from .models import SLA, Category, Comment, Talep
 
 # Bu dosya Django admin arayüzü için model kayıtlarını ve özelleştirilmiş görünümleri tanımlar.
 # Türkçe başlıklar, list_display ve özel admin işlemleri (actions) eklenmiştir.

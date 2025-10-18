@@ -1,10 +1,12 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, get_user_model
+from django.contrib.auth import get_user_model, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import Group
-from .models import Talep, Category
-from .forms import TicketForm
+from django.shortcuts import get_object_or_404, redirect, render
+
 from accounts.forms import CustomUserCreationForm
+
+from .forms import TicketForm
+from .models import Category, Talep
 
 User = get_user_model()  # Projede kullanılan özel kullanıcı modelini alır (CustomUser)
 

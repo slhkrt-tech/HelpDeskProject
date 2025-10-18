@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
-    
+
     // Collapsible textarea
-    
+
     document.querySelectorAll('.textarea-container').forEach(container => {
         const textarea = container.querySelector('.collapsible-textarea');
         const toggle = container.querySelector('.toggle-arrow');
