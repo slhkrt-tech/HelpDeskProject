@@ -1,6 +1,8 @@
-from django.shortcuts import render
+"""Accounts uygulaması için view'lerin bulunduğu modül.
 
-# accounts/views.py
-# Bu dosya, kullanıcı hesaplarıyla ilgili görünümleri (views) içerir.
-# Örneğin: kullanıcı kaydı, giriş, profil görüntüleme, parola değiştirme işlemleri.
-# Şu an boş; uygulama geliştikçe ilgili fonksiyonlar veya sınıf tabanlı view’ler buraya eklenecek.
+Bu modülde kullanıcıya ilişkin view fonksiyonları veya sınıf tabanlı view'ler yer alır
+(kayıt, giriş, profil, parola işlemleri vb.). Şu an proje basit olduğu için bu dosya
+boş; ihtiyaç oldukça fonksiyonlar eklenecektir.
+"""
+
+from django.shortcuts import render

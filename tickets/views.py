@@ -6,16 +6,17 @@ from .models import Talep, Category
 from .forms import TicketForm
 from accounts.forms import CustomUserCreationForm
 
-User = get_user_model()  # CustomUser kullanımı
+User = get_user_model()  # Projede kullanılan özel kullanıcı modelini alır (CustomUser)
 
 @login_required
 def ticket_list(request):
-    """
-    Ticket listesi:
-    - Supervisor ve superuser her şeyi görür.
-    - Normal kullanıcılar:
-        * Kendi oluşturdukları talepler
-        * Aynı gruptaki diğer kullanıcıların talepleri
+    """Ticket listesini döndürür.
+
+    Davranış:
+    - Eğer kullanıcı Supervisor grubundaysa veya superuser ise tüm talepler gösterilir.
+    - Normal kullanıcı ise kendi talepleri ve aynı gruptaki diğer kullanıcıların talepleri gösterilir.
+
+    Bu fonksiyon login_required dekoratörü ile korunur.
     """
     user = request.user
     if user.groups.filter(name='Supervisor').exists() or user.is_superuser:
@@ -30,7 +31,11 @@ def ticket_list(request):
 
 @login_required
 def ticket_detail(request, pk):
-    """Ticket detay sayfası"""
+    """Belirli bir talebin detay sayfasını gösterir.
+
+    Erişim kontrolü:
+    - Sadece talebi oluşturan kullanıcı, aynı gruptaki kullanıcılar veya Supervisor/superuser görüntüleyebilir.
+    """
     ticket = get_object_or_404(Talep, pk=pk)
     user = request.user
     if not user.is_superuser and not user.groups.filter(name='Supervisor').exists():
@@ -42,7 +47,12 @@ def ticket_detail(request, pk):
 
 @login_required
 def ticket_create(request):
-    """Yeni ticket oluşturma"""
+    """Yeni bir talep (ticket) oluşturma formunu işler ve kaydeder.
+
+    - POST isteklerinde form doğrulanır, kullanıcı talep sahibi olarak atanır.
+    - Eğer kullanıcının grup adı varsa, aynı isimde bir Category varsa otomatik atama yapılır.
+    - Başarılı kayıt sonrası ticket listesine yönlendirir.
+    """
     if request.method == 'POST':
         form = TicketForm(request.POST)
         if form.is_valid():
@@ -62,7 +72,10 @@ def ticket_create(request):
 
 
 def signup(request):
-    """Yeni kullanıcı kaydı"""
+    """Kayıt (signup) sayfası ve kullanıcı oluşturma işlemi.
+
+    - Başarılı kayıt sonrası kullanıcı otomatik olarak giriş yapılır ve talepler sayfasına yönlendirilir.
+    """
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
@@ -76,7 +89,10 @@ def signup(request):
 
 @user_passes_test(lambda u: u.is_staff or u.is_superuser)
 def add_user_to_group(request, user_id):
-    """Admin veya staff kullanıcıların, bir kullanıcıyı gruba eklemesini sağlar"""
+    """Belirlenen kullanıcıyı (user_id) bir gruba eklemeyi sağlar.
+
+    Bu işlem yalnızca staff veya superuser tarafından yapılabilir (user_passes_test ile korunur).
+    """
     user = get_object_or_404(User, pk=user_id)
     groups = Group.objects.all()
     if request.method == 'POST':

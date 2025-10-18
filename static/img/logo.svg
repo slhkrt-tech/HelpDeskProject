@@ -1,0 +1,21 @@
+<!-- Theme-friendly logo: sun with subtle crescent, uses currentColor so it adapts to theme colors -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" aria-hidden="true" role="img">
+  <title>Tema</title>
+  <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- central circle (sun/moon core) -->
+    <circle cx="12" cy="12" r="4" fill="currentColor" />
+
+    <!-- rays -->
+    <line x1="12" y1="1.5" x2="12" y2="3.5" />
+    <line x1="12" y1="20.5" x2="12" y2="22.5" />
+    <line x1="1.5" y1="12" x2="3.5" y2="12" />
+    <line x1="20.5" y1="12" x2="22.5" y2="12" />
+    <line x1="4.2" y1="4.2" x2="5.8" y2="5.8" />
+    <line x1="18.2" y1="18.2" x2="19.8" y2="19.8" />
+    <line x1="4.2" y1="19.8" x2="5.8" y2="18.2" />
+    <line x1="18.2" y1="5.8" x2="19.8" y2="4.2" />
+
+    <!-- subtle crescent overlay (stroke only to remain adaptable) -->
+    <path d="M16.2 8.5a5 5 0 1 1-6.7 6.7" stroke-linecap="round" />
+  </g>
+</svg>

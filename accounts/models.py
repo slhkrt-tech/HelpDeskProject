@@ -1,14 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 
-# Django'nun varsayılan kullanıcı modelini genişleten özel kullanıcı sınıfı.
-# Yeni kullanıcı rolleri tanımlanır (admin, support, customer).
-# Grup ve izin ilişkileri yeniden tanımlanarak isim çakışmaları önlenir.
 
+# CustomUser: Django'nun AbstractUser sınıfını genişletir.
+# Projenin kullanıcı modeline "role" alanı eklenmiştir (admin/support/customer).
+# Ayrıca groups ve user_permissions ilişkilerinde related_name kullanılarak
+# admin arayüzünde isim çakışmaları önlenir.
 class CustomUser(AbstractUser):
 
     # Kullanıcının sistemdeki rolünü belirtir.
-
     ROLE_CHOICES = (
         ('admin', 'Admin'),
         ('support', 'Support'),
@@ -21,9 +21,7 @@ class CustomUser(AbstractUser):
         help_text="Kullanıcının sistemdeki rolünü belirtir."
     )
 
-    # Django'nun yerleşik 'groups' alanı yeniden tanımlandı.
-    # related_name parametresi, ters ilişki adının diğer modellerle çakışmaması için değiştirildi.
-
+    # Kullanıcının dahil olduğu gruplar (related_name ile çakışma önlendi).
     groups = models.ManyToManyField(
         Group,
         related_name='customuser_set',
@@ -31,9 +29,7 @@ class CustomUser(AbstractUser):
         help_text="Kullanıcının dahil olduğu gruplar."
     )
 
-    # Kullanıcının sahip olduğu özel izinler.
-    # related_name yine çakışmayı önlemek için değiştirildi.
-
+    # Kullanıcının özel izinleri.
     user_permissions = models.ManyToManyField(
         Permission,
         related_name='customuser_permissions_set',
@@ -42,7 +38,5 @@ class CustomUser(AbstractUser):
     )
 
     def __str__(self):
-
-        # Admin panelinde kullanıcı nesneleri anlamlı görünsün diye
-
+        # Admin panelinde ve debug çıktılarında daha anlamlı gösterim sağlar.
         return f"{self.username} ({self.get_role_display()})"

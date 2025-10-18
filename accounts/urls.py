@@ -1,4 +1,7 @@
-# accounts/urls.py
+"""accounts uygulaması için kimlik doğrulama URL'leri.
+
+Bu modülde login/logout gibi temel auth yolları tanımlıdır.
+"""
 
 from django.urls import path
 from django.contrib.auth import views as auth_views

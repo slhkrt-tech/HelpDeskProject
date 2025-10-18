@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -5,82 +6,24 @@
   <title>Talep Listesi</title>
 
   <!-- Bootstrap CSS -->
-   
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Tema CSS -->
-
-  <link rel="stylesheet" href="/static/css/theme.css">
-
-  <!-- Collapsible textarea ve modal CSS -->
+  <link rel="stylesheet" href="{% static 'css/theme.css' %}">
 
   <style>
-    .textarea-container {
-        position: relative;
-    }
+    .textarea-container { position: relative; }
+    .collapsible-textarea { width: 100%; overflow: hidden; resize: none; transition: height 0.3s ease; }
+    .toggle-arrow { position: absolute; right: 5px; bottom: 5px; cursor: pointer; font-weight: bold; user-select: none; color: #007bff; }
 
-    .collapsible-textarea {
-        width: 100%;
-        overflow: hidden;
-        resize: none;
-        transition: height 0.3s ease;
-    }
-
-    .toggle-arrow {
-        position: absolute;
-        right: 5px;
-        bottom: 5px;
-        cursor: pointer;
-        font-weight: bold;
-        user-select: none;
-        color: #007bff;
-    }
-
-    .modal-overlay {
-        display: none;
-        position: fixed;
-        top:0; left:0;
-        width:100%; height:100%;
-        background: rgba(0,0,0,0.5);
-        z-index: 10000;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .modal-overlay.show {
-        display: flex;
-    }
-
-    .modal-content {
-        background: #fff;
-        width: 80%;
-        height: 80%;
-        position: relative;
-        padding: 10px;
-        box-shadow: 0 0 15px #000;
-    }
-
-    .modal-content iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-    }
-
-    .btn-close {
-        position: absolute;
-        top: 5px;
-        right: 10px;
-        font-size: 16px;
-        background: none;
-        border: none;
-        cursor: pointer;
-    }
+    .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center; }
+    .modal-overlay.show { display: flex; }
+    .modal-content { background: #fff; width: 80%; height: 80%; position: relative; padding: 10px; box-shadow: 0 0 15px #000; }
+    .modal-content iframe { width: 100%; height: 100%; border: none; }
+    .btn-close { position: absolute; top: 5px; right: 10px; font-size: 16px; background: none; border: none; cursor: pointer; }
   </style>
 </head>
 <body data-theme="dark">
 
-<!-- Navbar sabit renk -->
-
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
   <div class="container">
     <a class="navbar-brand" href="/">Yardım Masası</a>
@@ -90,29 +33,35 @@
 
     <div class="collapse navbar-collapse" id="navbarContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link" href="/tickets/">Talepler</a></li>
-        <li class="nav-item"><a class="nav-link" href="/tickets/create/">Yeni Talep</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'ticket_list' %}">Talepler</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'ticket_create' %}">Yeni Talep</a></li>
       </ul>
 
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
-        <li class="nav-item me-3">
-          <span class="nav-link mb-0">Hoşgeldin, admin</span>
-        </li>
-        <li class="nav-item">
-          <form method="post" action="/accounts/logout/" class="d-flex align-items-center m-0 p-0">
-            <input type="hidden" name="csrfmiddlewaretoken" value="fGkH3QgU7VBy0KTeukYQVv0pQb4gYffPOjjk0ZIc5bLQ9rly6gTYPVm1xzadZbI1">
-            <button type="submit" class="btn btn-link nav-link m-0 p-0">Çıkış</button>
-          </form>
-        </li>
+        {% if user.is_authenticated %}
+          <li class="nav-item me-3"><span class="nav-link mb-0">Hoşgeldin, {{ user.username }}</span></li>
+          <li class="nav-item">
+            <form method="post" action="{% url 'logout' %}" class="d-flex align-items-center m-0 p-0">{% csrf_token %}
+              <button type="submit" class="btn btn-link nav-link m-0 p-0 text-danger fw-semibold">Çıkış</button>
+            </form>
+          </li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Giriş</a></li>
+        {% endif %}
+
         <li class="nav-item ms-3">
-          <button id="toggle-theme" class="btn btn-outline-primary btn-sm">Tema Değiştir</button>
+          <button id="toggle-theme" class="btn btn-outline-primary btn-sm d-flex align-items-center" aria-label="Tema Değiştir">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="me-2">
+              <path d="M12 2l7 4v6c0 5-3.58 9.74-7 11-3.42-1.26-7-6-7-11V6l7-4z"></path>
+              <path d="M8 11h8M8 15h5"></path>
+            </svg>
+            <span class="visually-hidden">Tema Değiştir</span>
+          </button>
         </li>
       </ul>
     </div>
   </div>
 </nav>
-
-<!-- Ana içerik -->
 
 <div class="container mt-4">
   <h3 class="mb-4">Talep Listesi</h3>
@@ -134,101 +83,95 @@
         </tr>
       </thead>
       <tbody>
+        {% for talep in tickets %}
         <tr>
-          <td>#1</td>
-          <td>Bakım</td>
+          <td>#{{ talep.talep_numarasi }}</td>
+          <td>{{ talep.title }}</td>
           <td>
             <div class="textarea-container">
-              <textarea class="collapsible-textarea" readonly>Bilgi işlem bölümü olarak tüm fabrikanın tüm istemcilerinin bakım planlaması yapılacaktır.</textarea>
+              <textarea class="collapsible-textarea" readonly>{{ talep.description }}</textarea>
               <span class="toggle-arrow">▼</span>
             </div>
           </td>
-          <td>Alındı</td>
-          <td>Düşük</td>
-          <td>admin</td>
-          <td>Atanmamış</td>
-          <td>Kategori yok</td>
-          <td>2025-10-18 11:19</td>
+          <td>{{ talep.get_status_display }}</td>
+          <td>{{ talep.get_priority_display }}</td>
+          <td>{{ talep.user.username }}</td>
+          <td>{{ talep.assigned_to_name }}</td>
+          <td>{% if talep.category %}{{ talep.category.name }}{% else %}Kategori yok{% endif %}</td>
+          <td>{{ talep.created_at|date:"Y-m-d H:i" }}</td>
           <td>
-            <a href="#" class="btn btn-sm btn-primary" onclick="openModal('/tickets/1/'); return false;">Detay</a>
+            <a href="{% url 'ticket_detail' talep.pk %}" class="detail-btn" aria-label="Talep {{ talep.talep_numarasi }} detay">
+              <span>Detay</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="ms-2" aria-hidden="true">
+                <path d="M5 12h14"></path>
+                <path d="M12 5l7 7-7 7"></path>
+              </svg>
+            </a>
           </td>
         </tr>
+        {% empty %}
+        <tr>
+          <td colspan="10" class="text-center">Henüz talep yok.</td>
+        </tr>
+        {% endfor %}
       </tbody>
     </table>
   </div>
 </div>
 
 <!-- Modal container -->
-
 <div id="popupModal" class="modal-overlay">
-    <div class="modal-content">
-        <button id="closeModal" class="btn-close">✖</button>
-        <iframe id="modalIframe" src=""></iframe>
-    </div>
+  <div class="modal-content">
+    <button id="closeModal" class="btn-close">✖</button>
+    <iframe id="modalIframe" src=""></iframe>
+  </div>
 </div>
-
-<!-- Bootstrap JS -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- JS: Collapsible textarea, modal ve tema toggle -->
- 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-
-    // Collapsible textarea
-
-    document.querySelectorAll('.textarea-container').forEach(container => {
-        const textarea = container.querySelector('.collapsible-textarea');
-        const toggle = container.querySelector('.toggle-arrow');
-
-        toggle.addEventListener('click', () => {
-            if (textarea.classList.contains('collapsed')) {
-                textarea.style.height = '300px';
-                textarea.classList.remove('collapsed');
-                textarea.classList.add('expanded');
-                toggle.innerHTML = '▲';
-            } else {
-                textarea.style.height = '80px';
-                textarea.classList.remove('expanded');
-                textarea.classList.add('collapsed');
-                toggle.innerHTML = '▼';
-            }
-        });
-
-        textarea.classList.add('collapsed');
+  // Collapsible textarea
+  document.querySelectorAll('.textarea-container').forEach(container => {
+    const textarea = container.querySelector('.collapsible-textarea');
+    const toggle = container.querySelector('.toggle-arrow');
+    toggle.addEventListener('click', () => {
+      if (textarea.classList.contains('collapsed')) {
+        textarea.style.height = '300px';
+        textarea.classList.remove('collapsed');
+        textarea.classList.add('expanded');
+        toggle.innerHTML = '▲';
+      } else {
         textarea.style.height = '80px';
+        textarea.classList.remove('expanded');
+        textarea.classList.add('collapsed');
+        toggle.innerHTML = '▼';
+      }
     });
+    textarea.classList.add('collapsed');
+    textarea.style.height = '80px';
+  });
 
-    // Modal
+  // Modal
+  const modal = document.getElementById('popupModal');
+  const iframe = document.getElementById('modalIframe');
+  const closeBtn = document.getElementById('closeModal');
+  window.openModal = function(url) { iframe.src = url; modal.classList.add('show'); };
+  closeBtn.addEventListener('click', function() { modal.classList.remove('show'); iframe.src = ''; });
 
-    const modal = document.getElementById('popupModal');
-    const iframe = document.getElementById('modalIframe');
-    const closeBtn = document.getElementById('closeModal');
-
-    window.openModal = function(url) {
-        iframe.src = url;
-        modal.classList.add('show');
-    };
-
-    closeBtn.addEventListener('click', function() {
-        modal.classList.remove('show');
-        iframe.src = '';
-    });
-
-    // Tema toggle
-
-    const toggleTheme = document.getElementById('toggle-theme');
-    const body = document.body;
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    body.setAttribute('data-theme', savedTheme);
-
+  // Theme toggle (single button)
+  const toggleTheme = document.getElementById('toggle-theme');
+  const body = document.body;
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  body.setAttribute('data-theme', savedTheme);
+  if (toggleTheme) {
     toggleTheme.addEventListener('click', () => {
-        const current = body.getAttribute('data-theme');
-        const next = current === 'dark' ? 'light' : 'dark';
-        body.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
+      const current = body.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
     });
+  }
 });
 </script>
 

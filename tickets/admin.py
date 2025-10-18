@@ -6,6 +6,9 @@ from django.utils.html import format_html
 from django.db import models
 from .models import Category, SLA, Talep, Comment
 
+# Bu dosya Django admin arayüzü için model kayıtlarını ve özelleştirilmiş görünümleri tanımlar.
+# Türkçe başlıklar, list_display ve özel admin işlemleri (actions) eklenmiştir.
+
 # ---------------------------------------------------------------------
 # Category
 # ---------------------------------------------------------------------

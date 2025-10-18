@@ -49,3 +49,135 @@ button:hover, .btn:hover {
     border-color: var(--accent-color);
     color: var(--bg-color);
 }
+
+/* Logo toggle styling */
+.theme-logo-btn {
+    background: transparent;
+    border: 0;
+    color: var(--text-color);
+    padding: 4px 6px;
+}
+
+.theme-logo-btn svg, .theme-logo-btn img {
+    display: block;
+    width: 28px;
+    height: 28px;
+    /* currentColor makes svg stroke/fill follow text color */
+}
+
+.theme-logo-btn:hover {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+/* Give a subtle focus style for keyboard users */
+.theme-logo-btn:focus {
+    outline: 2px dashed rgba(5,140,66,0.35);
+    outline-offset: 2px;
+}
+
+/* Modern small action button used in ticket list */
+.detail-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.06);
+    color: var(--text-color);
+    padding: .3rem .6rem;
+    border-radius: .5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    font-size: .85rem;
+    transition: transform .12s ease, background-color .12s ease, color .12s ease, box-shadow .12s ease;
+}
+
+body[data-theme="light"] .detail-btn {
+    border-color: rgba(0,0,0,0.08);
+}
+
+.detail-btn:hover {
+    transform: translateX(4px);
+    color: var(--accent-color);
+    background-color: rgba(0,0,0,0.04);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.detail-btn svg { width: 16px; height: 16px; display: block; }
+
+@media (max-width: 576px) {
+    .detail-btn { padding: .25rem .45rem; font-size: .8rem; }
+}
+/* DARK MODE */
+
+body[data-theme="dark"] {
+    --bg-color: #020202;
+    --text-color: #E0E0E0;
+    --primary-color: #16DB65;
+    --accent-color: #058C42;
+    --secondary-bg: #04471C;
+}
+
+/* LIGHT MODE */
+
+body[data-theme="light"] {
+    --bg-color: #F4F9F4;
+    --text-color: #131515;
+    --primary-color: #058C42;
+    --accent-color: #16DB65;
+    --secondary-bg: #04471C;
+}
+
+/* Genel kullanım */
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* Form alanları */
+
+input.form-control, textarea.form-control {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--primary-color);
+}
+input.form-control:focus, textarea.form-control:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.2rem rgba(0,128,0,0.25);
+}
+
+/* Butonlar */
+
+button, .btn {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    border: 1px solid var(--primary-color);
+}
+button:hover, .btn:hover {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--bg-color);
+}
+
+/* Logo toggle styling */
+.theme-logo-btn {
+    background: transparent;
+    border: 0;
+    color: var(--text-color);
+    padding: 4px 6px;
+}
++
+.theme-logo-btn svg, .theme-logo-btn img {
+    display: block;
+    width: 28px;
+    height: 28px;
++
+    /* currentColor makes svg stroke/fill follow text color */
+}
++
+.theme-logo-btn:hover {
+    color: var(--accent-color);
++    text-decoration: none;
++}
++
+/* Give a subtle focus style for keyboard users */
++.theme-logo-btn:focus { outline: 2px dashed rgba(5,140,66,0.35); outline-offset: 2px; }

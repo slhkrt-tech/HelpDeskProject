@@ -3,6 +3,8 @@ from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 
+
+# CustomUser için admin arayüzü kaydı.
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
@@ -24,3 +26,4 @@ class CustomUserAdmin(UserAdmin):
     ordering = ("username",)
 
 admin.site.register(CustomUser, CustomUserAdmin)
+# Admin paneline özel kullanıcı modelini kaydeder.

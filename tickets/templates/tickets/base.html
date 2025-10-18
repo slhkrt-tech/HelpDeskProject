@@ -36,7 +36,7 @@
           <li class="nav-item me-3">
             <span class="nav-link mb-0">Hoşgeldin, {{ user.username }}</span>
           </li>
-          <li class="nav-item">
++          <li class="nav-item">
 
             <!-- Logout POST form, CSRF token ile -->
 
@@ -44,14 +44,34 @@
               {% csrf_token %}
               <button type="submit" class="btn btn-link nav-link m-0 p-0 text-danger fw-semibold">Çıkış</button>
             </form>
-          </li>
++          </li>
         {% else %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'login' %}">Giriş</a>
           </li>
         {% endif %}
+
+        <!-- Single logo-style toggle visible to all users -->
         <li class="nav-item ms-3">
-          <button id="toggle-theme" class="btn btn-outline-primary btn-sm">Tema Değiştir</button>
+          <button id="toggle-theme" class="theme-logo-btn d-flex align-items-center" aria-label="Tema Değiştir">
+            <!-- Inline SVG for better theming control -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" class="me-2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <title>Tema</title>
+              <g>
+                <circle cx="12" cy="12" r="4" fill="currentColor" />
+                <line x1="12" y1="1.5" x2="12" y2="3.5" />
+                <line x1="12" y1="20.5" x2="12" y2="22.5" />
+                <line x1="1.5" y1="12" x2="3.5" y2="12" />
+                <line x1="20.5" y1="12" x2="22.5" y2="12" />
+                <line x1="4.2" y1="4.2" x2="5.8" y2="5.8" />
+                <line x1="18.2" y1="18.2" x2="19.8" y2="19.8" />
+                <line x1="4.2" y1="19.8" x2="5.8" y2="18.2" />
+                <line x1="18.2" y1="5.8" x2="19.8" y2="4.2" />
+                <path d="M16.2 8.5a5 5 0 1 1-6.7 6.7" stroke-linecap="round" />
+              </g>
+            </svg>
+            <span class="visually-hidden">Tema Değiştir</span>
+          </button>
         </li>
       </ul>
     </div>
