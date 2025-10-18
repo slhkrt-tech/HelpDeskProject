@@ -1,0 +1,5 @@
+﻿C:\Users\Kurt Ailesi\Desktop\helpdesk\accounts\__pycache__
+C:\Users\Kurt Ailesi\Desktop\helpdesk\accounts\migrations\__pycache__
+C:\Users\Kurt Ailesi\Desktop\helpdesk\helpdesk\__pycache__
+C:\Users\Kurt Ailesi\Desktop\helpdesk\tickets\__pycache__
+C:\Users\Kurt Ailesi\Desktop\helpdesk\tickets\migrations\__pycache__
