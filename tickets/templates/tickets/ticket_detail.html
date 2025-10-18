@@ -9,7 +9,7 @@
     {% if "[Yanlış Bölüm]" in ticket.title %}
       <span class="badge bg-danger" title="Yanlış bölümden açılmış ticket">Yanlış Bölüm</span>
     {% endif %}
-    {{ ticket.title|replace:"[Yanlış Bölüm] ","" }}
+    {{ ticket.title|cut:"[Yanlış Bölüm] " }}
     <small class="text-muted">#{{ ticket.pk }}</small>
   </h3>
 
@@ -35,7 +35,12 @@
 
   <hr>
 
-  <p>{{ ticket.description|linebreaks }}</p>
+  <!-- Collapsible description -->
+   
+  <div class="textarea-container mb-3">
+    <textarea class="collapsible-textarea" readonly>{{ ticket.description|linebreaks }}</textarea>
+    <span class="toggle-arrow">▼</span>
+  </div>
 
   <h5>Yorumlar</h5>
   <ul class="list-group mb-3">
@@ -85,4 +90,12 @@
     </form>
   {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tickets/css/talep_list.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tickets/js/talep_list.js' %}"></script>
 {% endblock %}

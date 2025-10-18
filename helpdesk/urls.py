@@ -1,28 +1,37 @@
 """
 urls.py
-Gelen HTTP isteklerinin hangi view veya uygulamaya yönlendirileceğini belirler.
-Proje genelinde URL haritası burada tanımlanır.
+Tüm proje genelinde URL yönlendirmelerini tanımlar:
+- Admin paneli
+- Ana sayfa
+- Tickets uygulaması
+- Kullanıcı kimlik doğrulama (login/logout)
 """
 
 from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import TemplateView
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
 
-    # Django yönetim paneli
-
+    # Admin paneli
+    
     path('admin/', admin.site.urls),
 
-    # Ana sayfa yönlendirmesi (şu an sabit bir template gösteriyor)
+    # Ana sayfa
 
     path('', TemplateView.as_view(template_name='tickets/home.html'), name='home'),
 
-    # Tickets uygulamasına ait URL’ler
+    # Tickets uygulaması
 
     path('tickets/', include('tickets.urls')),
 
-    # Django’nun yerleşik kimlik doğrulama URL’leri (login, logout, password_reset vb.)
+    # Kimlik doğrulama (login/logout)
+
+    path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
+    path('accounts/logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
+
+    # Diğer Django auth URL’leri (password reset vb.)
 
     path('accounts/', include('django.contrib.auth.urls')),
 ]

@@ -1,12 +1,6 @@
 """
 settings.py
-Projenin genel yapılandırmasını içerir:
-- Güvenlik ayarları
-- Uygulamalar
-- Veritabanı bağlantısı
-- Statik / medya dosyaları
-- Şablon (template) ayarları
-- Yetkilendirme ve kullanıcı modeli
+HelpDesk Project - Django yapılandırması
 """
 
 import os
@@ -23,15 +17,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ============================================================
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-secret-key')
-DEBUG = True  # Production'da False olmalı
-ALLOWED_HOSTS = ['*']  # Geliştirme ortamı için
+DEBUG = True
+ALLOWED_HOSTS = ['*']
 
 # ============================================================
 # UYGULAMALAR
 # ============================================================
 
 INSTALLED_APPS = [
-    # Django çekirdek uygulamaları
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,16 +32,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Üçüncü parti uygulamalar
+    # Üçüncü parti
+
     'widget_tweaks',
     'crispy_forms',
 
-    # Proje uygulamaları
+    # Yerel uygulamalar
+    
     'tickets',
     'accounts',
 ]
 
-# Crispy Forms ayarları
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
@@ -68,14 +62,14 @@ MIDDLEWARE = [
 ]
 
 # ============================================================
-# URL ve UYGULAMA BAŞLATMA AYARLARI
+# URL / WSGI
 # ============================================================
 
 ROOT_URLCONF = 'helpdesk.urls'
 WSGI_APPLICATION = 'helpdesk.wsgi.application'
 
 # ============================================================
-# VERİTABANI AYARLARI
+# VERİTABANI
 # ============================================================
 
 DATABASES = {
@@ -90,14 +84,14 @@ DATABASES = {
 }
 
 # ============================================================
-# ŞABLON AYARLARI
+# TEMPLATE
 # ============================================================
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "templates"],  # Ortak template klasörü
-        'APP_DIRS': True,  # Uygulamaların kendi template klasörlerini tarar
+        'DIRS': [BASE_DIR / "templates"],
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -121,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # ============================================================
-# DİL VE ZAMAN AYARLARI
+# DİL / ZAMAN
 # ============================================================
 
 LANGUAGE_CODE = 'tr'
@@ -131,7 +125,7 @@ USE_L10N = True
 USE_TZ = True
 
 # ============================================================
-# STATİK VE MEDYA DOSYALARI
+# STATİK / MEDYA
 # ============================================================
 
 STATIC_URL = '/static/'
@@ -141,19 +135,34 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# WhiteNoise: statik dosyaları hızlı servis eder
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ============================================================
-# GİRİŞ/ÇIKIŞ VE KULLANICI MODELİ
+# GİRİŞ / ÇIKIŞ / KULLANICI MODELİ
 # ============================================================
 
 LOGIN_REDIRECT_URL = '/tickets/'
 LOGOUT_REDIRECT_URL = '/'
-AUTH_USER_MODEL = 'accounts.CustomUser'  # Custom user modeli
+AUTH_USER_MODEL = 'accounts.CustomUser'
 
 # ============================================================
-# OTOMATİK ID AYARI
+# CSRF VE SESSION AYARLARI (ÇIKIŞ HATASI ÇÖZÜMÜ)
+# ============================================================
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+]
+
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+CSRF_USE_SESSIONS = True
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+# ============================================================
+# DİĞER
 # ============================================================
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
