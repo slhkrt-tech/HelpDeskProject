@@ -12,7 +12,9 @@ Projenin genel yapılandırmasını içerir:
 import os
 from pathlib import Path
 
-# Proje ana dizini
+# ============================================================
+# PROJE ANA DİZİNİ
+# ============================================================
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,52 +22,35 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # GÜVENLİK AYARLARI
 # ============================================================
 
-# Geliştirme ortamı için geçici secret key
-# Production’da bu değer ortam değişkeninden okunmalı.
-
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-secret-key')
-
-# DEBUG = True -> geliştirme sürecinde hata detaylarını gösterir.
-# Production’da kesinlikle False olmalı.
-
-DEBUG = True
-
-# '*' -> her isteğe izin verir (sadece local ortamda kabul edilebilir)
-
-ALLOWED_HOSTS = ['*']
-
+DEBUG = True  # Production'da False olmalı
+ALLOWED_HOSTS = ['*']  # Geliştirme ortamı için
 
 # ============================================================
 # UYGULAMALAR
 # ============================================================
 
 INSTALLED_APPS = [
-
     # Django çekirdek uygulamaları
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'widget_tweaks',
-   
-    # Üçüncü parti uygulamalar
 
+    # Üçüncü parti uygulamalar
+    'widget_tweaks',
     'crispy_forms',
 
     # Proje uygulamaları
-
     'tickets',
     'accounts',
 ]
 
 # Crispy Forms ayarları
-
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
-
 
 # ============================================================
 # MIDDLEWARE
@@ -82,14 +67,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
 # ============================================================
 # URL ve UYGULAMA BAŞLATMA AYARLARI
 # ============================================================
 
 ROOT_URLCONF = 'helpdesk.urls'
 WSGI_APPLICATION = 'helpdesk.wsgi.application'
-
 
 # ============================================================
 # VERİTABANI AYARLARI
@@ -106,7 +89,6 @@ DATABASES = {
     }
 }
 
-
 # ============================================================
 # ŞABLON AYARLARI
 # ============================================================
@@ -115,7 +97,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR / "templates"],  # Ortak template klasörü
-        'APP_DIRS': True,  # Uygulamaların kendi template klasörlerini kullanmasına izin verir
+        'APP_DIRS': True,  # Uygulamaların kendi template klasörlerini tarar
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -126,7 +108,6 @@ TEMPLATES = [
         },
     },
 ]
-
 
 # ============================================================
 # ŞİFRE GÜVENLİĞİ
@@ -139,14 +120,12 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-
 # ============================================================
 # DİL VE ZAMAN AYARLARI
 # ============================================================
 
-LANGUAGE_CODE = 'tr'       # Varsayılan dil Türkçe
+LANGUAGE_CODE = 'tr'
 TIME_ZONE = 'Europe/Istanbul'
-
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -157,15 +136,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # collectstatic çıktısı
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# WhiteNoise: statik dosyaları production’da hızlı servis eder
-
+# WhiteNoise: statik dosyaları hızlı servis eder
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 
 # ============================================================
 # GİRİŞ/ÇIKIŞ VE KULLANICI MODELİ
@@ -173,8 +150,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 LOGIN_REDIRECT_URL = '/tickets/'
 LOGOUT_REDIRECT_URL = '/'
-AUTH_USER_MODEL = 'accounts.CustomUser'
-
+AUTH_USER_MODEL = 'accounts.CustomUser'  # Custom user modeli
 
 # ============================================================
 # OTOMATİK ID AYARI

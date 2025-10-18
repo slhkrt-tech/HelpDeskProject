@@ -1,4 +1,4 @@
-# models.py
+# tickets/models.py
 # ---------------------------------------------------------------------
 # Bu dosya HelpDesk uygulamasının veri modellerini içerir.
 # Her model veritabanında bir tabloyu temsil eder.
@@ -12,6 +12,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 User = get_user_model()  # Django’nun aktif kullanıcı modelini alır
+
 
 # ---------------------------------------------------------------------
 # Kategori Modeli
@@ -71,8 +72,23 @@ class Talep(models.Model):
     priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='normal', verbose_name="Öncelik")
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Kategori")
     sla = models.ForeignKey(SLA, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="SLA")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="talepler", verbose_name="Oluşturan Kullanıcı")
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="atanan_talepler", verbose_name="Atanan Kullanıcı")
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="talepler",
+        verbose_name="Oluşturan Kullanıcı"
+    )
+
+    assigned_to = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="atanan_talepler",
+        verbose_name="Atanan Kullanıcı"
+    )
+
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
     talep_numarasi = models.PositiveIntegerField(unique=True, blank=True, null=True, verbose_name="Talep Numarası")
@@ -96,7 +112,7 @@ class Talep(models.Model):
 
 
 # ---------------------------------------------------------------------
-# Comment (Yorum) Modeli
+# Yorum (Comment) Modeli
 # ---------------------------------------------------------------------
 
 class Comment(models.Model):
@@ -105,7 +121,7 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name="yorumlar",
         verbose_name="Talep",
-        null=True,       # nullable yaptık
+        null=True,
         blank=True
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Kullanıcı")

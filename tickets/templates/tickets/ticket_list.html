@@ -1,11 +1,9 @@
 {% extends "tickets/base.html" %}
 
-{# Sayfa başlığını "Ticket Listesi" → "Talep Listesi" olarak değiştirdik #}
 {% block title %}Talep Listesi{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-  {# Tablo başlığını da "Ticket Listesi" → "Talep Listesi" olarak değiştirdik #}
   <h3 class="mb-4">Talep Listesi</h3>
 
   {% load tz %}
@@ -61,7 +59,6 @@
           <td>{{ t.created_at|date:"Y-m-d H:i" }}</td>
         </tr>
         {% empty %}
-        {# Henüz ticket yok mesajını zaten "talep" olarak yazmıştık, değiştirmeye gerek yok #}
         <tr>
           <td colspan="8" class="text-center">Henüz talep yok.</td>
         </tr>
