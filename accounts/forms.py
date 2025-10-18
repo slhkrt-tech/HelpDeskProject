@@ -1,16 +1,19 @@
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
+
 from .models import CustomUser
+
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = CustomUser
-        fields = ('username', 'email')  # CustomUser alanlarına göre ekleme yapabilirsin
+        fields = ('username', 'email')  # CustomUser alanlarına göre ekleme yapabilirsiniz
+
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
-        fields = ('username', 'email')  # Gerekirse diğer alanlar da eklenebilir
+        fields = ('username', 'email')  # Gerekirse diğer alanları da ekleyin
 
-# Bu formlar Django'nun yerleşik UserCreationForm ve UserChangeForm'u genişleterek
-# proje özel CustomUser modelini kullanır. Alanlar basit tutuldu; isterseniz
-# role veya diğer özel alanları da ekleyebilirsiniz.
+# Bu formlar, Django'nun yerleşik UserCreationForm ve UserChangeForm'u genişleterek
+# proje özel CustomUser modelini kullanır. Alanlar kasıtlı olarak basit tutulmuştur;
+# ihtiyaç halinde role veya diğer özel alanlar eklenebilir.

@@ -1,13 +1,13 @@
-"""tickets uygulaması için basit test iskeleti.
+"""`tickets` uygulaması için basit test iskeleti.
 
-Bu dosyaya Unit/Integration testlerini ekleyin. Şu an boş bir TestCase örneği vardır.
+Bu dosyaya Unit/integrasyon testlerini ekleyin. Şu an örnek bir TestCase bulunmaktadır.
 """
 
 from django.test import TestCase
 
 
 class SimpleTest(TestCase):
-	"""Placeholder test: projenin test altyapısını kurmak için başlangıç sınıfı."""
+    """Yer tutucu test: test altyapısını doğrulamak için basit bir örnek."""
 
-	def test_placeholder(self):
-		self.assertTrue(True)
+    def test_placeholder(self):
+        self.assertTrue(True)

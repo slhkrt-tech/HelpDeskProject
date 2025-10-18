@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.db import models
 
 
 # CustomUser: Django'nun AbstractUser sınıfını genişletir.
@@ -21,7 +21,7 @@ class CustomUser(AbstractUser):
         help_text="Kullanıcının sistemdeki rolünü belirtir."
     )
 
-    # Kullanıcının dahil olduğu gruplar (related_name ile çakışma önlendi).
+    # Kullanıcının dahil olduğu gruplar (related_name ile isim çakışması önlendi).
     groups = models.ManyToManyField(
         Group,
         related_name='customuser_set',
@@ -29,7 +29,7 @@ class CustomUser(AbstractUser):
         help_text="Kullanıcının dahil olduğu gruplar."
     )
 
-    # Kullanıcının özel izinleri.
+    # Kullanıcının sahip olduğu özel izinler.
     user_permissions = models.ManyToManyField(
         Permission,
         related_name='customuser_permissions_set',

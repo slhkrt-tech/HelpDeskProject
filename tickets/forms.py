@@ -1,11 +1,12 @@
 from django import forms
-from .models import Talep, Comment  # Talep = Ticket modeli
+
+from .models import Comment, Talep  # Talep = Ticket modeli
 
 
 class TicketForm(forms.ModelForm):
-    """Talep oluşturma/güncelleme formu.
+    """Talep oluşturma / güncelleme formu.
 
-    ModelForm kullanılarak Talep modelinin alanları form üzerinde gösterilir.
+    `ModelForm` kullanılarak `Talep` modelinin alanları form üzerinde sunulur.
     """
 
     class Meta:
