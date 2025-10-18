@@ -1,0 +1,156 @@
+{% extends 'tickets/base.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Admin Panel - Talepler</h1>
+
+<form method="get" class="row g-2 mb-3">
+  <div class="col-auto">
+    <input type="text" name="q" value="{{ filters.q }}" class="form-control" placeholder="Ara (başlık/açıklama)">
+  </div>
+  <div class="col-auto">
+    <select name="status" class="form-select">
+      <option value="">Tümü</option>
+      <option value="new" {% if filters.status == 'new' %}selected{% endif %}>Yeni</option>
+      <option value="open" {% if filters.status == 'open' %}selected{% endif %}>Açık</option>
+      <option value="pending" {% if filters.status == 'pending' %}selected{% endif %}>Beklemede</option>
+      <option value="closed" {% if filters.status == 'closed' %}selected{% endif %}>Kapatıldı</option>
+      <option value="wrong_section" {% if filters.status == 'wrong_section' %}selected{% endif %}>Yanlış Bölüm</option>
+    </select>
+  </div>
+  <div class="col-auto">
+    <select name="category" class="form-select">
+      <option value="">Tümü</option>
+      {% for c in categories %}
+      <option value="{{ c.id }}" {% if filters.category == c.id|stringformat:'s' %}selected{% endif %}>{{ c.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-outline-primary">Filtrele</button>
+  </div>
+</form>
+
+<form method="post">
+  {% csrf_token %}
+  <div class="mb-2">
+    <select name="action" class="form-select d-inline-block w-auto">
+      <option value="">-- Toplu işlem --</option>
+      <option value="close">Kapat</option>
+      <option value="pending">Beklemede</option>
+      <option value="open">Açık</option>
+      <option value="wrong_section">Yanlış Bölüm</option>
+      <option value="delete">Sil</option>
+    </select>
+    <button type="submit" class="btn btn-primary ms-2">Uygula</button>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><input type="checkbox" id="select-all"/></th>
+        <th>ID</th>
+        <th>Başlık</th>
+        <th>Kullanıcı</th>
+        <th>Kategori</th>
+        <th>Durum</th>
+        <th>Oluşturulma</th>
+        <th>İşlemler</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in tickets %}
+      <tr>
+        <td><input type="checkbox" name="selected" value="{{ t.id }}"></td>
+        <td>{{ t.id }}</td>
+        <td>{{ t.title }}</td>
+        <td>{{ t.user.get_full_name|default:t.user.username }}</td>
+        <td>{% if t.category %}{{ t.category.name }}{% else %}—{% endif %}</td>
+        <td>{{ t.get_status_display }}</td>
+        <td>{{ t.created_at }}</td>
+        <td>
+          <a href="{% url 'admin_panel_detail' t.id %}" class="btn btn-sm btn-outline-secondary">Detay</a>
+          <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="{{ t.id }}" data-title="{{ t.title|escapejs }}">Sil</button>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="8">Hiç talep yok.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </form>
+
+  {% if page_obj.has_other_pages %}
+  <nav aria-label="Page navigation">
+    <ul class="pagination">
+      {% if page_obj.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Önceki</a></li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">Önceki</span></li>
+      {% endif %}
+
+      <li class="page-item active"><span class="page-link">{{ page_obj.number }} / {{ paginator.num_pages }}</span></li>
+
+      {% if page_obj.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Sonraki</a></li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">Sonraki</span></li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+
+<script>
+document.getElementById('select-all')?.addEventListener('change', function(e){
+  const checked = e.target.checked;
+  document.querySelectorAll('input[name="selected"]').forEach(i=>i.checked = checked);
+});
+// CSRF helper - read cookie (Django sets csrftoken cookie)
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+// Delegated click handler for delete buttons
+document.addEventListener('click', async function (e) {
+  const btn = e.target.closest('.delete-btn');
+  if (!btn) return;
+  const id = btn.dataset.id;
+  const title = btn.dataset.title;
+  if (!confirm(`Talep #${id} - "${title}" silinsin mi?`)) return;
+  const url = `{% url 'admin_panel_detail' 0 %}`.replace('/0/', `/${id}/`);
+  const csrftoken = getCookie('csrftoken');
+  try {
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': csrftoken,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({action: 'delete'}).toString(),
+    });
+    if (resp.ok) {
+      window.location.reload();
+    } else {
+      alert('Silme sırasında hata oluştu. Konsolu kontrol edin.');
+      console.error('Delete failed', resp.status, await resp.text());
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Silme isteği gönderilemedi. Konsolu kontrol edin.');
+  }
+});
+</script>
+
+{% endblock %}

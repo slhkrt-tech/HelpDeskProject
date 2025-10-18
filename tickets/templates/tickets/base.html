@@ -81,6 +81,14 @@
 <!-- Ana içerik -->
 
 <div class="container">
+  {% if messages %}
+  <div class="mt-2">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
   {% block content %}{% endblock %}
 </div>
 

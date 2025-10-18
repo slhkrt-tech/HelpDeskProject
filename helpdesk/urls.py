@@ -10,13 +10,13 @@ Tüm proje genelinde URL yönlendirmelerini tanımlar:
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import include, path
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
 
 urlpatterns = [
 
-    # Admin paneli
-
-    path('admin/', admin.site.urls),
+    # Admin paneli (varsayılan /admin/ yolunu özel panele yönlendiriyoruz)
+    # Not: admin uygulaması hâlâ kurulu, sadece URL yönlendirmesi yapıyoruz.
+    path('admin/', RedirectView.as_view(url='/tickets/panel/', permanent=False)),
 
     # Ana sayfa
 

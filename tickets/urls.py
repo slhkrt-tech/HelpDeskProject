@@ -1,6 +1,7 @@
 from django.urls import path
 
 from . import views
+from . import admin_views
 
 urlpatterns = [
 
@@ -29,4 +30,7 @@ urlpatterns = [
     # Kullanıcıyı bir gruba ekleme (yalnızca staff veya admin)
 
     path("user/<int:user_id>/add-group/", views.add_user_to_group, name="add_user_to_group"),
+    # Basit özelleştirilebilir admin paneli (staff-only)
+    path("panel/", admin_views.panel_list, name="admin_panel"),
+    path("panel/<int:pk>/", admin_views.panel_detail, name="admin_panel_detail"),
 ]
