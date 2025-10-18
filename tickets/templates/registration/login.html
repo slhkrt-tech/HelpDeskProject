@@ -1,28 +1,46 @@
 {% extends "tickets/base.html" %}
+{% load widget_tweaks %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Yardım Masası – Giriş{% endblock %}
 
 {% block content %}
-<div class="container mt-5" style="max-width: 400px;">
-  <h2 class="mb-4 text-center">Login</h2>
-  
-  <form method="post" novalidate>
-    {% csrf_token %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="w-100" style="max-width: 400px;">
+      
+        <!-- Başlık tema rengini kullanıyor -->
 
-    <!-- Django AuthenticationForm'u p etiketleriyle render eder -->
-     
-    {{ form.as_p }}
+        <h2 class="text-center mb-4" style="color: var(--primary-color);">Giriş Yap</h2>
 
-    <div class="d-grid mt-3">
-      <button type="submit" class="btn btn-primary btn-block">Login</button>
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            <!-- Kullanıcı Adı -->
+
+            <p class="mb-3">
+                {{ form.username|add_class:"form-control bg-body text-body" |attr:"placeholder:Kullanıcı Adı" }}
+                {% if form.username.errors %}
+                    <div class="text-danger small mt-1">{{ form.username.errors|striptags }}</div>
+                {% endif %}
+            </p>
+
+            <!-- Parola -->
+
+            <p class="mb-3">
+                {{ form.password|add_class:"form-control bg-body text-body" |attr:"placeholder:Parola" }}
+                {% if form.password.errors %}
+                    <div class="text-danger small mt-1">{{ form.password.errors|striptags }}</div>
+                {% endif %}
+            </p>
+
+            <div class="d-grid mt-3">
+                <button type="submit" class="btn btn-primary w-100">Giriş Yap</button>
+            </div>
+        </form>
+
+        <div class="mt-3 text-center">
+            <a href="{% url 'password_reset' %}">Parolamı Unuttum?</a> |
+            <a href="{% url 'signup' %}">Kayıt Ol</a>
+        </div>
     </div>
-  </form>
-
-  <!-- Ek linkler: kayıt ve şifre sıfırlama -->
-
-  <div class="mt-3 text-center">
-    <a href="{% url 'password_reset' %}">Forgot password?</a> |
-    <a href="{% url 'signup' %}">Sign up</a>
-  </div>
 </div>
 {% endblock %}

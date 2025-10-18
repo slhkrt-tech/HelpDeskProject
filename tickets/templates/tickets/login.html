@@ -1,47 +1,48 @@
 {% extends "tickets/base.html" %}
 {% load widget_tweaks %}
 
-{% block title %}Giriş{% endblock %}
+{% block title %}Yardım Masası – Giriş{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-  <div class="col-md-6 text-center">
+    <div class="w-100" style="max-width: 400px;">
 
-    <h3 class="mb-4" style="color: var(--bs-body-color);">Giriş Yap</h3>
+        <h2 class="text-center mb-4" style="color: var(--primary-color);">Giriş Yap</h2>
 
-    <form method="post" novalidate>
-      {% csrf_token %}
+        <form method="post" novalidate>
+            {% csrf_token %}
 
-      <!-- Kullanıcı Adı -->
-       
-      <p class="mb-3 text-start">
-        <label for="{{ form.username.id_for_label }}" class="form-label d-block" style="color: var(--bs-body-color);">{{ form.username.label }}</label>
-        {{ form.username|add_class:"form-control bg-body text-body" }}
-        {% if form.username.errors %}
-          <div class="text-danger small mt-1">{{ form.username.errors|striptags }}</div>
-        {% endif %}
-      </p>
+            <!-- Kullanıcı Adı -->
+             
+            <div class="form-floating mb-3">
+                {{ form.username|add_class:"form-control" |attr:"placeholder:Kullanıcı Adı" }}
+                <label for="{{ form.username.id_for_label }}">Kullanıcı Adı</label>
+                {% if form.username.errors %}
+                    <div class="text-danger small mt-1">{{ form.username.errors|striptags }}</div>
+                {% endif %}
+            </div>
 
-      <!-- Parola -->
+            <!-- Parola -->
 
-      <p class="mb-3 text-start">
-        <label for="{{ form.password.id_for_label }}" class="form-label d-block" style="color: var(--bs-body-color);">{{ form.password.label }}</label>
-        {{ form.password|add_class:"form-control bg-body text-body" }}
-        {% if form.password.errors %}
-          <div class="text-danger small mt-1">{{ form.password.errors|striptags }}</div>
-        {% endif %}
-      </p>
+            <div class="form-floating mb-3">
+                {{ form.password|add_class:"form-control" |attr:"placeholder:Parola" }}
+                <label for="{{ form.password.id_for_label }}">Parola</label>
+                {% if form.password.errors %}
+                    <div class="text-danger small mt-1">{{ form.password.errors|striptags }}</div>
+                {% endif %}
+            </div>
 
-      <div class="d-grid mt-3">
-        <button type="submit" class="btn btn-primary">Giriş Yap</button>
-      </div>
-    </form>
+            <div class="d-grid mt-3">
+                <button type="submit" class="btn w-100" style="background-color: var(--primary-color); color: var(--bg-color);">
+                    Giriş Yap
+                </button>
+            </div>
+        </form>
 
-    <div class="mt-3 text-center">
-      <a href="{% url 'password_reset' %}" class="text-decoration-none" style="color: var(--bs-body-color);">Şifremi Unuttum?</a> |
-      <a href="{% url 'signup' %}" class="text-decoration-none" style="color: var(--bs-body-color);">Kayıt Ol</a>
+        <div class="mt-3 text-center">
+            <a href="{% url 'password_reset' %}" class="text-decoration-none" style="color: var(--accent-color);">Parolamı Unuttum?</a> |
+            <a href="{% url 'signup' %}" class="text-decoration-none" style="color: var(--accent-color);">Kayıt Ol</a>
+        </div>
     </div>
-
-  </div>
 </div>
 {% endblock %}
