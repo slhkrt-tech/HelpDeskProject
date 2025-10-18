@@ -92,6 +92,7 @@ class Talep(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
     talep_numarasi = models.PositiveIntegerField(unique=True, blank=True, null=True, verbose_name="Talep Numarası")
+    is_deleted = models.BooleanField(default=False, verbose_name="Silindi (soft-delete)")
 
     def save(self, *args, **kwargs):
         if not self.talep_numarasi:

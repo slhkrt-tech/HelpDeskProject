@@ -22,11 +22,11 @@ def ticket_list(request):
     """
     user = request.user
     if user.groups.filter(name='Supervisor').exists() or user.is_superuser:
-        tickets = Talep.objects.all()
+        tickets = Talep.objects.filter(is_deleted=False)
     else:
         # Kullanıcının kendi gruplarındaki diğer kullanıcıları al
         group_users = User.objects.filter(groups__in=user.groups.all()).distinct()
-        tickets = Talep.objects.filter(user=user) | Talep.objects.filter(user__in=group_users)
+        tickets = (Talep.objects.filter(user=user, is_deleted=False) | Talep.objects.filter(user__in=group_users, is_deleted=False))
         tickets = tickets.distinct()  # Tekrarları önlemek için
     return render(request, 'tickets/ticket_list.html', {'tickets': tickets})
 
@@ -38,7 +38,7 @@ def ticket_detail(request, pk):
     Erişim kontrolü:
     - Sadece talebi oluşturan kullanıcı, aynı gruptaki kullanıcılar veya Supervisor/superuser görüntüleyebilir.
     """
-    ticket = get_object_or_404(Talep, pk=pk)
+    ticket = get_object_or_404(Talep, pk=pk, is_deleted=False)
     user = request.user
     if not user.is_superuser and not user.groups.filter(name='Supervisor').exists():
         group_users = User.objects.filter(groups__in=user.groups.all()).distinct()

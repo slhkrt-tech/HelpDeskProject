@@ -26,7 +26,7 @@ def panel_list(request):
     - Sayfalama
     - Toplu işlem (POST ile)
     """
-    qs = Talep.objects.all().order_by('-created_at')
+    qs = Talep.objects.filter(is_deleted=False).order_by('-created_at')
 
     # Filtreler
     status = request.GET.get('status')
@@ -69,10 +69,10 @@ def panel_list(request):
                     logger.info(f"User {request.user.pk} set {count} tickets to wrong_section: ids={selected}")
                     messages.success(request, f"{count} talep 'Yanlış Bölüm / Kapatıldı' olarak işaretlendi.")
                 elif action == 'delete':
-                    count = sel_qs.count()
-                    sel_qs.delete()
-                    logger.info(f"User {request.user.pk} deleted {count} tickets: ids={selected}")
-                    messages.success(request, f"{count} talep silindi.")
+                    # soft-delete: is_deleted=True
+                    count = sel_qs.update(is_deleted=True)
+                    logger.info(f"User {request.user.pk} soft-deleted {count} tickets: ids={selected}")
+                    messages.success(request, f"{count} talep arşivlendi (silindi).")
         return redirect('admin_panel')
 
     # Sayfalama
@@ -87,6 +87,7 @@ def panel_list(request):
         'paginator': paginator,
         'categories': categories,
         'filters': {'status': status, 'category': category_id, 'q': q},
+        'can_delete': request.user.is_superuser or request.user.groups.filter(name='Supervisor').exists(),
     }
     return render(request, 'tickets/admin_panel/list.html', context)
 
@@ -97,7 +98,7 @@ def panel_detail(request, pk):
 
     - POST: tekil işlem (status değiştirme veya silme) uygular.
     """
-    ticket = get_object_or_404(Talep, pk=pk)
+    ticket = get_object_or_404(Talep, pk=pk, is_deleted=False)
 
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -107,14 +108,15 @@ def panel_detail(request, pk):
             logger.info(f"User {request.user.pk} set ticket {ticket.pk} to {ticket.status}")
             messages.success(request, f"Talep durumu '{ticket.get_status_display()}' olarak güncellendi.")
         elif action == 'delete':
-            # delete yalnızca Supervisor veya superuser
+            # soft-delete: is_deleted flag set; delete yalnızca Supervisor veya superuser
             if not (request.user.is_superuser or request.user.groups.filter(name='Supervisor').exists()):
                 logger.warning(f"Unauthorized delete attempt on ticket {ticket.pk} by user {request.user.pk}")
                 messages.error(request, "Bu talebi silmek için yetkiniz yok.")
             else:
-                ticket.delete()
-                logger.info(f"User {request.user.pk} deleted ticket {ticket.pk}")
-                messages.success(request, "Talep silindi.")
+                ticket.is_deleted = True
+                ticket.save()
+                logger.info(f"User {request.user.pk} soft-deleted ticket {ticket.pk}")
+                messages.success(request, "Talep arşivlendi (silindi).")
                 return redirect('admin_panel')
         return redirect('admin_panel_detail', pk=pk)
 
