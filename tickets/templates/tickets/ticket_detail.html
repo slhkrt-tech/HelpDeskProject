@@ -86,10 +86,10 @@
       <div class="col-md-3">
         <label for="status" class="form-label">Durum</label>
         <select name="status" id="status" class="form-select">
-          <option value="new" {% if ticket.status=='new' %}selected{% endif %}>Yeni</option>
-          <option value="open" {% if ticket.status=='open' %}selected{% endif %}>Açık</option>
-          <option value="pending" {% if ticket.status=='pending' %}selected{% endif %}>Beklemede</option>
-          <option value="closed" {% if ticket.status=='closed' %}selected{% endif %}>Kapatıldı</option>
+          <option value="new" {% if ticket.status == 'new' %}selected{% endif %}>Yeni</option>
+          <option value="open" {% if ticket.status == 'open' %}selected{% endif %}>Açık</option>
+          <option value="pending" {% if ticket.status == 'pending' %}selected{% endif %}>Beklemede</option>
+          <option value="closed" {% if ticket.status == 'closed' %}selected{% endif %}>Kapatıldı</option>
         </select>
       </div>
       <div class="col-md-3">
