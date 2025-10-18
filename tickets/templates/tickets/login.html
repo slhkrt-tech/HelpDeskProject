@@ -15,7 +15,7 @@
             <!-- Kullanıcı Adı -->
              
             <div class="form-floating mb-3">
-                {{ form.username|add_class:"form-control" |attr:"placeholder:Kullanıcı Adı" }}
+                {{ form.username|add_class:"form-control" |attr:"placeholder: " }}
                 <label for="{{ form.username.id_for_label }}">Kullanıcı Adı</label>
                 {% if form.username.errors %}
                     <div class="text-danger small mt-1">{{ form.username.errors|striptags }}</div>
@@ -25,7 +25,7 @@
             <!-- Parola -->
 
             <div class="form-floating mb-3">
-                {{ form.password|add_class:"form-control" |attr:"placeholder:Parola" }}
+                {{ form.password|add_class:"form-control" |attr:"placeholder: " }}
                 <label for="{{ form.password.id_for_label }}">Parola</label>
                 {% if form.password.errors %}
                     <div class="text-danger small mt-1">{{ form.password.errors|striptags }}</div>
