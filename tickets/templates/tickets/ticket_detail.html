@@ -28,9 +28,26 @@
   </p>
 
   <p>
-    <strong>Kategori:</strong> {{ ticket.category.name if ticket.category else "Kategori yok" }} |
-    <strong>SLA:</strong> {{ ticket.sla.name if ticket.sla else "SLA yok" }} |
-    <strong>Atanan:</strong> {{ ticket.assigned_to.username if ticket.assigned_to else "Atanmamış" }}
+    <strong>Kategori:</strong>
+    {% if ticket.category %}
+      {{ ticket.category.name }}
+    {% else %}
+      Kategori yok
+    {% endif %} |
+
+    <strong>SLA:</strong>
+    {% if ticket.sla %}
+      {{ ticket.sla.name }}
+    {% else %}
+      SLA yok
+    {% endif %} |
+
+    <strong>Atanan:</strong>
+    {% if ticket.assigned_to %}
+      {{ ticket.assigned_to.username }}
+    {% else %}
+      Atanmamış
+    {% endif %}
   </p>
 
   <hr>
