@@ -67,3 +67,15 @@ NOT: `.env` dosyasını repoya eklemeyin. Üretim ortamında secrets yönetimi (
 ---
 
 Daha fazla bilgi ve deployment talimatları için `docs/` veya bir PR isteği açabilirsiniz.
+
+## Geliştirici araçları
+
+Yerelde kod kalitesini korumak için `pre-commit` kullanmanızı öneriyoruz. İlk kurulum:
+
+```powershell
+pip install pre-commit
+pre-commit install
+pre-commit run --all-files
+```
+
+CI otomasyonu için `.github/workflows/ci.yml` eklendi; push/pull request'lerde lint ve test aşamaları çalışacaktır.
