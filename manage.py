@@ -1,3 +1,9 @@
+"""Projeyi yerel olarak çalıştırmak ve yönetmek için Django `manage.py`.
+
+Bu modül, Django'nun yönetim komutlarını çalıştırmak için kullanılan
+standart `manage.py` betiğini içerir (örn. `runserver`, `migrate`).
+"""
+
 import os  # Ortam değişkenleriyle çalışma için
 import sys  # Komut satırı argümanlarını almak için
 
