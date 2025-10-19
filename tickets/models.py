@@ -128,6 +128,7 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Kullanıcı")
     message = models.TextField(verbose_name="Mesaj")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    is_deleted = models.BooleanField(default=False, verbose_name="Silindi (soft-delete)")
 
     def __str__(self):
         return f"Yorum {self.pk} - {self.user}"

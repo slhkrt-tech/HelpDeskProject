@@ -21,7 +21,7 @@ def staff_required(user):
     return user.is_superuser or user.is_staff or user.groups.filter(name='Supervisor').exists()
 
 
-@user_passes_test(staff_required)
+@user_passes_test(staff_required, login_url='/admin-panel/login/')
 def panel_list(request):
     """Talepleri listeleyen ve seçilen taleplere toplu işlem uygulayan görünüm.
 
@@ -97,7 +97,7 @@ def panel_list(request):
     return render(request, 'tickets/admin_panel/list.html', context)
 
 
-@user_passes_test(staff_required)
+@user_passes_test(staff_required, login_url='/admin-panel/login/')
 def panel_detail(request, pk):
     """Tek bir talep için detay ve hızlı işlem görünümü.
 
@@ -128,7 +128,7 @@ def panel_detail(request, pk):
     return render(request, 'tickets/admin_panel/detail.html', {'ticket': ticket})
 
 
-@user_passes_test(staff_required)
+@user_passes_test(staff_required, login_url='/admin-panel/login/')
 def admin_index(request):
     """Özel admin panelinin ana sayfası - sekmeli gezinme için küçük index."""
     counts = {
@@ -140,19 +140,56 @@ def admin_index(request):
     return render(request, 'tickets/admin_panel/index.html', {'counts': counts})
 
 
-@user_passes_test(staff_required)
+@user_passes_test(staff_required, login_url='/admin-panel/login/')
 def users_list(request):
     users = User.objects.all().order_by('id')
     return render(request, 'tickets/admin_panel/users.html', {'users': users})
 
 
-@user_passes_test(staff_required)
+@user_passes_test(staff_required, login_url='/admin-panel/login/')
+def user_edit(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    groups = Group.objects.all()
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        group_ids = request.POST.getlist('groups')
+        user.username = username
+        user.email = email
+        user.groups.set(Group.objects.filter(pk__in=group_ids))
+        user.save()
+        messages.success(request, 'Kullanıcı güncellendi.')
+        return redirect('admin_users')
+    return render(request, 'tickets/admin_panel/user_edit.html', {'user': user, 'groups': groups})
+
+
+@user_passes_test(staff_required, login_url='/admin-panel/login/')
 def groups_list(request):
     groups = Group.objects.all().order_by('id')
     return render(request, 'tickets/admin_panel/groups.html', {'groups': groups})
 
 
-@user_passes_test(staff_required)
+@user_passes_test(staff_required, login_url='/admin-panel/login/')
 def comments_list(request):
-    comments = Comment.objects.select_related('talep', 'user').order_by('-created_at')
+    comments = Comment.objects.select_related('talep', 'user').filter(is_deleted=False).order_by('-created_at')
     return render(request, 'tickets/admin_panel/comments.html', {'comments': comments})
+
+
+@user_passes_test(staff_required, login_url='/admin-panel/login/')
+def comment_delete(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    if request.method == 'POST':
+        comment.is_deleted = True
+        comment.save()
+        messages.success(request, 'Yorum arşivlendi (silindi).')
+    return redirect('admin_comments')
+
+
+@user_passes_test(staff_required, login_url='/admin-panel/login/')
+def comment_restore(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    if request.method == 'POST':
+        comment.is_deleted = False
+        comment.save()
+        messages.success(request, 'Yorum geri yüklendi.')
+    return redirect('admin_comments')

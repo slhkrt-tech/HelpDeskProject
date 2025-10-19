@@ -1,0 +1,23 @@
+{% extends 'tickets/base.html' %}
+{% block content %}
+<h1>Kullanıcı Düzenle - {{ user.username }}</h1>
+<form method="post">{% csrf_token %}
+  <div class="mb-2">
+    <label class="form-label">Kullanıcı adı</label>
+    <input class="form-control" name="username" value="{{ user.username }}">
+  </div>
+  <div class="mb-2">
+    <label class="form-label">Email</label>
+    <input class="form-control" name="email" value="{{ user.email }}">
+  </div>
+  <div class="mb-2">
+    <label class="form-label">Gruplar</label>
+    <select name="groups" class="form-select" multiple>
+      {% for g in groups %}
+      <option value="{{ g.id }}" {% if g in user.groups.all %}selected{% endif %}>{{ g.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button class="btn btn-primary">Kaydet</button>
+</form>
+{% endblock %}
