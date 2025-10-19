@@ -1,15 +1,23 @@
 {% extends 'tickets/base.html' %}
 {% block content %}
-<h1>Gruplar</h1>
-<table class="table">
-  <thead><tr><th>ID</th><th>Gruup Adı</th></tr></thead>
-  <tbody>
-    {% for g in groups %}
-    <tr>
-      <td>{{ g.id }}</td>
-      <td>{{ g.name }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <h1 class="mb-3 text-center">Gruplar</h1>
+    <div class="card">
+      <div class="card-body">
+        <table class="table">
+          <thead><tr><th>ID</th><th>Grup Adı</th></tr></thead>
+          <tbody>
+            {% for g in groups %}
+            <tr>
+              <td>{{ g.id }}</td>
+              <td>{{ g.name }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

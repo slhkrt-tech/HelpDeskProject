@@ -1,21 +1,29 @@
 {% extends 'tickets/base.html' %}
 {% block content %}
-<h1>Yorumlar</h1>
-<table class="table">
-  <thead><tr><th>ID</th><th>Talep</th><th>Kullanıcı</th><th>Mesaj</th><th>Tarih</th></tr></thead>
-  <tbody>
-    {% for c in comments %}
-    <tr>
-      <td>{{ c.id }}</td>
-      <td>{% if c.talep %}<a href="{% url 'admin_ticket_detail' c.talep.id %}">#{{ c.talep.talep_numarasi }}</a>{% else %}—{% endif %}</td>
-      <td>{{ c.user.get_full_name|default:c.user.username }}</td>
-      <td>{{ c.message|truncatechars:80 }}</td>
-      <td>{{ c.created_at }}</td>
-      <td>
-        <form method="post" action="{% url 'admin_comment_delete' c.id %}">{% csrf_token %}<button class="btn btn-sm btn-danger">Sil</button></form>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="row justify-content-center">
+  <div class="col-md-10">
+    <h1 class="mb-3 text-center">Yorumlar</h1>
+    <div class="card">
+      <div class="card-body">
+        <table class="table">
+          <thead><tr><th>ID</th><th>Talep</th><th>Kullanıcı</th><th>Mesaj</th><th>Tarih</th><th>İşlemler</th></tr></thead>
+          <tbody>
+            {% for c in comments %}
+            <tr>
+              <td>{{ c.id }}</td>
+              <td>{% if c.talep %}<a href="{% url 'admin_ticket_detail' c.talep.id %}">#{{ c.talep.talep_numarasi }}</a>{% else %}—{% endif %}</td>
+              <td>{{ c.user.get_full_name|default:c.user.username }}</td>
+              <td>{{ c.message|truncatechars:80 }}</td>
+              <td>{{ c.created_at }}</td>
+              <td>
+                <form method="post" action="{% url 'admin_comment_delete' c.id %}">{% csrf_token %}<button class="btn btn-sm btn-danger">Sil</button></form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
