@@ -24,6 +24,7 @@ ALLOWED_HOSTS = [
     'localhost', 
     '127.0.0.1',
     '[::1]',
+    'testserver',  # Django test client için
     os.getenv('ALLOWED_HOST', 'localhost')
 ]
 

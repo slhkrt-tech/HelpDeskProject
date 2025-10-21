@@ -349,9 +349,12 @@ function setActivePage() {
 
 // Authentication Utilities
 async function checkAuthState() {
-  // Sadece login ve signup sayfalarında auth kontrolü yapma
+  // Auth kontrolü gerektirmeyen sayfalar için kontrolü atla
   const currentPath = window.location.pathname;
-  if (currentPath.includes('/login/') || currentPath.includes('/signup/')) {
+  if (currentPath.includes('/login/') || 
+      currentPath.includes('/signup/') || 
+      currentPath.includes('/auth/password_reset/') ||
+      currentPath.includes('/auth/reset/')) {
     showUnauthenticatedState();
     return;
   }
@@ -392,8 +395,11 @@ async function checkAuthState() {
       showUnauthenticatedState();
     }
   } else {
-    // Token yoksa login sayfasına yönlendir (login/signup sayfaları hariç)
-    if (!currentPath.includes('/login/') && !currentPath.includes('/signup/')) {
+    // Token yoksa login sayfasına yönlendir (login/signup/password reset sayfaları hariç)
+    if (!currentPath.includes('/login/') && 
+        !currentPath.includes('/signup/') && 
+        !currentPath.includes('/auth/password_reset/') &&
+        !currentPath.includes('/auth/reset/')) {
       console.log('No token found, redirecting to login');
       window.location.href = '/accounts/login/';
     } else {
@@ -440,7 +446,10 @@ document.addEventListener('visibilitychange', function() {
   if (!document.hidden) {
     // Sekme aktif olduğunda auth durumunu kontrol et
     const currentPath = window.location.pathname;
-    if (!currentPath.includes('/login/') && !currentPath.includes('/signup/')) {
+    if (!currentPath.includes('/login/') && 
+        !currentPath.includes('/signup/') && 
+        !currentPath.includes('/auth/password_reset/') &&
+        !currentPath.includes('/auth/reset/')) {
       const token = localStorage.getItem('authToken');
       if (!token) {
         // Token yoksa login sayfasına yönlendir
@@ -453,7 +462,10 @@ document.addEventListener('visibilitychange', function() {
 // Sayfa focus olduğunda kontrol et
 window.addEventListener('focus', function() {
   const currentPath = window.location.pathname;
-  if (!currentPath.includes('/login/') && !currentPath.includes('/signup/')) {
+  if (!currentPath.includes('/login/') && 
+      !currentPath.includes('/signup/') && 
+      !currentPath.includes('/auth/password_reset/') &&
+      !currentPath.includes('/auth/reset/')) {
     const token = localStorage.getItem('authToken');
     if (!token) {
       // Token yoksa login sayfasına yönlendir
