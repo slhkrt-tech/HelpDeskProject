@@ -1,15 +1,18 @@
 # admin.py
+# ================================================================================
+# Django Admin Konfigürasyonu - Tickets Uygulaması
+# Bu dosya, modellerin admin panelde nasıl görüneceğini ve yönetileceğini belirler.
+# ================================================================================
 
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 from django.utils.html import format_html
-from django.db import models
 from .models import Category, SLA, Talep, Comment
 
-# ---------------------------------------------------------------------
-# Category
-# ---------------------------------------------------------------------
 
+# -------------------------------------------------------------------------------
+# Kategori (Category) Admin
+# -------------------------------------------------------------------------------
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
@@ -19,10 +22,10 @@ class CategoryAdmin(admin.ModelAdmin):
     verbose_name = _("Kategori")
     verbose_name_plural = _("Kategoriler")
 
-# ---------------------------------------------------------------------
-# SLA
-# ---------------------------------------------------------------------
 
+# -------------------------------------------------------------------------------
+# SLA (Servis Düzeyi Anlaşması) Admin
+# -------------------------------------------------------------------------------
 @admin.register(SLA)
 class SLAAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'response_time', 'resolve_time')
@@ -31,10 +34,10 @@ class SLAAdmin(admin.ModelAdmin):
     verbose_name = _("SLA")
     verbose_name_plural = _("SLA'lar")
 
-# ---------------------------------------------------------------------
-# Talep
-# ---------------------------------------------------------------------
 
+# -------------------------------------------------------------------------------
+# Talep (Ticket) Admin
+# -------------------------------------------------------------------------------
 @admin.register(Talep)
 class TalepAdmin(admin.ModelAdmin):
     list_display = (
@@ -61,31 +64,29 @@ class TalepAdmin(admin.ModelAdmin):
     # ================================
     # Toplu İşlemler (Bulk Actions)
     # ================================
-
     def mark_as_closed(self, request, queryset):
-        """Seçilen talepleri kapatıldı olarak işaretle"""
+        """Seçilen talepleri 'Kapatıldı' olarak işaretle"""
         updated = queryset.update(status='closed')
         self.message_user(request, f"{updated} talep kapatıldı.")
     mark_as_closed.short_description = "Seçilen talepleri (Kapatıldı) olarak işaretle"
 
     def mark_as_pending(self, request, queryset):
-        """Seçilen talepleri beklemeye al"""
+        """Seçilen talepleri 'Beklemede' olarak işaretle"""
         updated = queryset.update(status='pending')
         self.message_user(request, f"{updated} talep beklemeye alındı.")
     mark_as_pending.short_description = "Seçilen talepleri (Beklemede) olarak işaretle"
 
     def mark_as_open(self, request, queryset):
-        """Seçilen talepleri açık olarak işaretle"""
+        """Seçilen talepleri 'Açık' olarak işaretle"""
         updated = queryset.update(status='open')
         self.message_user(request, f"{updated} talep açık olarak işaretlendi.")
     mark_as_open.short_description = "Seçilen talepleri (Açık) olarak işaretle"
 
     # ================================
-    # Custom Display Methods
+    # Özel Görünüm Metodları (Custom Display)
     # ================================
-
     def get_description(self, obj):
-        """Açıklama alanını kısalt"""
+        """Açıklama alanını 75 karakter ile sınırla"""
         return (obj.description[:75] + "...") if len(obj.description) > 75 else obj.description
     get_description.short_description = "Açıklama"
 
@@ -97,10 +98,10 @@ class TalepAdmin(admin.ModelAdmin):
         )
     view_detail.short_description = "📄"
 
-# ---------------------------------------------------------------------
-# Comment
-# ---------------------------------------------------------------------
 
+# -------------------------------------------------------------------------------
+# Yorum (Comment) Admin
+# -------------------------------------------------------------------------------
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('id', 'talep', 'user', 'created_at')
@@ -109,10 +110,10 @@ class CommentAdmin(admin.ModelAdmin):
     verbose_name = _("Yorum")
     verbose_name_plural = _("Yorumlar")
 
-# ---------------------------------------------------------------------
-# Genel admin başlıkları
-# ---------------------------------------------------------------------
 
+# -------------------------------------------------------------------------------
+# Genel Admin Paneli Başlıkları
+# -------------------------------------------------------------------------------
 admin.site.site_header = "Yönetim Paneli"
 admin.site.site_title = "Yardım Masası Yönetimi"
 admin.site.index_title = "Hoşgeldiniz - HelpDesk Admin"

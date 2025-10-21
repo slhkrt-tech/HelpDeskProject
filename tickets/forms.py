@@ -1,12 +1,20 @@
 from django import forms
-from .models import Talep, Comment  # Ticket -> Talep
+from .models import Talep, Comment  # Talep modeli ve Comment modeli
 
+# ================================================================================
+# Talep Formu
+# ================================================================================
 class TicketForm(forms.ModelForm):
-    """Talep modeli için form (eski Ticket) - Modern UI ile"""
+    """
+    Talep (Ticket) modeli için form
+    Modern UI ve Bootstrap ile uyumlu
+    """
 
     class Meta:
         model = Talep
         fields = ['title', 'description', 'priority', 'category', 'sla', 'assigned_to']
+
+        # Widget'lar (form alanlarının HTML özellikleri)
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control form-control-lg',
@@ -19,19 +27,13 @@ class TicketForm(forms.ModelForm):
                 'placeholder': 'Talebinizi detaylı bir şekilde açıklayın...',
                 'style': 'resize: vertical;'
             }),
-            'priority': forms.Select(attrs={
-                'class': 'form-select',
-            }),
-            'category': forms.Select(attrs={
-                'class': 'form-select',
-            }),
-            'sla': forms.Select(attrs={
-                'class': 'form-select',
-            }),
-            'assigned_to': forms.Select(attrs={
-                'class': 'form-select',
-            }),
+            'priority': forms.Select(attrs={'class': 'form-select'}),
+            'category': forms.Select(attrs={'class': 'form-select'}),
+            'sla': forms.Select(attrs={'class': 'form-select'}),
+            'assigned_to': forms.Select(attrs={'class': 'form-select'}),
         }
+
+        # Alan başlıkları (label)
         labels = {
             'title': 'Talep Başlığı',
             'description': 'Detaylı Açıklama',
@@ -40,6 +42,8 @@ class TicketForm(forms.ModelForm):
             'sla': 'Hizmet Seviyesi',
             'assigned_to': 'Atanacak Kişi',
         }
+
+        # Yardım metinleri (help_text)
         help_texts = {
             'title': 'Talebinizi özetleyen kısa bir başlık',
             'description': 'Sorununuzu veya ihtiyacınızı detaylı şekilde açıklayın',
@@ -50,27 +54,39 @@ class TicketForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        """Form initialization ve widget customization"""
+        """
+        Form başlatıldığında ek özelleştirmeler
+        - Zorunlu alanlar
+        - Boş seçenekler
+        - HTML 'required' attribute ekleme
+        """
         super().__init__(*args, **kwargs)
         
-        # Zorunlu alanları belirle
         self.fields['title'].required = True
         self.fields['description'].required = True
         
         # Atama alanı için boş seçenek
         self.fields['assigned_to'].empty_label = "--- Otomatik Atama ---"
         
-        # Bootstrap CSS sınıflarını otomatik ekle
+        # Zorunlu alanlara 'required' attribute ekle
         for field_name, field in self.fields.items():
             if field.required:
                 field.widget.attrs['required'] = True
 
+
+# ================================================================================
+# Yorum Formu
+# ================================================================================
 class CommentForm(forms.ModelForm):
-    """Comment modeli için form - Modern UI ile"""
-    
+    """
+    Comment modeli için form
+    Modern UI ve Bootstrap ile uyumlu
+    """
+
     class Meta:
         model = Comment
         fields = ['message']
+
         widgets = {
             'message': forms.Textarea(attrs={
                 'rows': 3,
@@ -79,9 +95,11 @@ class CommentForm(forms.ModelForm):
                 'style': 'resize: vertical;'
             })
         }
+
         labels = {
             'message': 'Yorum'
         }
+
         help_texts = {
             'message': 'Bu talep hakkında yorumunuzu yazın'
         }

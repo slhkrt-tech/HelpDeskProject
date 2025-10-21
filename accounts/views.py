@@ -618,7 +618,7 @@ def customer_panel_view(request):
     Customer Panel - Tüm kullanıcılar erişebilir
     Gelişmiş token kontrolü ve kullanıcı deneyimi
     """
-    from tickets.models import Ticket, Category
+    from tickets.models import Talep, Category
     from django.db.models import Q
     
     # Token tabanlı kimlik doğrulama
@@ -629,7 +629,7 @@ def customer_panel_view(request):
         return redirect('/?redirect=customer-panel')
     
     # Kullanıcının kendi talepleri
-    my_tickets = Ticket.objects.filter(user=user).order_by('-created_at')
+    my_tickets = Talep.objects.filter(user=user).order_by('-created_at')
     
     # Kullanıcının gruplarının talepleri
     group_tickets = []
@@ -638,7 +638,7 @@ def customer_panel_view(request):
         # Grup adına göre kategorileri bul
         group_categories = Category.objects.filter(name__in=user_groups.values_list('name', flat=True))
         # Bu kategorilerdeki tüm talepleri getir (kendi talepleri hariç)
-        group_tickets = Ticket.objects.filter(
+        group_tickets = Talep.objects.filter(
             category__in=group_categories
         ).exclude(user=user).order_by('-created_at')
     
