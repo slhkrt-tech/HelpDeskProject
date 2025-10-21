@@ -1,0 +1,436 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb" class="mb-4">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{% url 'home' %}" style="color: var(--accent-color);">
+        <i class="bi bi-house-door me-1"></i>Ana Sayfa
+      </a>
+    </li>
+    <li class="breadcrumb-item">
+      <a href="/accounts/admin-panel/" style="color: var(--accent-color);">
+        <i class="bi bi-shield-check me-1"></i>Admin Panel
+      </a>
+    </li>
+    <li class="breadcrumb-item">
+      <a href="/accounts/admin/users/" style="color: var(--accent-color);">
+        <i class="bi bi-people me-1"></i>Kullanıcı Yönetimi
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Yeni Kullanıcı</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <!-- Page Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="h3 mb-0">
+            <i class="bi bi-person-plus text-primary me-2"></i>Yeni Kullanıcı Oluştur
+          </h1>
+          <p class="text-muted mb-0">Sisteme yeni kullanıcı ekleyin</p>
+        </div>
+        <div>
+          <a href="/accounts/admin/users/" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Geri Dön
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Messages -->
+  {% if error %}
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="alert alert-danger" role="alert">
+          <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- User Creation Form -->
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-0 py-3">
+          <h5 class="mb-0">
+            <i class="bi bi-person-fill-add me-2"></i>Kullanıcı Bilgileri
+          </h5>
+        </div>
+        <div class="card-body">
+          <form method="post" id="userCreateForm" novalidate>
+            {% csrf_token %}
+            
+            <!-- Basic Info -->
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <label for="username" class="form-label">
+                  <i class="bi bi-person me-1"></i>Kullanıcı Adı *
+                </label>
+                <input type="text" 
+                       class="form-control" 
+                       id="username" 
+                       name="username" 
+                       required
+                       placeholder="Kullanıcı adını girin">
+                <div class="invalid-feedback">
+                  Kullanıcı adı gereklidir.
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="email" class="form-label">
+                  <i class="bi bi-envelope me-1"></i>E-posta
+                </label>
+                <input type="email" 
+                       class="form-control" 
+                       id="email" 
+                       name="email" 
+                       placeholder="E-posta adresini girin">
+                <div class="invalid-feedback">
+                  Geçerli bir e-posta adresi girin.
+                </div>
+              </div>
+            </div>
+
+            <!-- Password -->
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <label for="password" class="form-label">
+                  <i class="bi bi-lock me-1"></i>Şifre *
+                </label>
+                <div class="input-group">
+                  <input type="password" 
+                         class="form-control" 
+                         id="password" 
+                         name="password" 
+                         required
+                         placeholder="Şifre girin">
+                  <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </div>
+                <div class="invalid-feedback">
+                  Şifre gereklidir.
+                </div>
+                <small class="text-muted">En az 8 karakter olmalıdır.</small>
+              </div>
+              <div class="col-md-6">
+                <label for="confirmPassword" class="form-label">
+                  <i class="bi bi-lock-fill me-1"></i>Şifre Tekrarı *
+                </label>
+                <input type="password" 
+                       class="form-control" 
+                       id="confirmPassword" 
+                       name="confirmPassword" 
+                       required
+                       placeholder="Şifreyi tekrar girin">
+                <div class="invalid-feedback">
+                  Şifreler eşleşmiyor.
+                </div>
+              </div>
+            </div>
+
+            <!-- Role Selection -->
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <label for="role" class="form-label">
+                  <i class="bi bi-shield me-1"></i>Kullanıcı Rolü *
+                </label>
+                <select class="form-select" id="role" name="role" required>
+                  <option value="">Rol seçin</option>
+                  <option value="customer">Customer (Müşteri)</option>
+                  <option value="support">Support (Destek)</option>
+                  <option value="admin">Admin (Yönetici)</option>
+                </select>
+                <div class="invalid-feedback">
+                  Kullanıcı rolü seçmelisiniz.
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="is_active" class="form-label">
+                  <i class="bi bi-toggle-on me-1"></i>Durum
+                </label>
+                <div class="form-check mt-2">
+                  <input class="form-check-input" 
+                         type="checkbox" 
+                         id="is_active" 
+                         name="is_active" 
+                         checked>
+                  <label class="form-check-label" for="is_active">
+                    Aktif kullanıcı
+                  </label>
+                </div>
+                <small class="text-muted">Kullanıcının sisteme giriş yapabilmesi için aktif olmalıdır.</small>
+              </div>
+            </div>
+
+            <!-- Additional Info -->
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <label for="first_name" class="form-label">
+                  <i class="bi bi-person-badge me-1"></i>Ad
+                </label>
+                <input type="text" 
+                       class="form-control" 
+                       id="first_name" 
+                       name="first_name" 
+                       placeholder="Ad">
+              </div>
+              <div class="col-md-6">
+                <label for="last_name" class="form-label">
+                  <i class="bi bi-person-badge-fill me-1"></i>Soyad
+                </label>
+                <input type="text" 
+                       class="form-control" 
+                       id="last_name" 
+                       name="last_name" 
+                       placeholder="Soyad">
+              </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+              <div>
+                <small class="text-muted">* işaretli alanlar zorunludur</small>
+              </div>
+              <div>
+                <button type="submit" class="btn btn-primary">
+                  <i class="bi bi-person-plus me-2"></i>Kullanıcı Oluştur
+                </button>
+                <a href="/accounts/admin/users/" class="btn btn-secondary ms-2">
+                  <i class="bi bi-x-circle me-2"></i>İptal
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Info Panel -->
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-0 py-3">
+          <h6 class="mb-0">
+            <i class="bi bi-info-circle me-2"></i>Kullanıcı Rolleri
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <div class="d-flex align-items-center mb-2">
+              <span class="badge bg-primary me-2">
+                <i class="bi bi-person"></i>
+              </span>
+              <strong>Customer</strong>
+            </div>
+            <p class="small text-muted mb-0">
+              Sadece kendi gruplarındaki talepleri görür ve yeni talep oluşturabilir.
+            </p>
+          </div>
+          
+          <div class="mb-3">
+            <div class="d-flex align-items-center mb-2">
+              <span class="badge bg-success me-2">
+                <i class="bi bi-headset"></i>
+              </span>
+              <strong>Support</strong>
+            </div>
+            <p class="small text-muted mb-0">
+              Tüm talepleri görür ve durumlarını değiştirebilir. Support paneline erişebilir.
+            </p>
+          </div>
+          
+          <div class="mb-3">
+            <div class="d-flex align-items-center mb-2">
+              <span class="badge bg-danger me-2">
+                <i class="bi bi-shield-check"></i>
+              </span>
+              <strong>Admin</strong>
+            </div>
+            <p class="small text-muted mb-0">
+              Sistem yöneticisi. Tüm panellere erişebilir, kullanıcı ve grup yönetimi yapabilir.
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Security Info -->
+      <div class="card border-0 shadow-sm mt-3">
+        <div class="card-header bg-transparent border-0 py-3">
+          <h6 class="mb-0">
+            <i class="bi bi-shield-lock me-2"></i>Güvenlik
+          </h6>
+        </div>
+        <div class="card-body">
+          <ul class="small text-muted mb-0">
+            <li>Şifre en az 8 karakter olmalıdır</li>
+            <li>Kullanıcı adı benzersiz olmalıdır</li>
+            <li>E-posta adresi doğrulanabilir olmalıdır</li>
+            <li>Varsayılan olarak aktif kullanıcı oluşturulur</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.form-label {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+.invalid-feedback {
+  display: block;
+}
+
+.is-invalid {
+  border-color: var(--danger-color);
+}
+
+.role-badge {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+#togglePassword {
+  border-left: none;
+}
+
+.input-group .form-control:focus + .btn {
+  border-color: var(--primary-color);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('userCreateForm');
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+    const togglePassword = document.getElementById('togglePassword');
+    
+    // Password visibility toggle
+    togglePassword.addEventListener('click', function() {
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        confirmPassword.setAttribute('type', type);
+        
+        const icon = this.querySelector('i');
+        icon.className = type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
+    });
+    
+    // Password confirmation validation
+    function validatePasswords() {
+        if (password.value !== confirmPassword.value) {
+            confirmPassword.setCustomValidity('Şifreler eşleşmiyor');
+            confirmPassword.classList.add('is-invalid');
+            return false;
+        } else {
+            confirmPassword.setCustomValidity('');
+            confirmPassword.classList.remove('is-invalid');
+            return true;
+        }
+    }
+    
+    password.addEventListener('input', validatePasswords);
+    confirmPassword.addEventListener('input', validatePasswords);
+    
+    // Form validation
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        let isValid = true;
+        const requiredFields = form.querySelectorAll('[required]');
+        
+        // Clear previous validation
+        form.querySelectorAll('.is-invalid').forEach(field => {
+            field.classList.remove('is-invalid');
+        });
+        
+        // Validate required fields
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            }
+        });
+        
+        // Validate email format
+        const email = document.getElementById('email');
+        if (email.value && !email.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+            email.classList.add('is-invalid');
+            isValid = false;
+        }
+        
+        // Validate password length
+        if (password.value.length < 8) {
+            password.classList.add('is-invalid');
+            isValid = false;
+        }
+        
+        // Validate password confirmation
+        if (!validatePasswords()) {
+            isValid = false;
+        }
+        
+        // Validate username format
+        const username = document.getElementById('username');
+        if (username.value && !username.value.match(/^[a-zA-Z0-9_]+$/)) {
+            username.classList.add('is-invalid');
+            username.nextElementSibling.textContent = 'Kullanıcı adı sadece harf, rakam ve _ içerebilir.';
+            isValid = false;
+        }
+        
+        if (isValid) {
+            // Show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Oluşturuluyor...';
+            submitBtn.disabled = true;
+            
+            // Submit form
+            form.submit();
+        } else {
+            // Scroll to first error
+            const firstError = form.querySelector('.is-invalid');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstError.focus();
+            }
+        }
+    });
+    
+    // Real-time username validation
+    const username = document.getElementById('username');
+    username.addEventListener('input', function() {
+        if (this.value && !this.value.match(/^[a-zA-Z0-9_]+$/)) {
+            this.classList.add('is-invalid');
+            this.nextElementSibling.textContent = 'Kullanıcı adı sadece harf, rakam ve _ içerebilir.';
+        } else {
+            this.classList.remove('is-invalid');
+            this.nextElementSibling.textContent = 'Kullanıcı adı gereklidir.';
+        }
+    });
+});
+</script>
+
+{% endblock %}

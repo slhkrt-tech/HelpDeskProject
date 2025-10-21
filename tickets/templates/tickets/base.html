@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  {% load static %}
+  <meta charset="utf-8">
+  <title>{% block title %}Yardım Masası{% endblock %}</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
+  <link rel="shortcut icon" href="{% static 'favicon.svg' %}">
+
+  <!-- Google Fonts - Mulish -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+   
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Tema CSS -->
+  <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+  
+  <!-- Sidebar CSS -->
+  <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+  
+  <!-- Extra CSS Block -->
+  {% block extra_css %}{% endblock %}">
+</head>
+
+<body data-theme="dark">
+
+<!-- Sidebar -->
+<nav id="sidebar" class="sidebar">
+  <div class="sidebar-header">
+    <div class="d-flex align-items-center justify-content-between">
+      <h4 class="mb-0">
+        <i class="bi bi-headset me-2"></i>
+        <span class="sidebar-text">Yardım Masası</span>
+      </h4>
+      <button id="sidebar-toggle" class="btn btn-link sidebar-toggle">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="sidebar-content">
+    <!-- Ana Menü -->
+    <ul class="sidebar-nav">
+      <li class="nav-item">
+        <a href="{% url 'home' %}" class="nav-link" data-page="home">
+          <i class="bi bi-house-door"></i>
+          <span class="sidebar-text">Ana Sayfa</span>
+        </a>
+      </li>
+    </ul>
+
+    <!-- Admin Menü (Sadece admin kullanıcılar için) -->
+    <div id="adminMenu" style="display: none;">
+      <div class="sidebar-section-title mt-3 mb-2 px-3">
+        <small class="text-muted sidebar-text">YÖNETİM</small>
+      </div>
+      <ul class="sidebar-nav">
+        <li class="nav-item">
+          <a href="/accounts/admin-panel/" class="nav-link" data-page="admin">
+            <i class="bi bi-gear"></i>
+            <span class="sidebar-text">Admin Paneli</span>
+          </a>
+        </li>
+        
+        <li class="nav-item">
+          <a href="/accounts/admin/users/" class="nav-link" data-page="users">
+            <i class="bi bi-people"></i>
+            <span class="sidebar-text">Kullanıcılar</span>
+          </a>
+        </li>
+        
+        <li class="nav-item">
+          <a href="#" class="nav-link" data-page="reports">
+            <i class="bi bi-graph-up"></i>
+            <span class="sidebar-text">Raporlar</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="#" class="nav-link" data-page="settings">
+            <i class="bi bi-sliders"></i>
+            <span class="sidebar-text">Sistem Ayarları</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Support Menü (Support kullanıcılar için) -->
+    <div id="supportMenu" style="display: none;">
+      <div class="sidebar-section-title mt-3 mb-2 px-3">
+        <small class="text-muted sidebar-text">DESTEK</small>
+      </div>
+      <ul class="sidebar-nav">
+        <li class="nav-item">
+          <a href="/accounts/support-panel/" class="nav-link" data-page="support">
+            <i class="bi bi-headset"></i>
+            <span class="sidebar-text">Destek Paneli</span>
+          </a>
+        </li>
+        
+        <li class="nav-item">
+          <a href="#" class="nav-link" data-page="tickets-all">
+            <i class="bi bi-list-ul"></i>
+            <span class="sidebar-text">Tüm Talepler</span>
+          </a>
+        </li>
+        
+        <li class="nav-item">
+          <a href="#" class="nav-link" data-page="tickets-assigned">
+            <i class="bi bi-person-check"></i>
+            <span class="sidebar-text">Atanan Talepler</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Tickets Menü (Giriş yapmış kullanıcılar için) -->
+    <div id="ticketsMenu" style="display: none;">
+      <div class="sidebar-section-title mt-3 mb-2 px-3">
+        <small class="text-muted sidebar-text">TALEPLER</small>
+      </div>
+      <ul class="sidebar-nav">
+        <li class="nav-item">
+          <a href="/tickets/" class="nav-link" data-page="tickets">
+            <i class="bi bi-list"></i>
+            <span class="sidebar-text">Taleplerim</span>
+          </a>
+        </li>
+        
+        <li class="nav-item">
+          <a href="/tickets/create/" class="nav-link" data-page="create">
+            <i class="bi bi-plus-circle"></i>
+            <span class="sidebar-text">Yeni Talep</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Kullanıcı Menüsü -->
+    <div class="sidebar-user mt-auto">
+      <div id="userSection" style="display: none;">
+        <div class="user-info p-3">
+          <div class="d-flex align-items-center">
+            <div class="user-avatar me-2">
+              <i class="bi bi-person-circle"></i>
+            </div>
+            <div class="user-details">
+              <span class="username sidebar-text" id="sidebarUsername"></span>
+              <small class="text-muted d-block sidebar-text">Kullanıcı</small>
+            </div>
+          </div>
+        </div>
+        
+        <ul class="sidebar-nav border-top pt-2">
+          <li class="nav-item">
+            <a href="#" class="nav-link" onclick="logout()">
+              <i class="bi bi-box-arrow-right text-danger"></i>
+              <span class="sidebar-text">Çıkış</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div id="guestSection">
+        <ul class="sidebar-nav">
+          <li class="nav-item">
+            <a href="{% url 'login' %}" class="nav-link">
+              <i class="bi bi-box-arrow-in-right"></i>
+              <span class="sidebar-text">Giriş</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'signup' %}" class="nav-link">
+              <i class="bi bi-person-plus"></i>
+              <span class="sidebar-text">Kayıt</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Tema Toggle -->
+    <div class="sidebar-footer p-3 border-top">
+      <button id="toggle-theme" class="btn btn-outline-primary btn-sm w-100">
+        <i class="bi bi-moon-stars me-2"></i>
+        <span class="sidebar-text">Tema Değiştir</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Sidebar Overlay (Mobile) -->
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main id="main-content" class="main-content">
+  <!-- Top Bar (Mobile) -->
+  <div class="top-bar d-lg-none">
+    <div class="d-flex align-items-center justify-content-between p-3">
+      <button id="mobile-sidebar-toggle" class="btn btn-link">
+        <i class="bi bi-list"></i>
+      </button>
+      <h5 class="mb-0">{% block page_title %}Yardım Masası{% endblock %}</h5>
+      <div></div>
+    </div>
+  </div>
+
+  <!-- Page Content -->
+  <div class="content-wrapper">
+    <!-- Breadcrumb -->
+    {% block breadcrumb %}
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="{% url 'home' %}" style="color: var(--accent-color);">
+            <i class="bi bi-house-door me-1"></i>Ana Sayfa
+          </a>
+        </li>
+        {% block breadcrumb_items %}{% endblock %}
+      </ol>
+    </nav>
+    {% endblock %}
+    
+    {% block content %}{% endblock %}
+  </div>
+</main>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Sidebar & Theme JS -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Sidebar Elements
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggle = document.getElementById('sidebar-toggle');
+  const mobileSidebarToggle = document.getElementById('mobile-sidebar-toggle');
+  const sidebarOverlay = document.getElementById('sidebar-overlay');
+  const mainContent = document.getElementById('main-content');
+  
+  // Theme Elements
+  const themeToggle = document.getElementById('toggle-theme');
+  const body = document.body;
+
+  // Initialize Theme
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  body.setAttribute('data-theme', savedTheme);
+  updateThemeIcon();
+
+  // Initialize Sidebar State
+  const sidebarState = localStorage.getItem('sidebarCollapsed') === 'true';
+  if (sidebarState) {
+    sidebar.classList.add('collapsed');
+    mainContent.classList.add('sidebar-collapsed');
+  }
+
+  // Sidebar Toggle (Desktop)
+  sidebarToggle?.addEventListener('click', () => {
+    toggleSidebar();
+  });
+
+  // Mobile Sidebar Toggle
+  mobileSidebarToggle?.addEventListener('click', () => {
+    sidebar.classList.add('mobile-open');
+    sidebarOverlay.classList.add('active');
+  });
+
+  // Sidebar Overlay Click (Mobile)
+  sidebarOverlay?.addEventListener('click', () => {
+    sidebar.classList.remove('mobile-open');
+    sidebarOverlay.classList.remove('active');
+  });
+
+  // Theme Toggle
+  themeToggle?.addEventListener('click', () => {
+    const current = body.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    body.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    updateThemeIcon();
+  });
+
+  // Functions
+  function toggleSidebar() {
+    const isCollapsed = sidebar.classList.contains('collapsed');
+    
+    if (isCollapsed) {
+      sidebar.classList.remove('collapsed');
+      mainContent.classList.remove('sidebar-collapsed');
+      localStorage.setItem('sidebarCollapsed', 'false');
+    } else {
+      sidebar.classList.add('collapsed');
+      mainContent.classList.add('sidebar-collapsed');
+      localStorage.setItem('sidebarCollapsed', 'true');
+    }
+  }
+
+  function updateThemeIcon() {
+    const theme = body.getAttribute('data-theme');
+    const icon = themeToggle.querySelector('i');
+    if (theme === 'dark') {
+      icon.className = 'bi bi-sun me-2';
+    } else {
+      icon.className = 'bi bi-moon-stars me-2';
+    }
+  }
+
+  // Active Page Detection
+  setActivePage();
+  
+  // Authentication State Check
+  checkAuthState();
+});
+
+// Active Page Setting
+function setActivePage() {
+  const currentPath = window.location.pathname;
+  const navLinks = document.querySelectorAll('.sidebar-nav .nav-link[data-page]');
+  
+  navLinks.forEach(link => {
+    const page = link.getAttribute('data-page');
+    link.classList.remove('active');
+    
+    if (
+      (page === 'home' && currentPath === '/') ||
+      (page === 'tickets' && currentPath.startsWith('/tickets/') && !currentPath.includes('/create/')) ||
+      (page === 'create' && currentPath.includes('/create/')) ||
+      (page === 'admin' && currentPath.includes('/admin-panel/')) ||
+      (page === 'support' && currentPath.includes('/support-panel/')) ||
+      (page === 'users' && currentPath.includes('/users/')) ||
+      (page === 'reports' && currentPath.includes('/reports/')) ||
+      (page === 'settings' && currentPath.includes('/settings/')) ||
+      (page === 'tickets-all' && currentPath.includes('/tickets-all/')) ||
+      (page === 'tickets-assigned' && currentPath.includes('/tickets-assigned/'))
+    ) {
+      link.classList.add('active');
+    }
+  });
+}
+
+// Authentication Utilities
+async function checkAuthState() {
+  // Sadece login ve signup sayfalarında auth kontrolü yapma
+  const currentPath = window.location.pathname;
+  if (currentPath.includes('/login/') || currentPath.includes('/signup/')) {
+    showUnauthenticatedState();
+    return;
+  }
+  
+  // Yeni login olduysa kısa süre bekle
+  const justLoggedIn = sessionStorage.getItem('justLoggedIn');
+  if (justLoggedIn) {
+    console.log('Just logged in, waiting for token...');
+    sessionStorage.removeItem('justLoggedIn');
+    // Token set edilmesi için kısa süre bekle
+    setTimeout(() => {
+      checkAuthState();
+    }, 500);
+    return;
+  }
+  
+  const token = localStorage.getItem('authToken');
+  const userData = localStorage.getItem('userData');
+  
+  if (token && userData) {
+    try {
+      const user = JSON.parse(userData);
+      
+      // Token'ı server-side'da da doğrula
+      const isValidToken = await validateTokenWithServer(token);
+      
+      if (isValidToken) {
+        showAuthenticatedState(user);
+      } else {
+        // Token geçersiz, temizle ve login'e yönlendir
+        console.log('Token validation failed, clearing auth data');
+        clearAuthData();
+        window.location.href = '/accounts/login/';
+      }
+    } catch (e) {
+      console.error('User data parse error:', e);
+      clearAuthData();
+      showUnauthenticatedState();
+    }
+  } else {
+    // Token yoksa login sayfasına yönlendir (login/signup sayfaları hariç)
+    if (!currentPath.includes('/login/') && !currentPath.includes('/signup/')) {
+      console.log('No token found, redirecting to login');
+      window.location.href = '/accounts/login/';
+    } else {
+      showUnauthenticatedState();
+    }
+  }
+}
+
+// Token'ı server-side'da doğrula
+async function validateTokenWithServer(token) {
+  try {
+    const response = await fetch('/accounts/api/profile/', {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      // User data'yı güncelle (token yenilendiyse)
+      localStorage.setItem('userData', JSON.stringify(data.user));
+      return true;
+    } else {
+      console.log('Token validation failed:', response.status);
+      return false;
+    }
+  } catch (error) {
+    console.error('Token validation error:', error);
+    return false;
+  }
+}
+
+// Auth data'yı temizle
+function clearAuthData() {
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('userData');
+  document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+}
+
+// Sekme değiştiğinde kontrol et
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden) {
+    // Sekme aktif olduğunda auth durumunu kontrol et
+    const currentPath = window.location.pathname;
+    if (!currentPath.includes('/login/') && !currentPath.includes('/signup/')) {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        // Token yoksa login sayfasına yönlendir
+        window.location.href = '/accounts/login/';
+      }
+    }
+  }
+});
+
+// Sayfa focus olduğunda kontrol et
+window.addEventListener('focus', function() {
+  const currentPath = window.location.pathname;
+  if (!currentPath.includes('/login/') && !currentPath.includes('/signup/')) {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      // Token yoksa login sayfasına yönlendir
+      window.location.href = '/accounts/login/';
+    }
+  }
+});
+
+function showAuthenticatedState(user) {
+  document.getElementById('userSection').style.display = 'block';
+  document.getElementById('guestSection').style.display = 'none';
+  
+  // XSS koruması için username'i escape et
+  const safeUsername = escapeHtml(user.username);
+  document.getElementById('sidebarUsername').textContent = safeUsername;
+  
+  // Menüleri role'a göre göster/gizle
+  const adminMenu = document.getElementById('adminMenu');
+  const supportMenu = document.getElementById('supportMenu');
+  const ticketsMenu = document.getElementById('ticketsMenu');
+  
+  // Hepsini gizle
+  adminMenu.style.display = 'none';
+  supportMenu.style.display = 'none';
+  
+  // Role'a göre menü göster
+  if (user.is_superuser || user.role === 'admin') {
+    // Admin: Hem admin hem tickets menüsü
+    adminMenu.style.display = 'block';
+    ticketsMenu.style.display = 'block';
+  } else if (user.role === 'support') {
+    // Support: Hem support hem tickets menüsü
+    supportMenu.style.display = 'block';
+    ticketsMenu.style.display = 'block';
+  } else {
+    // Customer: Sadece tickets menüsü
+    ticketsMenu.style.display = 'block';
+  }
+}
+
+// XSS koruması için HTML escape fonksiyonu
+function escapeHtml(text) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+function showUnauthenticatedState() {
+  document.getElementById('userSection').style.display = 'none';
+  document.getElementById('guestSection').style.display = 'block';
+  
+  // Tüm menüleri gizle (giriş yapılmamış durumda)
+  document.getElementById('adminMenu').style.display = 'none';
+  document.getElementById('supportMenu').style.display = 'none';
+  document.getElementById('ticketsMenu').style.display = 'none';
+}
+
+async function logout() {
+  const token = localStorage.getItem('authToken');
+  
+  if (token) {
+    try {
+      // CSRF token'ını al
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                       getCookie('csrftoken');
+      
+      const response = await fetch('/accounts/api/logout/', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Token ' + token,
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+        }
+      });
+      
+      if (response.ok) {
+        console.log('Logout successful');
+      } else {
+        console.log('Logout failed, but clearing local data anyway');
+      }
+      
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  }
+  
+  // Her durumda local auth data'yı temizle
+  clearAuthData();
+  
+  // Login sayfasına yönlendir
+  window.location.href = '/accounts/login/';
+}
+
+// CSRF Cookie yardımcı fonksiyonu
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+// Token'ı otomatik olarak API isteklerine ekle
+function makeAuthenticatedRequest(url, options = {}) {
+  const token = localStorage.getItem('authToken');
+  
+  if (token) {
+    options.headers = options.headers || {};
+    options.headers['Authorization'] = 'Token ' + token;
+  }
+  
+  return fetch(url, options);
+}
+</script>
+
+</body>
+</html>

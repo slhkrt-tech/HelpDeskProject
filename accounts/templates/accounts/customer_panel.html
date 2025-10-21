@@ -1,0 +1,731 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}{{ panel_title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Panel Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">{{ panel_title }}</h1>
+                    <p class="text-muted">Kişisel talep yönetim paneli</p>
+                </div>
+                <div class="text-end">
+                    <span class="badge" style="background-color: var(--info-color); color: white;">{{ user_role }}</span>
+                    <small class="text-muted d-block">{{ current_user.username }}</small>
+                </div>
+            </div>
+
+            <!-- Customer Dashboard Cards -->
+            <div class="row g-4 mb-4">
+                <!-- Açık Taleplerim -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-white" style="background-color: var(--primary-color);">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title mb-0">Açık Taleplerim</h6>
+                                    <p class="card-text small mb-0">Devam eden talepler</p>
+                                </div>
+                                <div class="ms-3">
+                                    <i class="bi bi-folder-open fs-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer border-0" style="background-color: var(--primary-color);">
+                            <a href="/tickets/?user={{ current_user.id }}&status=open" class="text-white text-decoration-none small">
+                                Detayları Gör <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yeni Talep -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-white" style="background-color: var(--success-color);">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title mb-0">Yeni Talep</h6>
+                                    <p class="card-text small mb-0">Talep oluştur</p>
+                                </div>
+                                <div class="ms-3">
+                                    <i class="bi bi-plus-circle fs-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer border-0" style="background-color: var(--success-color);">
+                            <a href="/tickets/create/" class="text-white text-decoration-none small">
+                                Talep Oluştur <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tamamlanan -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-white" style="background-color: var(--info-color);">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title mb-0">Tamamlanan</h6>
+                                    <p class="card-text small mb-0">Çözülen talepler</p>
+                                </div>
+                                <div class="ms-3">
+                                    <i class="bi bi-check-circle fs-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer border-0" style="background-color: var(--info-color);">
+                            <a href="/tickets/?user={{ current_user.id }}&status=closed" class="text-white text-decoration-none small">
+                                Geçmişi Gör <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profil -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-white" style="background-color: var(--warning-color);">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title mb-0">Profil</h6>
+                                    <p class="card-text small mb-0">Bilgilerimi düzenle</p>
+                                </div>
+                                <div class="ms-3">
+                                    <i class="bi bi-person-gear fs-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer border-0" style="background-color: var(--warning-color);">
+                            <a href="#" class="text-white text-decoration-none small">
+                                Profil Ayarları <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Content Tabs -->
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="customerTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="my-tickets-tab" data-bs-toggle="tab" data-bs-target="#my-tickets" type="button" role="tab">
+                                <i class="bi bi-ticket-perforated me-2"></i>Taleplerim
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="create-ticket-tab" data-bs-toggle="tab" data-bs-target="#create-ticket" type="button" role="tab">
+                                <i class="bi bi-plus-circle me-2"></i>Yeni Talep
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab">
+                                <i class="bi bi-person me-2"></i>Profil
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="customerTabsContent">
+                        <!-- Taleplerim -->
+                        <div class="tab-pane fade show active" id="my-tickets" role="tabpanel">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">Taleplerim</h5>
+                                <div class="d-flex gap-2">
+                                    <select class="form-select form-select-sm" style="width: auto;">
+                                        <option>Tüm Talepler</option>
+                                        <option>Açık</option>
+                                        <option>Devam Eden</option>
+                                        <option>Çözülmüş</option>
+                                    </select>
+                                    <button class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-funnel"></i> Filtrele
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Ticket #</th>
+                                            <th>Başlık</th>
+                                            <th>Kategori</th>
+                                            <th>Öncelik</th>
+                                            <th>Durum</th>
+                                            <th>Oluşturulma</th>
+                                            <th>Son Güncelleme</th>
+                                            <th>İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if my_tickets %}
+                                            {% for ticket in my_tickets %}
+                                            <tr>
+                                                <td>
+                                                    <span class="badge bg-secondary">#{{ ticket.ticket_number|default:ticket.id }}</span>
+                                                </td>
+                                                <td>
+                                                    <a href="/tickets/{{ ticket.id }}/" class="text-decoration-none">
+                                                        {{ ticket.title }}
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    {% if ticket.category %}
+                                                        <span class="badge bg-info">{{ ticket.category.name }}</span>
+                                                    {% else %}
+                                                        <span class="text-muted">Kategori yok</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if ticket.priority == 'urgent' %}
+                                                        <span class="badge bg-danger">Acil</span>
+                                                    {% elif ticket.priority == 'high' %}
+                                                        <span class="badge bg-warning">Yüksek</span>
+                                                    {% elif ticket.priority == 'normal' %}
+                                                        <span class="badge bg-primary">Normal</span>
+                                                    {% else %}
+                                                        <span class="badge bg-secondary">Düşük</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if ticket.status == 'open' %}
+                                                        <span class="badge bg-primary">Açık</span>
+                                                    {% elif ticket.status == 'in_progress' %}
+                                                        <span class="badge bg-warning">Devam Eden</span>
+                                                    {% elif ticket.status == 'closed' %}
+                                                        <span class="badge bg-success">Çözülmüş</span>
+                                                    {% else %}
+                                                        <span class="badge bg-secondary">{{ ticket.status|title }}</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">{{ ticket.created_at|date:"d.m.Y H:i" }}</small>
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">{{ ticket.updated_at|date:"d.m.Y H:i" }}</small>
+                                                </td>
+                                                <td>
+                                                    <a href="/tickets/{{ ticket.id }}/" class="btn btn-sm btn-outline-primary" title="Detay Görüntüle">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            <tr>
+                                                <td colspan="8" class="text-center text-muted py-4">
+                                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                                    Henüz hiç talebiniz bulunmamaktadır.
+                                                    <br>
+                                                    <a href="#" class="btn btn-primary btn-sm mt-2" data-bs-toggle="tab" data-bs-target="#create-ticket">
+                                                        İlk Talebinizi Oluşturun
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                        
+                                        {% if group_tickets %}
+                                            <tr>
+                                                <td colspan="8" class="bg-light">
+                                                    <strong class="text-info">
+                                                        <i class="bi bi-people me-2"></i>Grup Talepleri
+                                                        {% if user_groups %}
+                                                            ({{ user_groups|join:", " }})
+                                                        {% endif %}
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            {% for ticket in group_tickets %}
+                                            <tr class="table-info">
+                                                <td>
+                                                    <span class="badge bg-info">#{{ ticket.ticket_number|default:ticket.id }}</span>
+                                                </td>
+                                                <td>
+                                                    <a href="/tickets/{{ ticket.id }}/" class="text-decoration-none">
+                                                        {{ ticket.title }}
+                                                    </a>
+                                                    <br><small class="text-muted">{{ ticket.user.username }}</small>
+                                                </td>
+                                                <td>
+                                                    {% if ticket.category %}
+                                                        <span class="badge bg-info">{{ ticket.category.name }}</span>
+                                                    {% else %}
+                                                        <span class="text-muted">Kategori yok</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if ticket.priority == 'urgent' %}
+                                                        <span class="badge bg-danger">Acil</span>
+                                                    {% elif ticket.priority == 'high' %}
+                                                        <span class="badge bg-warning">Yüksek</span>
+                                                    {% elif ticket.priority == 'normal' %}
+                                                        <span class="badge bg-primary">Normal</span>
+                                                    {% else %}
+                                                        <span class="badge bg-secondary">Düşük</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if ticket.status == 'open' %}
+                                                        <span class="badge bg-primary">Açık</span>
+                                                    {% elif ticket.status == 'in_progress' %}
+                                                        <span class="badge bg-warning">Devam Eden</span>
+                                                    {% elif ticket.status == 'closed' %}
+                                                        <span class="badge bg-success">Çözülmüş</span>
+                                                    {% else %}
+                                                        <span class="badge bg-secondary">{{ ticket.status|title }}</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">{{ ticket.created_at|date:"d.m.Y H:i" }}</small>
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">{{ ticket.updated_at|date:"d.m.Y H:i" }}</small>
+                                                </td>
+                                                <td>
+                                                    <a href="/tickets/{{ ticket.id }}/" class="btn btn-sm btn-outline-info" title="Detay Görüntüle">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Yeni Talep -->
+                        <div class="tab-pane fade" id="create-ticket" role="tabpanel">
+                            <h5 class="mb-3">Yeni Talep Oluştur</h5>
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <form id="createTicketForm" method="post">
+                                        {% csrf_token %}
+                                        
+                                        <div class="mb-3">
+                                            <label for="ticket-title" class="form-label">Başlık <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="ticket-title" name="title" placeholder="Talebinizin kısa başlığını yazın..." required maxlength="200">
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="ticket-description" class="form-label">Açıklama <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" id="ticket-description" name="description" rows="6" placeholder="Sorununuzu detaylı bir şekilde açıklayın..." required></textarea>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="ticket-category" class="form-label">Kategori</label>
+                                                <select class="form-select" id="ticket-category" name="category">
+                                                    <option value="">Kategori seçiniz...</option>
+                                                    <!-- Kategoriler dinamik olarak yüklenecek -->
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="ticket-priority" class="form-label">Öncelik</label>
+                                                <select class="form-select" id="ticket-priority" name="priority">
+                                                    <option value="low">Düşük</option>
+                                                    <option value="normal" selected>Normal</option>
+                                                    <option value="high">Yüksek</option>
+                                                    <option value="urgent">Acil</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="d-flex gap-2">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-send me-2"></i>Talep Gönder
+                                            </button>
+                                            <button type="reset" class="btn btn-outline-secondary">
+                                                <i class="bi bi-arrow-clockwise me-2"></i>Temizle
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body">
+                                            <h6 class="card-title">
+                                                <i class="bi bi-info-circle text-primary me-2"></i>
+                                                Talep Gönderme İpuçları
+                                            </h6>
+                                            <ul class="list-unstyled small">
+                                                <li class="mb-2">
+                                                    <i class="bi bi-check text-success me-2"></i>
+                                                    Probleminizi mümkün olduğunca detaylı açıklayın
+                                                </li>
+                                                <li class="mb-2">
+                                                    <i class="bi bi-check text-success me-2"></i>
+                                                    Hata mesajları varsa ekran görüntüsü ekleyin
+                                                </li>
+                                                <li class="mb-2">
+                                                    <i class="bi bi-check text-success me-2"></i>
+                                                    Doğru kategori ve öncelik seçin
+                                                </li>
+                                                <li class="mb-2">
+                                                    <i class="bi bi-check text-success me-2"></i>
+                                                    İletişim bilgilerinizin güncel olduğundan emin olun
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card bg-light border-0 mt-3">
+                                        <div class="card-body">
+                                            <h6 class="card-title">
+                                                <i class="bi bi-clock text-warning me-2"></i>
+                                                Yanıt Süreleri
+                                            </h6>
+                                            <ul class="list-unstyled small">
+                                                <li class="mb-1"><strong>Acil:</strong> 1 saat içinde</li>
+                                                <li class="mb-1"><strong>Yüksek:</strong> 4 saat içinde</li>
+                                                <li class="mb-1"><strong>Orta:</strong> 1 gün içinde</li>
+                                                <li class="mb-1"><strong>Düşük:</strong> 3 gün içinde</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Profil -->
+                        <div class="tab-pane fade" id="profile" role="tabpanel">
+                            <h5 class="mb-3">Profil Bilgileri</h5>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="card border-0 bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Kişisel Bilgiler</h6>
+                                            <table class="table table-borderless table-sm">
+                                                <tr>
+                                                    <td><strong>Kullanıcı Adı:</strong></td>
+                                                    <td>{{ current_user.username }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>E-posta:</strong></td>
+                                                    <td>{{ current_user.email }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Adı Soyadı:</strong></td>
+                                                    <td>{{ current_user.get_full_name|default:"Belirtilmemiş" }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Kayıt Tarihi:</strong></td>
+                                                    <td>{{ current_user.date_joined|date:"d.m.Y H:i" }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Son Giriş:</strong></td>
+                                                    <td>{{ current_user.last_login|date:"d.m.Y H:i"|default:"Bilinmiyor" }}</td>
+                                                </tr>
+                                            </table>
+                                            <button class="btn btn-primary btn-sm">
+                                                <i class="bi bi-pencil me-1"></i>Bilgileri Düzenle
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="card border-0 bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Hesap İstatistikleri</h6>
+                                            <div class="row text-center">
+                                                <div class="col-4">
+                                                    <div class="border-end">
+                                                        <h4 class="text-primary mb-0">{{ total_tickets_count }}</h4>
+                                                        <small class="text-muted">Toplam Talep</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4">
+                                                    <div class="border-end">
+                                                        <h4 class="text-success mb-0">{{ my_closed_tickets_count }}</h4>
+                                                        <small class="text-muted">Çözülen</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4">
+                                                    <h4 class="text-warning mb-0">{{ my_open_tickets_count }}</h4>
+                                                    <small class="text-muted">Bekleyen</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card border-0 bg-light mt-3">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Güvenlik</h6>
+                                            <div class="d-grid gap-2">
+                                                <button class="btn btn-outline-primary btn-sm">
+                                                    <i class="bi bi-key me-1"></i>Şifre Değiştir
+                                                </button>
+                                                <button class="btn btn-outline-danger btn-sm">
+                                                    <i class="bi bi-shield-exclamation me-1"></i>Hesabı Güvenli Çıkış
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Customer panel özel stilleri */
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Tab navigationu */
+.nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    color: var(--bs-gray-600);
+    transition: all 0.3s ease;
+    position: relative;
+    background: transparent;
+    padding: 0.75rem 1rem;
+}
+
+.nav-tabs .nav-link:hover {
+    border-color: transparent;
+    color: var(--info-color);
+    background-color: rgba(var(--info-color-rgb), 0.1);
+}
+
+.nav-tabs .nav-link.active {
+    background-color: transparent;
+    border-bottom: 3px solid var(--info-color);
+    color: var(--info-color);
+    font-weight: 600;
+}
+
+/* Tab content */
+.tab-content {
+    min-height: 400px;
+}
+
+.tab-pane {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.tab-pane.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.table-borderless td {
+    padding: 0.25rem 0.5rem;
+}
+
+/* Form stilleri */
+.form-control:focus {
+    border-color: var(--info-color);
+    box-shadow: 0 0 0 0.2rem rgba(var(--info-color-rgb), 0.25);
+}
+
+.form-select:focus {
+    border-color: var(--info-color);
+    box-shadow: 0 0 0 0.2rem rgba(var(--info-color-rgb), 0.25);
+}
+
+/* Badge stilleri */
+.badge {
+    font-size: 0.75em;
+    padding: 0.375rem 0.75rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .nav-tabs .nav-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Customer Panel loaded');
+    
+    // Bootstrap tabs'ları manuel olarak initialize et
+    const tabLinks = document.querySelectorAll('#customerTabs button[data-bs-toggle="tab"]');
+    console.log('Found tab links:', tabLinks.length);
+    
+    // Bootstrap Tab instance'larını oluştur
+    const tabs = [];
+    tabLinks.forEach(function(tabElement) {
+        try {
+            // Bootstrap Tab object'i oluştur
+            const tab = new bootstrap.Tab(tabElement);
+            tabs.push(tab);
+            
+            // Click event ekle
+            tabElement.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Tab clicked:', this.getAttribute('data-bs-target'));
+                tab.show();
+            });
+        } catch (error) {
+            console.error('Bootstrap Tab creation error:', error);
+            
+            // Fallback: Manuel tab sistemi
+            tabElement.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Manual tab switching for:', this.getAttribute('data-bs-target'));
+                
+                // Tüm tab'ları inaktif yap
+                tabLinks.forEach(link => {
+                    link.classList.remove('active');
+                    link.setAttribute('aria-selected', 'false');
+                });
+                
+                // Tüm tab content'lerini gizle
+                const tabPanes = document.querySelectorAll('#customerTabsContent .tab-pane');
+                tabPanes.forEach(pane => {
+                    pane.classList.remove('show', 'active');
+                });
+                
+                // Tıklanan tab'ı aktif yap
+                this.classList.add('active');
+                this.setAttribute('aria-selected', 'true');
+                
+                // İlgili content'i göster
+                const targetId = this.getAttribute('data-bs-target');
+                const targetPane = document.querySelector(targetId);
+                if (targetPane) {
+                    targetPane.classList.add('show', 'active');
+                    console.log('Activated tab pane:', targetId);
+                }
+            });
+        }
+    });
+    
+    // İlk tab'ı aktif yap
+    if (tabLinks.length > 0) {
+        const firstTab = tabLinks[0];
+        const firstTargetId = firstTab.getAttribute('data-bs-target');
+        const firstPane = document.querySelector(firstTargetId);
+        
+        firstTab.classList.add('active');
+        firstTab.setAttribute('aria-selected', 'true');
+        
+        if (firstPane) {
+            firstPane.classList.add('show', 'active');
+        }
+        
+        console.log('First tab activated:', firstTargetId);
+    }
+    
+    // Card hover efekti
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+    
+    // Form validasyonu (yeni talep formu için)
+    const createTicketForm = document.querySelector('#createTicketForm');
+    if (createTicketForm) {
+        createTicketForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('ticket-title').value.trim();
+            const description = document.getElementById('ticket-description').value.trim();
+            const category = document.getElementById('ticket-category').value;
+            const priority = document.getElementById('ticket-priority').value;
+            
+            // Basit validasyon
+            if (!title || title.length < 5) {
+                alert('Başlık en az 5 karakter olmalıdır.');
+                return;
+            }
+            
+            if (!description || description.length < 10) {
+                alert('Açıklama en az 10 karakter olmalıdır.');
+                return;
+            }
+            
+            try {
+                // CSRF token'ını al
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                
+                const response = await fetch('/tickets/create/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': csrfToken,
+                    },
+                    body: new URLSearchParams({
+                        'title': title,
+                        'description': description,
+                        'category': category,
+                        'priority': priority
+                    })
+                });
+                
+                if (response.ok) {
+                    alert('Talep başarıyla oluşturuldu!');
+                    // Formu temizle
+                    createTicketForm.reset();
+                    // Taleplerim sekmesine geç
+                    document.querySelector('#my-tickets-tab').click();
+                    // Sayfayı yenile
+                    window.location.reload();
+                } else {
+                    alert('Talep oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
+                }
+            } catch (error) {
+                console.error('Talep oluşturma hatası:', error);
+                alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+            }
+        });
+    }
+    
+    // URL'deki tab parametresini kontrol et
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeTab = urlParams.get('tab');
+    
+    if (activeTab) {
+        const tabButton = document.querySelector(`#customerTabs button[data-bs-target="#${activeTab}"]`);
+        if (tabButton) {
+            console.log('Activating tab from URL:', activeTab);
+            tabButton.click();
+        }
+    }
+    
+    console.log('Customer Panel JavaScript initialized successfully');
+});
+</script>
+{% endblock %}

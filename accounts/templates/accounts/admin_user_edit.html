@@ -1,0 +1,188 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}Kullanıcı Düzenle - {{ target_user.username }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">Kullanıcı Düzenle</h1>
+                    <p class="text-muted">{{ target_user.username }} kullanıcısının bilgilerini düzenleyin</p>
+                </div>
+                <div>
+                    <a href="/accounts/admin/users/" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Geri Dön
+                    </a>
+                </div>
+            </div>
+
+            <!-- Edit Form -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-person-gear me-2"></i>Kullanıcı Bilgileri
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="username" class="form-label">Kullanıcı Adı <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="username" name="username" value="{{ target_user.username }}" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email" class="form-label">E-posta <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control" id="email" name="email" value="{{ target_user.email }}" required>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="first_name" class="form-label">Ad</label>
+                                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ target_user.first_name }}">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="last_name" class="form-label">Soyad</label>
+                                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ target_user.last_name }}">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="role" class="form-label">Rol <span class="text-danger">*</span></label>
+                                        <select class="form-select" id="role" name="role" required>
+                                            <option value="customer" {% if target_user.role == 'customer' %}selected{% endif %}>Müşteri</option>
+                                            <option value="support" {% if target_user.role == 'support' %}selected{% endif %}>Destek</option>
+                                            <option value="admin" {% if target_user.role == 'admin' %}selected{% endif %}>Admin</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Durum</label>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if target_user.is_active %}checked{% endif %}>
+                                            <label class="form-check-label" for="is_active">
+                                                Aktif
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Yeni Şifre</label>
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Değiştirmek istemiyorsanız boş bırakın">
+                                    <div class="form-text">Şifreyi değiştirmek istemiyorsanız bu alanı boş bırakın.</div>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-check-lg me-2"></i>Kaydet
+                                    </button>
+                                    <a href="/accounts/admin/users/" class="btn btn-outline-secondary">
+                                        <i class="bi bi-x-lg me-2"></i>İptal
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- User Info Card -->
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0">
+                                <i class="bi bi-info-circle me-2"></i>Kullanıcı Bilgileri
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-borderless table-sm">
+                                <tr>
+                                    <td><strong>ID:</strong></td>
+                                    <td>{{ target_user.id }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Kayıt Tarihi:</strong></td>
+                                    <td>{{ target_user.date_joined|date:"d.m.Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Son Giriş:</strong></td>
+                                    <td>{{ target_user.last_login|date:"d.m.Y H:i"|default:"Hiç giriş yapmamış" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Superuser:</strong></td>
+                                    <td>
+                                        {% if target_user.is_superuser %}
+                                            <span class="badge bg-danger">Evet</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Hayır</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Staff:</strong></td>
+                                    <td>
+                                        {% if target_user.is_staff %}
+                                            <span class="badge bg-warning">Evet</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Hayır</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Actions Card -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-warning text-dark">
+                            <h6 class="mb-0">
+                                <i class="bi bi-gear me-2"></i>İşlemler
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a href="/accounts/admin/users/{{ target_user.id }}/assign-groups/" class="btn btn-outline-info btn-sm">
+                                    <i class="bi bi-people me-1"></i>Grupları Yönet
+                                </a>
+                                <a href="/accounts/admin/users/{{ target_user.id }}/delete/" class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-trash me-1"></i>Kullanıcıyı Sil
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border-radius: 0.5rem;
+}
+
+.card-header {
+    border-radius: 0.5rem 0.5rem 0 0 !important;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+.table-borderless td {
+    padding: 0.25rem 0.5rem;
+}
+
+.badge {
+    font-size: 0.75em;
+}
+</style>
+{% endblock %}

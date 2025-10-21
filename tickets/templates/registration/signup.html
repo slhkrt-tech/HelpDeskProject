@@ -1,0 +1,288 @@
+{% extends "tickets/base.html" %}
+
+{% block title %}Yardım Masası – Kayıt{% endblock %}
+{% block page_title %}Kayıt{% endblock %}
+
+{% block breadcrumb %}
+<!-- Signup sayfasında breadcrumb gösterme -->
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 200px);">
+  <div class="w-100" style="max-width: 400px;">
+
+      <h2 class="text-center mb-4" style="color: var(--primary-color);">Kayıt Ol</h2>
+
+      <!-- Token-based Signup Form -->
+      <form id="signupForm" novalidate>
+          <!-- CSRF Token -->
+          {% csrf_token %}
+
+          <!-- Hata Mesajları -->
+          <div id="errorMessages" class="alert alert-danger d-none" role="alert"></div>
+          
+          <!-- Başarı Mesajları -->
+          <div id="successMessages" class="alert alert-success d-none" role="alert"></div>
+
+          <!-- Kullanıcı Adı -->
+          <div class="form-floating mb-3">
+              <input type="text" 
+                     id="username" 
+                     name="username" 
+                     class="form-control" 
+                     placeholder="Kullanıcı Adı" 
+                     required>
+              <label for="username">Kullanıcı Adı</label>
+              <div class="invalid-feedback"></div>
+          </div>
+
+          <!-- E-posta -->
+          <div class="form-floating mb-3">
+              <input type="email" 
+                     id="email" 
+                     name="email" 
+                     class="form-control" 
+                     placeholder="E-posta" 
+                     required>
+              <label for="email">E-posta</label>
+              <div class="invalid-feedback"></div>
+          </div>
+
+          <!-- Parola -->
+          <div class="form-floating mb-3">
+              <input type="password" 
+                     id="password1" 
+                     name="password1" 
+                     class="form-control" 
+                     placeholder="Parola" 
+                     required>
+              <label for="password1">Parola</label>
+              <div class="invalid-feedback"></div>
+          </div>
+
+          <!-- Parola Tekrar -->
+          <div class="form-floating mb-3">
+              <input type="password" 
+                     id="password2" 
+                     name="password2" 
+                     class="form-control" 
+                     placeholder="Parola Tekrar" 
+                     required>
+              <label for="password2">Parola Tekrar</label>
+              <div class="invalid-feedback"></div>
+          </div>
+
+          <div class="d-grid mt-3">
+              <button type="submit" id="signupBtn" class="btn w-100" style="background-color: var(--primary-color); color: var(--bg-color);">
+                  <span class="spinner-border spinner-border-sm d-none me-2" role="status"></span>
+                  Kayıt Ol
+              </button>
+          </div>
+      </form>
+
+      <div class="mt-3 text-center">
+          <a href="{% url 'login' %}" class="text-decoration-none" style="color: var(--accent-color);">Zaten hesabım var? Giriş Yap</a>
+      </div>
+  </div>
+</div>
+
+<script>
+// ES5 uyumlu basit test fonksiyonu
+function testAPI() {
+    console.log('testAPI çağrıldı!');
+    
+    var testData = {
+        username: 'testuser123',
+        email: 'test@example.com',
+        password1: 'TestPassword123!',
+        password2: 'TestPassword123!'
+    };
+    
+    console.log('Test data hazırlandı:', testData);
+    
+    // XMLHttpRequest kullanarak test
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/accounts/api/signup/', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            console.log('Response alındı:', xhr.status);
+            
+            var errorDiv = document.getElementById('errorMessages');
+            var successDiv = document.getElementById('successMessages');
+            
+            try {
+                var data = JSON.parse(xhr.responseText);
+                console.log('Response data:', data);
+                
+                if (xhr.status === 200 || xhr.status === 201) {
+                    successDiv.textContent = 'Test başarılı! User ID: ' + (data.user_id || 'N/A');
+                    successDiv.classList.remove('d-none');
+                    errorDiv.classList.add('d-none');
+                } else {
+                    errorDiv.textContent = 'Test hatası: ' + data.error;
+                    errorDiv.classList.remove('d-none');
+                    successDiv.classList.add('d-none');
+                }
+            } catch (e) {
+                errorDiv.textContent = 'Parse hatası: ' + e.message;
+                errorDiv.classList.remove('d-none');
+            }
+        }
+    };
+    
+    xhr.onerror = function() {
+        console.error('XHR Error');
+        var errorDiv = document.getElementById('errorMessages');
+        errorDiv.textContent = 'Network hatası';
+        errorDiv.classList.remove('d-none');
+    };
+    
+    xhr.send(JSON.stringify(testData));
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, sayfa hazır');
+    
+    const signupForm = document.getElementById('signupForm');
+    const signupBtn = document.getElementById('signupBtn');
+    const spinner = signupBtn.querySelector('.spinner-border');
+    const errorDiv = document.getElementById('errorMessages');
+    const successDiv = document.getElementById('successMessages');
+
+    // Test butonu için event listener
+    testBtn.addEventListener('click', async function() {
+        console.log('Test butonuna tıklandı');
+        
+        const testData = {
+            username: 'testuser123',
+            email: 'test@example.com',
+            password1: 'TestPassword123!',
+            password2: 'TestPassword123!'
+        };
+        
+        console.log('Test data:', testData);
+        
+        try {
+            const response = await fetch('/accounts/api/signup/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(testData)
+            });
+            
+            console.log('Response status:', response.status);
+            console.log('Response ok:', response.ok);
+            
+            const data = await response.json();
+            console.log('Response data:', data);
+            
+            if (response.ok) {
+                showMessage(successDiv, 'Test başarılı! User ID: ' + data.user_id);
+            } else {
+                showMessage(errorDiv, 'Test hatası: ' + data.error);
+            }
+            
+        } catch (error) {
+            console.error('Test fetch hatası:', error);
+            showMessage(errorDiv, 'Test fetch hatası: ' + error.message);
+        }
+    });
+
+    signupForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Loading state
+        signupBtn.disabled = true;
+        spinner.classList.remove('d-none');
+        
+        // Form verilerini topla
+        const formData = new FormData(signupForm);
+        const username = formData.get('username');
+        const email = formData.get('email');
+        const password1 = formData.get('password1');
+        const password2 = formData.get('password2');
+        
+        // CSRF token'ını al
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        console.log('Form data:', { username, email, password1, password2 });
+        console.log('CSRF token:', csrfToken);
+        
+        // Basit CSRF bypass testi için header'ı kaldır
+        try {
+            const response = await fetch('/accounts/api/signup/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'X-CSRFToken': csrfToken,  // Geçici olarak kaldırdık
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    username: username,
+                    email: email,
+                    password1: password1,
+                    password2: password2
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                // Token'ı localStorage'a kaydet
+                localStorage.setItem('authToken', data.token);
+                localStorage.setItem('userData', JSON.stringify(data.user));
+                
+                // Token'ı cookie olarak da kaydet (server-side authentication için)
+                document.cookie = `auth_token=${data.token}; path=/; max-age=${7*24*60*60}`; // 7 gün
+                
+                // Başarı mesajı göster
+                showMessage(successDiv, data.message || 'Hesap başarıyla oluşturuldu. Yönlendiriliyorsunuz...');
+                
+                // Role-based yönlendirme yap
+                setTimeout(() => {
+                    if (data.redirect_url) {
+                        window.location.href = data.redirect_url;
+                    } else {
+                        // Fallback: Ana sayfaya git (home_view otomatik yönlendirecek)
+                        window.location.href = '/';
+                    }
+                }, 1500);
+                
+            } else {
+                // Hata mesajını göster
+                showMessage(errorDiv, data.error || 'Kayıt olurken bir hata oluştu.');
+            }
+            
+        } catch (error) {
+            console.error('Signup hatası:', error);
+            console.error('Error details:', error.message, error.stack);
+            showMessage(errorDiv, 'Bir hata oluştu. Lütfen tekrar deneyin. Hata: ' + error.message);
+        } finally {
+            // Loading state'i kaldır
+            signupBtn.disabled = false;
+            spinner.classList.add('d-none');
+        }
+    });
+    
+    function showMessage(element, message) {
+        element.textContent = message;
+        element.classList.remove('d-none');
+        
+        // Diğer mesaj kutusunu gizle
+        if (element === errorDiv) {
+            successDiv.classList.add('d-none');
+        } else {
+            errorDiv.classList.add('d-none');
+        }
+        
+        // 5 saniye sonra mesajı gizle
+        setTimeout(() => {
+            element.classList.add('d-none');
+        }, 5000);
+    }
+});
+</script>
+{% endblock %}

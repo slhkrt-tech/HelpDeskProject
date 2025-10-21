@@ -1,0 +1,320 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb" class="mb-4">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{% url 'home' %}" style="color: var(--accent-color);">
+        <i class="bi bi-house-door me-1"></i>Ana Sayfa
+      </a>
+    </li>
+    <li class="breadcrumb-item">
+      <a href="/accounts/admin-panel/" style="color: var(--accent-color);">
+        <i class="bi bi-shield-check me-1"></i>Admin Panel
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Grup Yönetimi</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <!-- Page Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="h3 mb-0">
+            <i class="bi bi-collection text-info me-2"></i>Grup Yönetimi
+          </h1>
+          <p class="text-muted mb-0">Kullanıcı gruplarını yönetin ve düzenleyin</p>
+        </div>
+        <div>
+          <a href="/accounts/admin/groups/create/" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Yeni Grup
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="row g-4 mb-4">
+    <div class="col-lg-4 col-md-6">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-grow-1">
+              <h6 class="text-muted mb-0">Toplam Grup</h6>
+              <h4 class="text-primary mb-0">{{ groups|length }}</h4>
+            </div>
+            <div class="ms-3">
+              <i class="bi bi-collection fs-2 text-primary"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-4 col-md-6">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-grow-1">
+              <h6 class="text-muted mb-0">Gruplu Kullanıcı</h6>
+              <h4 class="text-success mb-0">
+                {% comment %}Bu sayı Python'da hesaplanmalı{% endcomment %}
+                -
+              </h4>
+            </div>
+            <div class="ms-3">
+              <i class="bi bi-people-fill fs-2 text-success"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-4 col-md-6">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-grow-1">
+              <h6 class="text-muted mb-0">Ortalama Grup Boyutu</h6>
+              <h4 class="text-info mb-0">
+                {% comment %}Bu sayı Python'da hesaplanmalı{% endcomment %}
+                -
+              </h4>
+            </div>
+            <div class="ms-3">
+              <i class="bi bi-bar-chart fs-2 text-info"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Groups Table -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-0 py-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Grup Listesi</h5>
+            <div class="input-group" style="max-width: 300px;">
+              <input type="text" id="searchInput" class="form-control" placeholder="Grup ara...">
+              <span class="input-group-text">
+                <i class="bi bi-search"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          {% if groups %}
+            <div class="table-responsive">
+              <table class="table table-hover align-middle" id="groupsTable">
+                <thead class="table-light">
+                  <tr>
+                    <th>
+                      <i class="bi bi-collection me-1"></i>Grup Adı
+                    </th>
+                    <th>
+                      <i class="bi bi-people me-1"></i>Kullanıcı Sayısı
+                    </th>
+                    <th>
+                      <i class="bi bi-calendar me-1"></i>Oluşturulma
+                    </th>
+                    <th>
+                      <i class="bi bi-person-check me-1"></i>Kullanıcılar
+                    </th>
+                    <th>
+                      <i class="bi bi-gear me-1"></i>İşlemler
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for group in groups %}
+                    <tr class="group-row">
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div class="avatar-circle me-3">
+                            <i class="bi bi-collection text-info"></i>
+                          </div>
+                          <div>
+                            <strong>{{ group.name }}</strong>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <span class="badge bg-primary">
+                          <i class="bi bi-people me-1"></i>{{ group.user_set.count }}
+                        </span>
+                      </td>
+                      <td>
+                        <small class="text-muted">
+                          {{ group.id|date:"d.m.Y" }}
+                          {% comment %}Group creation date Django'da yok, ID ile tahmini{% endcomment %}
+                        </small>
+                      </td>
+                      <td>
+                        <div class="user-avatars">
+                          {% for user in group.user_set.all|slice:":5" %}
+                            <span class="badge bg-secondary me-1" title="{{ user.username }}">
+                              {{ user.username|slice:":2"|upper }}
+                            </span>
+                          {% endfor %}
+                          {% if group.user_set.count > 5 %}
+                            <span class="text-muted small">+{{ group.user_set.count|add:"-5" }} daha</span>
+                          {% endif %}
+                        </div>
+                      </td>
+                      <td>
+                        <div class="btn-group" role="group">
+                          <button class="btn btn-sm btn-outline-info" 
+                                  onclick="showGroupUsers('{{ group.name }}', '{{ group.user_set.count }}')"
+                                  title="Kullanıcıları Görüntüle">
+                            <i class="bi bi-eye"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger" 
+                                  onclick="deleteGroup('{{ group.id }}', '{{ group.name }}')"
+                                  title="Grubu Sil">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-center py-5">
+              <i class="bi bi-collection display-1 text-muted"></i>
+              <h5 class="mt-3 text-muted">Henüz grup bulunmamaktadır.</h5>
+              <p class="text-muted">Yeni bir grup oluşturmak için yukarıdaki butonu kullanabilirsiniz.</p>
+              <a href="/accounts/admin/groups/create/" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>İlk Grubu Oluşturun
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Group Users Modal -->
+<div class="modal fade" id="groupUsersModal" tabindex="-1" aria-labelledby="groupUsersModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="groupUsersModalLabel">
+          <i class="bi bi-people me-2"></i>Grup Kullanıcıları
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="groupUsersContent">
+        <!-- Content will be loaded here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--surface-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.btn-group .btn {
+  border-radius: 6px !important;
+  margin-right: 4px;
+}
+
+.table th {
+  font-weight: 600;
+  color: var(--text-color);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.group-row:hover {
+  background-color: var(--surface-color);
+}
+
+.user-avatars .badge {
+  font-size: 0.7rem;
+}
+
+#searchInput {
+  border: 1px solid var(--border-color);
+  background-color: var(--secondary-bg);
+  color: var(--text-color);
+}
+
+#searchInput:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    const groupRows = document.querySelectorAll('.group-row');
+    
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        groupRows.forEach(row => {
+            const groupName = row.querySelector('strong').textContent.toLowerCase();
+            
+            if (groupName.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+});
+
+function showGroupUsers(groupName, userCount) {
+    // Modal'ı göster
+    const modal = new bootstrap.Modal(document.getElementById('groupUsersModal'));
+    document.getElementById('groupUsersModalLabel').innerHTML = 
+        `<i class="bi bi-people me-2"></i>${groupName} Grubu (${userCount} kullanıcı)`;
+    
+    // Content placeholder
+    document.getElementById('groupUsersContent').innerHTML = 
+        '<div class="text-center"><div class="spinner-border" role="status"></div><p>Kullanıcılar yükleniyor...</p></div>';
+    
+    modal.show();
+    
+    // Bu kısım AJAX ile doldurulabilir
+    setTimeout(() => {
+        document.getElementById('groupUsersContent').innerHTML = 
+            '<p class="text-muted">Kullanıcı listesi buraya gelecek...</p>';
+    }, 1000);
+}
+
+function deleteGroup(groupId, groupName) {
+    if (confirm(`"${groupName}" grubunu silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz!`)) {
+        // AJAX delete request
+        console.log(`Deleting group ${groupId}: ${groupName}`);
+        // Burada delete API çağrısı yapılabilir
+    }
+}
+</script>
+
+{% endblock %}

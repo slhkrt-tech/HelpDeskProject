@@ -1,0 +1,347 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}{{ panel_title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Panel Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">{{ panel_title }}</h1>
+                    <p class="text-muted">Sistem yönetimi ve denetim paneli</p>
+                </div>
+                <div class="text-end">
+                    <span class="badge bg-primary">{{ user_role }}</span>
+                    <small class="text-muted d-block">{{ current_user.username }}</small>
+                </div>
+            </div>
+
+            <!-- Admin Dashboard Cards -->
+            <div class="row g-4 mb-4">
+                <!-- Kullanıcı Yönetimi -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-white" style="background-color: var(--primary-color);">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title mb-0">Kullanıcı Yönetimi</h6>
+                                    <p class="card-text small mb-0">Kullanıcıları yönet</p>
+                                </div>
+                                <div class="ms-3">
+                                    <i class="bi bi-people fs-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer border-0" style="background-color: var(--primary-color);">
+                            <a href="/accounts/admin/users/" class="text-white text-decoration-none small">
+                                Kullanıcı Yönetimine Git <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ticket Yönetimi -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-white" style="background-color: var(--success-color);">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title mb-0">Ticket Yönetimi</h6>
+                                    <p class="card-text small mb-0">Tüm talepleri yönet</p>
+                                </div>
+                                <div class="ms-3">
+                                    <i class="bi bi-ticket-perforated fs-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer border-0" style="background-color: var(--success-color);">
+                            <a href="/tickets/" class="text-white text-decoration-none small">
+                                Ticket'lara Git <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sistem Ayarları -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-white" style="background-color: var(--warning-color);">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title mb-0">Sistem Ayarları</h6>
+                                    <p class="card-text small mb-0">Sistem konfigürasyonu</p>
+                                </div>
+                                <div class="ms-3">
+                                    <i class="bi bi-gear fs-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer border-0" style="background-color: var(--warning-color);">
+                            <a href="#" class="text-white text-decoration-none small">
+                                Ayarlara Git <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Raporlar -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-white" style="background-color: var(--info-color);">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title mb-0">Raporlar</h6>
+                                    <p class="card-text small mb-0">Analiz ve raporlar</p>
+                                </div>
+                                <div class="ms-3">
+                                    <i class="bi bi-graph-up fs-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer border-0" style="background-color: var(--info-color);">
+                            <a href="#" class="text-white text-decoration-none small">
+                                Raporları Gör <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grup Yönetimi -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-white" style="background-color: var(--accent-color);">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title mb-0">Grup Yönetimi</h6>
+                                    <p class="card-text small mb-0">Kullanıcı grupları</p>
+                                </div>
+                                <div class="ms-3">
+                                    <i class="bi bi-collection fs-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer border-0" style="background-color: var(--accent-color);">
+                            <a href="/accounts/admin/groups/" class="text-white text-decoration-none small">
+                                Grupları Yönet <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Content Tabs -->
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="adminTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                                <i class="bi bi-house me-2"></i>Genel Bakış
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
+                                <i class="bi bi-people me-2"></i>Kullanıcılar
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="tokens-tab" data-bs-toggle="tab" data-bs-target="#tokens" type="button" role="tab">
+                                <i class="bi bi-key me-2"></i>Token'lar
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="adminTabsContent">
+                        <!-- Genel Bakış -->
+                        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                            <h5>Sistem Durumu</h5>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="border rounded p-3 text-center">
+                                        <h6 class="text-muted">Toplam Kullanıcı</h6>
+                                        <h4 class="text-primary">-</h4>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="border rounded p-3 text-center">
+                                        <h6 class="text-muted">Aktif Token'lar</h6>
+                                        <h4 class="text-success">-</h4>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="border rounded p-3 text-center">
+                                        <h6 class="text-muted">Bekleyen Ticket'lar</h6>
+                                        <h4 class="text-warning">-</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kullanıcılar -->
+                        <div class="tab-pane fade" id="users" role="tabpanel">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">Kullanıcı Yönetimi</h5>
+                                <button class="btn btn-primary btn-sm">
+                                    <i class="bi bi-plus me-1"></i>Yeni Kullanıcı
+                                </button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Kullanıcı Adı</th>
+                                            <th>E-posta</th>
+                                            <th>Rol</th>
+                                            <th>Durumu</th>
+                                            <th>İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted">
+                                                Kullanıcı listesi yükleniyor...
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Token'lar -->
+                        <div class="tab-pane fade" id="tokens" role="tabpanel">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">Token Yönetimi</h5>
+                                <button class="btn btn-danger btn-sm">
+                                    <i class="bi bi-trash me-1"></i>Süresi Dolmuş Token'ları Temizle
+                                </button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Kullanıcı</th>
+                                            <th>Token (Son 8 karakter)</th>
+                                            <th>Oluşturulma</th>
+                                            <th>Bitiş</th>
+                                            <th>Son Kullanım</th>
+                                            <th>Durum</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted">
+                                                Token listesi yükleniyor...
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Admin panel özel stilleri */
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    color: var(--bs-gray-600);
+    transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: transparent;
+    border-bottom: 3px solid var(--bs-primary);
+    color: var(--bs-primary);
+}
+
+.nav-tabs .nav-link:hover {
+    border-color: transparent;
+    color: var(--bs-primary);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Bootstrap tabs'ları manuel olarak initialize et
+    const tabLinks = document.querySelectorAll('#adminTabs button[data-bs-toggle="tab"]');
+    
+    tabLinks.forEach(function(tabLink) {
+        tabLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Tüm tab'ları inaktif yap
+            tabLinks.forEach(link => {
+                link.classList.remove('active');
+                link.setAttribute('aria-selected', 'false');
+            });
+            
+            // Tüm tab content'lerini gizle
+            const tabPanes = document.querySelectorAll('#adminTabsContent .tab-pane');
+            tabPanes.forEach(pane => {
+                pane.classList.remove('show', 'active');
+            });
+            
+            // Tıklanan tab'ı aktif yap
+            this.classList.add('active');
+            this.setAttribute('aria-selected', 'true');
+            
+            // İlgili content'i göster
+            const targetId = this.getAttribute('data-bs-target');
+            const targetPane = document.querySelector(targetId);
+            if (targetPane) {
+                targetPane.classList.add('show', 'active');
+            }
+        });
+    });
+    
+    // İlk tab'ı manuel olarak aktif yap
+    const firstTab = document.querySelector('#overview-tab');
+    const firstPane = document.querySelector('#overview');
+    if (firstTab && firstPane) {
+        firstTab.classList.add('active');
+        firstTab.setAttribute('aria-selected', 'true');
+        firstPane.classList.add('show', 'active');
+    }
+    
+    // Card hover efekti
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+    
+    // URL'deki tab parametresini kontrol et
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeTab = urlParams.get('tab');
+    
+    if (activeTab) {
+        const tabButton = document.querySelector(`#adminTabs button[data-bs-target="#${activeTab}"]`);
+        if (tabButton) {
+            tabButton.click();
+        }
+    }
+});
+</script>
+{% endblock %}
