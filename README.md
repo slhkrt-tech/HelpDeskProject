@@ -282,7 +282,7 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICE
 
 ## 👥 Team & Support
 
-- **Developer:** Your Name
-- **Email:** your.email@example.com
+- **Developer:** Salih KURT
+- **Email:** slhkrt333@gmail.com
 - **Documentation:** [Wiki Pages]()
 - **Issues:** [GitHub Issues]()

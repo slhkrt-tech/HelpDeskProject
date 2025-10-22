@@ -1,101 +1,200 @@
-{% extends "tickets/base.html" %}
+﻿{% extends "tickets/base.html" %}
+{% load static %}
 
-{% block title %}Ticket #{{ ticket.pk }}{% endblock %}
-
-{% block content %}
-<div class="container mt-4" style="max-width: 800px;">
-
-  <h3>
-    {% if "[Yanlış Bölüm]" in ticket.title %}
-      <span class="badge bg-danger" title="Yanlış bölümden açılmış ticket">Yanlış Bölüm</span>
-    {% endif %}
-    {{ ticket.title|cut:"[Yanlış Bölüm] " }}
-    <small class="text-muted">#{{ ticket.pk }}</small>
-  </h3>
-
-  <p><strong>Oluşturulma Tarihi:</strong> {{ ticket.created_at|date:"Y-m-d H:i" }}</p>
-
-  <p>
-    <strong>Durum:</strong>
-    {% if ticket.status == 'new' %}Alındı
-    {% elif ticket.status == 'open' %}Görüldü
-    {% elif ticket.status == 'pending' %}Beklemede
-    {% elif ticket.status == 'closed' %}
-      {% if "[Yanlış Bölüm]" in ticket.title %}Yanlış Bölüm / Kapatıldı
-      {% else %}Kapatıldı{% endif %}
-    {% else %}{{ ticket.status }}{% endif %}
-    | <strong>Öncelik:</strong> {{ ticket.get_priority_display }}
-  </p>
-
-  <p>
-    <strong>Kategori:</strong> {{ ticket.category.name if ticket.category else "Kategori yok" }} |
-    <strong>SLA:</strong> {{ ticket.sla.name if ticket.sla else "SLA yok" }} |
-    <strong>Atanan:</strong> {{ ticket.assigned_to.username if ticket.assigned_to else "Atanmamış" }}
-  </p>
-
-  <hr>
-
-  <!-- Collapsible description -->
-   
-  <div class="textarea-container mb-3">
-    <textarea class="collapsible-textarea" readonly>{{ ticket.description|linebreaks }}</textarea>
-    <span class="toggle-arrow">▼</span>
-  </div>
-
-  <h5>Yorumlar</h5>
-  <ul class="list-group mb-3">
-    {% for c in ticket.comments.all %}
-      <li class="list-group-item">
-        <strong>{{ c.user.username }}</strong>
-        <small class="text-muted">{{ c.created_at|date:"Y-m-d H:i" }}</small>
-        <p class="mb-0">{{ c.message|linebreaks }}</p>
-      </li>
-    {% empty %}
-      <li class="list-group-item">Yorum yok.</li>
-    {% endfor %}
-  </ul>
-
-  <form method="post" class="mb-4">
-    {% csrf_token %}
-    {{ comment_form.as_p }}
-    <button type="submit" name="comment_submit" class="btn btn-primary">Yorum Ekle</button>
-  </form>
-
-  {% if user.is_staff %}
-    <hr>
-    <h5>Agent Kontrolleri</h5>
-    <form method="post" class="row g-3 align-items-end">
-      {% csrf_token %}
-      <div class="col-md-3">
-        <label for="status" class="form-label">Durum</label>
-        <select name="status" id="status" class="form-select">
-          <option value="new" {% if ticket.status=='new' %}selected{% endif %}>Yeni</option>
-          <option value="open" {% if ticket.status=='open' %}selected{% endif %}>Açık</option>
-          <option value="pending" {% if ticket.status=='pending' %}selected{% endif %}>Beklemede</option>
-          <option value="closed" {% if ticket.status=='closed' %}selected{% endif %}>Kapatıldı</option>
-        </select>
-      </div>
-      <div class="col-md-3">
-        <label for="assign_to" class="form-label">Atama</label>
-        <select name="assign_to" id="assign_to" class="form-select">
-          <option value="">(Seçiniz)</option>
-          {% for u in users %}
-            <option value="{{ u.pk }}" {% if ticket.assigned_to and ticket.assigned_to.pk == u.pk %}selected{% endif %}>{{ u.username }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-auto">
-        <button type="submit" name="assign" class="btn btn-success">Güncelle</button>
-      </div>
-    </form>
-  {% endif %}
-</div>
-{% endblock %}
+{% block title %}Talep #{{ ticket.talep_numarasi }}{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'tickets/css/talep_list.css' %}">
+<link rel="stylesheet" href="{% static 'tickets/css/ticket_list_modern.css' %}">
 {% endblock %}
 
-{% block extra_js %}
-<script src="{% static 'tickets/js/talep_list.js' %}"></script>
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            
+            <!-- Ticket Header -->
+            <div class="card mb-4" style="border: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h1 class="h3 mb-2">
+                                {% if "[Yanlış Bölüm]" in ticket.title %}
+                                    <span class="badge bg-danger me-2">Yanlış Bölüm</span>
+                                {% endif %}
+                                {{ ticket.title|cut:"[Yanlış Bölüm] " }}
+                            </h1>
+                            <p class="mb-0 opacity-75">
+                                <i class="bi bi-hash me-1"></i>Talep Numarası: #{{ ticket.talep_numarasi }}
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <span class="status-badge status-{{ ticket.status }} mb-2 d-block">
+                                {{ ticket.get_status_display }}
+                            </span>
+                            <small class="opacity-75">
+                                <i class="bi bi-calendar me-1"></i>{{ ticket.created_at|date:"d.m.Y H:i" }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ticket Info -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6 class="text-muted mb-1">Öncelik</h6>
+                            <span class="badge 
+                              {% if ticket.priority == 'low' %}bg-success bg-opacity-10 text-success border border-success border-opacity-25
+                              {% elif ticket.priority == 'normal' %}bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25
+                              {% elif ticket.priority == 'high' %}bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25
+                              {% elif ticket.priority == 'urgent' %}bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25
+                              {% endif %} px-3 py-2">
+                              {{ ticket.get_priority_display }}
+                            </span>
+                        </div>
+                        <div class="col-md-3">
+                            <h6 class="text-muted mb-1">Kategori</h6>
+                            {% if ticket.category %}
+                                <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-3 py-2">
+                                    <i class="bi bi-folder me-1"></i>{{ ticket.category.name }}
+                                </span>
+                            {% else %}
+                                <span class="text-muted">Kategori yok</span>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <h6 class="text-muted mb-1">SLA</h6>
+                            {% if ticket.sla %}
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-3 py-2">
+                                    {{ ticket.sla.name }}
+                                </span>
+                            {% else %}
+                                <span class="text-muted">SLA yok</span>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <h6 class="text-muted mb-1">Atanan</h6>
+                            {% if ticket.assigned_to %}
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 24px; height: 24px; font-size: 0.75rem;">
+                                        {{ ticket.assigned_to.username|first|upper }}
+                                    </div>
+                                    <span>{{ ticket.assigned_to.username }}</span>
+                                </div>
+                            {% else %}
+                                <span class="text-muted">Atanmamış</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="mb-3">
+                        <i class="bi bi-card-text me-2"></i>Açıklama
+                    </h5>
+                    <div style="white-space: pre-wrap; line-height: 1.6;">{{ ticket.description }}</div>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="mb-3">
+                        <i class="bi bi-chat-dots me-2"></i>Yorumlar
+                        <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 ms-2">
+                            {{ ticket.comments.count }}
+                        </span>
+                    </h5>
+                    
+                    {% for comment in ticket.comments.all %}
+                        <div class="border-start border-primary border-3 bg-light p-3 mb-3 rounded-end">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 0.875rem;">
+                                        {{ comment.user.username|first|upper }}
+                                    </div>
+                                    <div>
+                                        <strong>{{ comment.user.username }}</strong>
+                                        {% if comment.user.is_staff %}
+                                            <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 ms-1" style="font-size: 0.75rem;">Staff</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <small class="text-muted">{{ comment.created_at|date:"d.m.Y H:i" }}</small>
+                            </div>
+                            <div style="white-space: pre-wrap; line-height: 1.5;">{{ comment.message }}</div>
+                        </div>
+                    {% empty %}
+                        <div class="text-center text-muted py-4">
+                            <i class="bi bi-chat fs-1 mb-2"></i>
+                            <p>Henüz yorum bulunmuyor.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Add Comment -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="mb-3">
+                        <i class="bi bi-plus-circle me-2"></i>Yorum Ekle
+                    </h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            {{ comment_form.message.label_tag }}
+                            {{ comment_form.message }}
+                        </div>
+                        <button type="submit" name="comment_submit" class="btn btn-primary">
+                            <i class="bi bi-send me-2"></i>Yorum Gönder
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Admin Controls -->
+            {% if user.is_staff %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="mb-3">
+                        <i class="bi bi-gear me-2"></i>Admin Kontrolleri
+                    </h5>
+                    <form method="post" class="row g-3">
+                        {% csrf_token %}
+                        <div class="col-md-4">
+                            <label for="status" class="form-label">Durum</label>
+                            <select name="status" id="status" class="form-select">
+                                <option value="new" {% if ticket.status == 'new' %}selected{% endif %}>Yeni</option>
+                                <option value="open" {% if ticket.status == 'open' %}selected{% endif %}>Açık</option>
+                                <option value="pending" {% if ticket.status == 'pending' %}selected{% endif %}>Beklemede</option>
+                                <option value="closed" {% if ticket.status == 'closed' %}selected{% endif %}>Kapatıldı</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="assign_to" class="form-label">Atama</label>
+                            <select name="assign_to" id="assign_to" class="form-select">
+                                <option value="">(Seçiniz)</option>
+                                {% for u in users %}
+                                    <option value="{{ u.pk }}" {% if ticket.assigned_to and ticket.assigned_to.pk == u.pk %}selected{% endif %}>{{ u.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" name="assign" class="btn btn-success w-100">
+                                <i class="bi bi-check2 me-2"></i>Güncelle
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
 {% endblock %}

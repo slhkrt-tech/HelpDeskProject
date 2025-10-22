@@ -1,7 +1,13 @@
 {% extends "tickets/base.html" %}
+{% load static %}
 
 {% block title %}Talep Listesi{% endblock %}
 {% block page_title %}Talep Listesi{% endblock %}
+
+<!-- Modern CSS için -->
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tickets/css/ticket_list_modern.css' %}">
+{% endblock %}
 
 {% block breadcrumb %}
 <nav aria-label="breadcrumb" class="mb-4">
@@ -17,6 +23,10 @@
 {% endblock %}
 
 {% block content %}
+<!-- CSRF Token için hidden form -->
+<form style="display: none;">
+  {% csrf_token %}
+</form>
 <div class="container-fluid">
   <!-- Filtreler ve Başlık -->
   <div class="row mb-4">
@@ -99,20 +109,21 @@
       <div class="card border-0 shadow-sm">
         <div class="card-body">
           {% if tickets %}
-            <div class="table-responsive">
-              <table class="table table-hover align-middle">
-                <thead class="table-light">
+            <!-- Modern Ticket Table -->
+            <div class="table-responsive-modern">
+              <table class="table modern-table mb-0">
+                <thead>
                   <tr>
-                    <th>#</th>
-                    <th>Başlık</th>
-                    <th>Oluşturan</th>
-                    <th>Kategori</th>
-                    <th>Durum</th>
-                    <th>Öncelik</th>
-                    <th>Atanan</th>
-                    <th>Oluşturulma</th>
+                    <th><i class="bi bi-hash me-1"></i>Numara</th>
+                    <th><i class="bi bi-card-text me-1"></i>Başlık</th>
+                    <th><i class="bi bi-person me-1"></i>Kullanıcı</th>
+                    <th><i class="bi bi-folder me-1"></i>Kategori</th>
+                    <th><i class="bi bi-circle me-1"></i>Durum</th>
+                    <th><i class="bi bi-exclamation-circle me-1"></i>Öncelik</th>
+                    <th><i class="bi bi-person-check me-1"></i>Atanan</th>
+                    <th><i class="bi bi-calendar me-1"></i>Oluşturulma</th>
                     {% if is_admin or is_support %}
-                      <th>İşlemler</th>
+                      <th class="actions-column"><i class="bi bi-gear me-1"></i>İşlemler</th>
                     {% endif %}
                   </tr>
                 </thead>
@@ -120,87 +131,90 @@
                   {% for ticket in tickets %}
                     <tr>
                       <td>
-                        <a href="{% url 'ticket_detail' ticket.pk %}" class="text-decoration-none">
-                          <strong>#{{ ticket.talep_numarasi }}</strong>
+                        <a href="{% url 'ticket_detail' ticket.pk %}" class="text-decoration-none fw-bold text-primary">
+                          #{{ ticket.talep_numarasi }}
                         </a>
                       </td>
                       <td>
-                        <a href="{% url 'ticket_detail' ticket.pk %}" class="text-decoration-none">
+                        <a href="{% url 'ticket_detail' ticket.pk %}" class="text-decoration-none text-dark">
                           {{ ticket.title|truncatechars:50 }}
                         </a>
                       </td>
                       <td>
-                        <span class="d-flex align-items-center">
-                          <i class="bi bi-person-circle me-2"></i>
+                        <div class="d-flex align-items-center">
+                          <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 0.875rem;">
+                            {{ ticket.user.username|first|upper }}
+                          </div>
                           {{ ticket.user.username }}
-                        </span>
+                        </div>
                       </td>
                       <td>
                         {% if ticket.category %}
-                          <span class="badge bg-info">{{ ticket.category.name }}</span>
+                          <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-3 py-2">
+                            <i class="bi bi-folder me-1"></i>{{ ticket.category.name }}
+                          </span>
                         {% else %}
                           <span class="text-muted">-</span>
                         {% endif %}
                       </td>
                       <td>
-                        <span class="badge 
-                          {% if ticket.status == 'new' %}bg-primary
-                          {% elif ticket.status == 'seen' %}bg-info
-                          {% elif ticket.status == 'open' %}bg-warning
-                          {% elif ticket.status == 'pending' %}bg-secondary
-                          {% elif ticket.status == 'in_progress' %}bg-info
-                          {% elif ticket.status == 'resolved' %}bg-success
-                          {% elif ticket.status == 'closed' %}bg-dark
-                          {% else %}bg-light text-dark
-                          {% endif %}" id="status-badge-{{ ticket.pk }}">
+                        <span class="status-badge status-{{ ticket.status }}" id="status-badge-{{ ticket.pk }}">
                           {{ ticket.get_status_display }}
                         </span>
                       </td>
                       <td>
                         <span class="badge 
-                          {% if ticket.priority == 'low' %}bg-success
-                          {% elif ticket.priority == 'normal' %}bg-primary
-                          {% elif ticket.priority == 'high' %}bg-warning
-                          {% elif ticket.priority == 'urgent' %}bg-danger
-                          {% endif %}">
+                          {% if ticket.priority == 'low' %}bg-success bg-opacity-10 text-success border border-success border-opacity-25
+                          {% elif ticket.priority == 'normal' %}bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25
+                          {% elif ticket.priority == 'high' %}bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25
+                          {% elif ticket.priority == 'urgent' %}bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25
+                          {% endif %} px-3 py-2">
+                          {% if ticket.priority == 'low' %}<i class="bi bi-arrow-down me-1"></i>
+                          {% elif ticket.priority == 'normal' %}<i class="bi bi-dash me-1"></i>
+                          {% elif ticket.priority == 'high' %}<i class="bi bi-arrow-up me-1"></i>
+                          {% elif ticket.priority == 'urgent' %}<i class="bi bi-exclamation-triangle me-1"></i>
+                          {% endif %}
                           {{ ticket.get_priority_display }}
                         </span>
                       </td>
                       <td>
                         {% if ticket.assigned_to %}
-                          <span class="d-flex align-items-center">
-                            <i class="bi bi-person-check me-2"></i>
+                          <div class="d-flex align-items-center">
+                            <div class="avatar-sm bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 0.875rem;">
+                              {{ ticket.assigned_to.username|first|upper }}
+                            </div>
                             {{ ticket.assigned_to.username }}
-                          </span>
+                          </div>
                         {% else %}
-                          <span class="text-muted">Atanmamış</span>
+                          <span class="text-muted">
+                            <i class="bi bi-person-dash me-1"></i>Atanmamış
+                          </span>
                         {% endif %}
                       </td>
                       <td>
-                        <small class="text-muted">
-                          {{ ticket.created_at|date:"d.m.Y H:i" }}
-                        </small>
+                        <div class="d-flex flex-column">
+                          <span class="fw-medium">{{ ticket.created_at|date:"d.m.Y" }}</span>
+                          <small class="text-muted">{{ ticket.created_at|date:"H:i" }}</small>
+                        </div>
                       </td>
                       {% if is_admin or is_support %}
-                        <td>
-                          <div class="dropdown">
-                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" 
-                                    data-bs-toggle="dropdown" aria-expanded="false">
-                              Durum Değiştir
+                        <td class="actions-column">
+                          <div class="status-action-container">
+                            <button class="status-change-dropdown" type="button" data-ticket-id="{{ ticket.pk }}">
+                              <i class="bi bi-arrow-repeat me-1"></i>Durum Değiştir
+                              <i class="bi bi-chevron-down ms-1"></i>
                             </button>
-                            <ul class="dropdown-menu">
+                            <div class="status-dropdown-menu" style="display: none;">
                               {% for status_value, status_display in status_choices %}
                                 {% if status_value != ticket.status %}
-                                  <li>
-                                    <button class="dropdown-item change-status-btn" 
-                                            data-ticket-id="{{ ticket.pk }}" 
-                                            data-new-status="{{ status_value }}">
-                                      {{ status_display }}
-                                    </button>
-                                  </li>
+                                  <button class="status-dropdown-item" 
+                                          data-ticket-id="{{ ticket.pk }}" 
+                                          data-status="{{ status_value }}">
+                                    {{ status_display }}
+                                  </button>
                                 {% endif %}
                               {% endfor %}
-                            </ul>
+                            </div>
                           </div>
                         </td>
                       {% endif %}
@@ -225,114 +239,9 @@
   </div>
 </div>
 
-<!-- Loading Modal -->
-<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-sm modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-body text-center py-4">
-        <div class="spinner-border text-primary mb-3" role="status">
-          <span class="visually-hidden">Yükleniyor...</span>
-        </div>
-        <p class="mb-0">Durum güncelleniyor...</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Status değiştirme işlemi
-    const changeStatusBtns = document.querySelectorAll('.change-status-btn');
-    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
-    
-    changeStatusBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const ticketId = this.getAttribute('data-ticket-id');
-            const newStatus = this.getAttribute('data-new-status');
-            
-            // Loading modal göster
-            loadingModal.show();
-            
-            // CSRF token al
-            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
-                             getCookie('csrftoken');
-            
-            // AJAX isteği
-            fetch(`/tickets/${ticketId}/change-status/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': csrfToken,
-                },
-                body: `status=${newStatus}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                loadingModal.hide();
-                
-                if (data.success) {
-                    // Badge'i güncelle
-                    const badge = document.getElementById(`status-badge-${ticketId}`);
-                    if (badge) {
-                        badge.textContent = data.new_status_display;
-                        
-                        // Badge rengini güncelle
-                        badge.className = 'badge ';
-                        if (newStatus === 'new') badge.className += 'bg-primary';
-                        else if (newStatus === 'seen') badge.className += 'bg-info';
-                        else if (newStatus === 'open') badge.className += 'bg-warning';
-                        else if (newStatus === 'pending') badge.className += 'bg-secondary';
-                        else if (newStatus === 'in_progress') badge.className += 'bg-info';
-                        else if (newStatus === 'resolved') badge.className += 'bg-success';
-                        else if (newStatus === 'closed') badge.className += 'bg-dark';
-                        else badge.className += 'bg-light text-dark';
-                    }
-                    
-                    // Başarı mesajı
-                    showToast('Durum başarıyla güncellendi!', 'success');
-                } else {
-                    showToast('Hata: ' + data.error, 'error');
-                }
-            })
-            .catch(error => {
-                loadingModal.hide();
-                console.error('Error:', error);
-                showToast('Bir hata oluştu!', 'error');
-            });
-        });
-    });
-    
-    // Toast mesaj gösterme
-    function showToast(message, type) {
-        // Basit toast implementasyonu
-        const toast = document.createElement('div');
-        toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed top-0 end-0 m-3`;
-        toast.style.zIndex = '9999';
-        toast.textContent = message;
-        
-        document.body.appendChild(toast);
-        
-        setTimeout(() => {
-            toast.remove();
-        }, 3000);
-    }
-    
-    // CSRF cookie yardımcı fonksiyonu
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-});
-</script>
+<!-- Modern JavaScript için -->
+{% block extra_js %}
+<script src="{% static 'tickets/js/ticket_list_modern.js' %}"></script>
+{% endblock %}
 
 {% endblock %}

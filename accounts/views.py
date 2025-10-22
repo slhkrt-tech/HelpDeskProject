@@ -59,17 +59,17 @@ def home_view(request):
     if user:
         # Kullanıcı giriş yapmış, redirect parametresine göre yönlendir
         if redirect_to == 'admin-panel':
-            if user.is_superuser or user.role == 'admin':
+            if user.is_superuser or (user.role == 'admin' and user.is_staff):
                 return redirect('/accounts/admin-panel/')
             else:
                 # Yetkisi yok, kendi paneline yönlendir
-                if user.role == 'support':
+                if user.role == 'support' and user.is_staff:
                     return redirect('/accounts/support-panel/')
                 else:
                     return redirect('/accounts/customer-panel/')
                     
         elif redirect_to == 'support-panel':
-            if user.is_superuser or user.role in ['admin', 'support']:
+            if user.is_superuser or (user.role in ['admin', 'support'] and user.is_staff):
                 return redirect('/accounts/support-panel/')
             else:
                 # Yetkisi yok, customer paneline yönlendir
@@ -79,11 +79,13 @@ def home_view(request):
             return redirect('/accounts/customer-panel/')
         
         # Redirect parametresi yoksa normal role-based yönlendirme
-        if user.is_superuser or user.role == 'admin':
+        # Güvenlik: Sadece gerçek admin/superuser'lar admin panele gidebilir
+        if user.is_superuser or (user.role == 'admin' and user.is_staff):
             return redirect('/accounts/admin-panel/')
-        elif user.role == 'support':
+        elif user.role == 'support' and user.is_staff:
             return redirect('/accounts/support-panel/')
         else:
+            # Tüm diğer durumlar (customer, non-staff admin'ler) customer panele gider
             return redirect('/accounts/customer-panel/')
     
     # Kullanıcı giriş yapmamış
@@ -130,23 +132,17 @@ def api_login(request):
         # Log successful login
         logger.info(f"Successful login for user: {user.username} from IP: {get_client_ip(request)}")
         
-        # Mevcut custom token'ı kontrol et
-        try:
-            custom_token = CustomAuthToken.objects.get(user=user)
-            # Token süresi dolmuşsa yenile
-            if custom_token.is_expired():
-                custom_token.refresh_token()
-            # Token'ı kullanıldı olarak işaretle
-            custom_token.use_token()
-        except CustomAuthToken.DoesNotExist:
-            # Yeni custom token oluştur
-            custom_token = CustomAuthToken.objects.create(
-                user=user,
-                username=user.username
-            )
-            # Şifreyi hash'le ve kaydet
-            custom_token.set_password_hash(password)
-            custom_token.save()
+        # Aynı kullanıcının eski token'larını sil (güvenlik - her login'de yeni token)
+        CustomAuthToken.objects.filter(user=user).delete()
+        
+        # Yeni custom token oluştur
+        custom_token = CustomAuthToken.objects.create(
+            user=user,
+            username=user.username
+        )
+        # Şifreyi hash'le ve kaydet
+        custom_token.set_password_hash(password)
+        custom_token.save()
         
         # Backward compatibility için normal token da oluştur/güncelle
         normal_token, created = Token.objects.get_or_create(user=user)
@@ -170,6 +166,12 @@ def api_login(request):
             'token_expires': custom_token.expires_at.isoformat(),
             'message': 'Başarıyla giriş yapıldı.'
         })
+        
+        # Önce eski cookie'leri temizle (farklı kullanıcı girişi için)
+        response.delete_cookie('auth_token')
+        response.delete_cookie('user_id')
+        response.delete_cookie('user_role')
+        response.delete_cookie('sessionid')  # Django session cookie'sini de temizle
         
         # Token'ı çerezlere kaydet (browser için)
         response.set_cookie(
@@ -210,6 +212,9 @@ def api_login(request):
     }, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
+@api_view(['POST'])
+@authentication_classes([CsrfExemptSessionAuthentication, TokenAuthentication])
+@permission_classes([AllowAny])
 def api_logout(request):
     """
     Gelişmiş token-based logout endpoint
@@ -250,6 +255,68 @@ def api_logout(request):
         response.delete_cookie('user_id')
         response.delete_cookie('user_role')
         response.delete_cookie('sessionid')
+        
+        return response
+
+@api_view(['POST'])
+@authentication_classes([CsrfExemptSessionAuthentication, TokenAuthentication])
+@permission_classes([AllowAny])
+def api_safe_logout(request):
+    """
+    Güvenli çıkış - Tüm kullanıcı verilerini temizler ve login sayfasına yönlendirir
+    Signup sonrası role karışıklığını önlemek için kullanılır
+    """
+    try:
+        logger.info(f"Safe logout requested from IP: {get_client_ip(request)}")
+        
+        # Mevcut kullanıcı bilgilerini al
+        user = verify_token_auth(request)
+        if user:
+            logger.info(f"Safe logout for user: {user.username} (role: {user.role})")
+        
+        # Session'ı tamamen temizle
+        if request.user.is_authenticated:
+            from django.contrib.auth import logout
+            logout(request)
+        
+        # Kullanıcının tüm token'larını sil
+        if user:
+            # Custom token'ları sil
+            CustomAuthToken.objects.filter(user=user).delete()
+            
+            # Normal token'ları da sil
+            Token.objects.filter(user=user).delete()
+        
+        response = Response({
+            'message': 'Güvenli çıkış yapıldı. Lütfen tekrar giriş yapın.',
+            'redirect_url': '/accounts/login/',
+            'action': 'safe_logout_complete'
+        })
+        
+        # Tüm authentication çerezlerini temizle
+        response.delete_cookie('auth_token')
+        response.delete_cookie('user_id')
+        response.delete_cookie('user_role')
+        response.delete_cookie('sessionid')
+        response.delete_cookie('csrftoken')
+        
+        logger.info("Safe logout completed successfully")
+        return response
+        
+    except Exception as e:
+        logger.error(f"Safe logout error: {str(e)}")
+        response = Response({
+            'message': 'Güvenli çıkış tamamlandı.',
+            'redirect_url': '/accounts/login/',
+            'action': 'safe_logout_complete'
+        })
+        
+        # Hata durumunda da tüm çerezleri temizle
+        response.delete_cookie('auth_token')
+        response.delete_cookie('user_id')
+        response.delete_cookie('user_role')
+        response.delete_cookie('sessionid')
+        response.delete_cookie('csrftoken')
         
         return response
 
@@ -359,6 +426,12 @@ def api_signup(request):
             password=password1
         )
         
+        # Yeni kullanıcıları customer role'ü ile kaydet ve güvenlik ayarları
+        user.role = 'customer'
+        user.is_staff = False  # Güvenlik: Yeni kullanıcılar staff değil
+        user.is_superuser = False  # Güvenlik: Yeni kullanıcılar superuser değil
+        user.save()
+        
         # Log user creation
         logger.info(f"New user created: {username} from IP: {get_client_ip(request)}")
         
@@ -376,7 +449,10 @@ def api_signup(request):
         # Kullanıcı bilgilerini serialize et
         user_serializer = UserSerializer(user)
         
-        # Yeni kullanıcılar için customer paneline yönlendir
+        # Yeni kullanıcıları customer role'ü ile kaydet ve customer paneline yönlendir
+        user.role = 'customer'
+        user.save()
+        
         redirect_url = '/accounts/customer-panel/'
         
         response = Response({
@@ -904,6 +980,47 @@ def admin_group_create_view(request):
     
     return render(request, 'accounts/admin_group_create.html', context)
 
+def admin_group_delete_view(request, group_id):
+    """
+    Grup Silme - Sadece admin erişebilir
+    """
+    # Token tabanlı kimlik doğrulama
+    user = verify_token_auth(request)
+    
+    if not user:
+        return JsonResponse({'error': 'Kimlik doğrulama gerekli'}, status=401)
+    
+    # Admin kontrolü
+    if not (user.is_superuser or user.role == 'admin'):
+        return JsonResponse({'error': 'Bu işlem için yetkiniz yok'}, status=403)
+    
+    try:
+        group = Group.objects.get(id=group_id)
+        group_name = group.name
+        user_count = group.customuser_set.count()
+        
+        # Grup silme işlemi
+        group.delete()
+        
+        logger.info(f"Admin {user.username} tarafından '{group_name}' grubu silindi (önceki kullanıcı sayısı: {user_count})")
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'"{group_name}" grubu başarıyla silindi.',
+            'deleted_group': {
+                'id': group_id,
+                'name': group_name,
+                'user_count': user_count
+            }
+        })
+        
+    except Group.DoesNotExist:
+        return JsonResponse({'error': 'Grup bulunamadı'}, status=404)
+    
+    except Exception as e:
+        logger.error(f"Grup silme hatası: {str(e)}")
+        return JsonResponse({'error': f'Grup silinirken hata oluştu: {str(e)}'}, status=500)
+
 def admin_user_assign_groups_view(request, user_id):
     """
     Kullanıcıya Grup Atama - Sadece admin erişebilir
@@ -952,3 +1069,183 @@ def admin_user_assign_groups_view(request, user_id):
     }
     
     return render(request, 'accounts/admin_user_assign_groups.html', context)
+
+
+# ================================
+# Additional Admin Management Views
+# ================================
+
+def admin_settings_view(request):
+    """
+    Sistem Ayarları - Sadece admin erişebilir
+    """
+    # Token tabanlı kimlik doğrulama
+    user = verify_token_auth(request)
+    
+    if not user:
+        return redirect('/accounts/login/?next=admin-settings')
+    
+    # Admin kontrolü
+    if not (user.is_superuser or user.role == 'admin'):
+        return HttpResponseForbidden("Bu sayfaya erişim yetkiniz yok.")
+    
+    context = {
+        'current_user': user,
+        'user_role': 'Admin',
+        'page_title': 'Sistem Ayarları'
+    }
+    
+    return render(request, 'accounts/admin_settings.html', context)
+
+def admin_reports_view(request):
+    """
+    Raporlar - Sadece admin erişebilir
+    """
+    # Token tabanlı kimlik doğrulama
+    user = verify_token_auth(request)
+    
+    if not user:
+        return redirect('/accounts/login/?next=admin-reports')
+    
+    # Admin kontrolü
+    if not (user.is_superuser or user.role == 'admin'):
+        return HttpResponseForbidden("Bu sayfaya erişim yetkiniz yok.")
+    
+    context = {
+        'current_user': user,
+        'user_role': 'Admin',
+        'page_title': 'Raporlar'
+    }
+    
+    return render(request, 'accounts/admin_reports.html', context)
+
+
+# ================================
+# Customer Management Views
+# ================================
+
+def customer_profile_view(request):
+    """
+    Müşteri Profil Görüntüleme
+    """
+    # Token tabanlı kimlik doğrulama
+    user = verify_token_auth(request)
+    
+    if not user:
+        return redirect('/accounts/login/?next=customer-profile')
+    
+    context = {
+        'current_user': user,
+        'user_role': user.get_role_display(),
+        'page_title': 'Profil Bilgileri'
+    }
+    
+    return render(request, 'accounts/customer_profile.html', context)
+
+def customer_profile_edit_view(request):
+    """
+    Müşteri Profil Düzenleme
+    """
+    # Token tabanlı kimlik doğrulama
+    user = verify_token_auth(request)
+    
+    if not user:
+        return redirect('/accounts/login/?next=customer-profile-edit')
+    
+    if request.method == 'POST':
+        try:
+            user.first_name = request.POST.get('first_name', '')
+            user.last_name = request.POST.get('last_name', '')
+            user.email = request.POST.get('email', user.email)
+            user.save()
+            
+            logger.info(f"Kullanıcı {user.username} profil bilgilerini güncelledi")
+            return redirect('/accounts/customer/profile/')
+            
+        except Exception as e:
+            logger.error(f"Profil güncelleme hatası: {str(e)}")
+            context = {
+                'error': 'Profil güncellenirken bir hata oluştu.',
+                'current_user': user,
+                'user_role': user.get_role_display(),
+                'page_title': 'Profil Düzenle'
+            }
+            return render(request, 'accounts/customer_profile_edit.html', context)
+    
+    context = {
+        'current_user': user,
+        'user_role': user.get_role_display(),
+        'page_title': 'Profil Düzenle'
+    }
+    
+    return render(request, 'accounts/customer_profile_edit.html', context)
+
+def customer_change_password_view(request):
+    """
+    Müşteri Şifre Değiştirme
+    """
+    # Token tabanlı kimlik doğrulama
+    user = verify_token_auth(request)
+    
+    if not user:
+        return redirect('/accounts/login/?next=customer-change-password')
+    
+    if request.method == 'POST':
+        old_password = request.POST.get('old_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        # Şifre kontrolü
+        if not user.check_password(old_password):
+            context = {
+                'error': 'Mevcut şifreniz yanlış.',
+                'current_user': user,
+                'user_role': user.get_role_display(),
+                'page_title': 'Şifre Değiştir'
+            }
+            return render(request, 'accounts/customer_change_password.html', context)
+        
+        # Yeni şifre kontrolü
+        if new_password != confirm_password:
+            context = {
+                'error': 'Yeni şifreler eşleşmiyor.',
+                'current_user': user,
+                'user_role': user.get_role_display(),
+                'page_title': 'Şifre Değiştir'
+            }
+            return render(request, 'accounts/customer_change_password.html', context)
+        
+        # Şifre uzunluk kontrolü
+        if len(new_password) < 6:
+            context = {
+                'error': 'Yeni şifre en az 6 karakter olmalıdır.',
+                'current_user': user,
+                'user_role': user.get_role_display(),
+                'page_title': 'Şifre Değiştir'
+            }
+            return render(request, 'accounts/customer_change_password.html', context)
+        
+        try:
+            user.set_password(new_password)
+            user.save()
+            
+            logger.info(f"Kullanıcı {user.username} şifresini değiştirdi")
+            return redirect('/accounts/customer/profile/')
+            
+        except Exception as e:
+            logger.error(f"Şifre değiştirme hatası: {str(e)}")
+            context = {
+                'error': 'Şifre değiştirilirken bir hata oluştu.',
+                'current_user': user,
+                'user_role': user.get_role_display(),
+                'page_title': 'Şifre Değiştir'
+            }
+            return render(request, 'accounts/customer_change_password.html', context)
+    
+    context = {
+        'current_user': user,
+        'user_role': user.get_role_display(),
+        'page_title': 'Şifre Değiştir'
+    }
+    
+    return render(request, 'accounts/customer_change_password.html', context)

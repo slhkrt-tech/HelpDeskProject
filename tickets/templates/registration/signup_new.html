@@ -167,6 +167,29 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         showMessage(successDiv, data.message || 'Hesap başarıyla oluşturuldu! Yönlendiriliyorsunuz...');
                         
+                        // Güvenli çıkış önerisi butonu ekle
+                        const safeLogoutBtn = document.createElement('button');
+                        safeLogoutBtn.className = 'btn btn-outline-warning btn-sm mt-2 me-2';
+                        safeLogoutBtn.innerHTML = '<i class="bi bi-shield-exclamation me-1"></i>Güvenli Çıkış Yap';
+                        safeLogoutBtn.onclick = function() {
+                            if (confirm('Admin panel sorununu önlemek için güvenli çıkış yapmak istiyor musunuz?')) {
+                                // Base template'deki safeLogout fonksiyonunu çağır
+                                if (typeof safeLogout === 'function') {
+                                    safeLogout();
+                                } else {
+                                    // Fallback: Manuel güvenli çıkış
+                                    localStorage.clear();
+                                    sessionStorage.clear();
+                                    document.cookie.split(";").forEach(function(c) { 
+                                        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+                                    });
+                                    window.location.href = '/accounts/login/';
+                                }
+                            }
+                        };
+                        
+                        successDiv.appendChild(safeLogoutBtn);
+                        
                         // Yönlendirme
                         setTimeout(function() {
                             if (data.redirect_url) {

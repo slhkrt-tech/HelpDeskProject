@@ -1,0 +1,348 @@
+/* Ticket List Modern UI CSS */
+/* ================================================================================*/
+
+/* Ana konteyner */
+.ticket-list-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+/* Kart tasarımı */
+.ticket-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.ticket-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Modern tablo tasarımı */
+.modern-table {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.modern-table thead th {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: white;
+    font-weight: 600;
+    padding: 1rem;
+    border: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.modern-table tbody td {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.modern-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Durum badge'leri - modern tasarım */
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.status-badge::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.status-badge.status-new {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+}
+
+.status-badge.status-seen {
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    color: white;
+}
+
+.status-badge.status-open {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+}
+
+.status-badge.status-pending {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+    color: white;
+}
+
+.status-badge.status-in_progress {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+}
+
+.status-badge.status-resolved {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.status-badge.status-closed {
+    background: linear-gradient(135deg, #374151, #1f2937);
+    color: white;
+}
+
+.status-badge.status-wrong_section {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+/* Modern durum değiştirme butonları */
+.status-action-container {
+    position: relative;
+    display: inline-block;
+}
+
+.status-change-dropdown {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 10px rgba(79, 70, 229, 0.3);
+}
+
+.status-change-dropdown:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(79, 70, 229, 0.4);
+    background: linear-gradient(135deg, #5b52f0, #8b40f5);
+}
+
+.status-change-dropdown:active {
+    transform: translateY(0);
+}
+
+/* Dropdown menü */
+.status-dropdown-menu {
+    background: white;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    min-width: 200px;
+}
+
+.status-dropdown-item {
+    border: none;
+    background: none;
+    padding: 0.75rem 1rem;
+    margin: 0.125rem 0;
+    border-radius: 8px;
+    color: #374151;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.status-dropdown-item::before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.status-dropdown-item[data-status="new"]::before { background: #3b82f6; }
+.status-dropdown-item[data-status="seen"]::before { background: #06b6d4; }
+.status-dropdown-item[data-status="open"]::before { background: #f59e0b; }
+.status-dropdown-item[data-status="pending"]::before { background: #6b7280; }
+.status-dropdown-item[data-status="in_progress"]::before { background: #8b5cf6; }
+.status-dropdown-item[data-status="resolved"]::before { background: #10b981; }
+.status-dropdown-item[data-status="closed"]::before { background: #374151; }
+.status-dropdown-item[data-status="wrong_section"]::before { background: #ef4444; }
+
+.status-dropdown-item:hover {
+    background: #f8fafc;
+    color: #1f2937;
+    transform: translateX(5px);
+}
+
+/* Responsive table scroll */
+.table-responsive-modern {
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+.table-responsive-modern::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive-modern::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.table-responsive-modern::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.table-responsive-modern::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* İşlemler sütunu sticky */
+.actions-column {
+    position: sticky;
+    right: 0;
+    background: white;
+    border-left: 2px solid #e2e8f0;
+    min-width: 150px;
+    z-index: 5;
+}
+
+.actions-column::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 0;
+    bottom: 0;
+    width: 10px;
+    background: linear-gradient(to right, transparent, rgba(0,0,0,0.05));
+    pointer-events: none;
+}
+
+/* Loading ve toast stilleri */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+}
+
+.loading-spinner {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modern-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 300px;
+    animation: slideInRight 0.3s ease;
+}
+
+.modern-toast.success {
+    border-left: 4px solid #10b981;
+}
+
+.modern-toast.error {
+    border-left: 4px solid #ef4444;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Dark mode desteği */
+@media (prefers-color-scheme: dark) {
+    .modern-table {
+        background: #1f2937;
+        color: white;
+    }
+    
+    .modern-table tbody td {
+        border-bottom-color: #374151;
+    }
+    
+    .modern-table tbody tr:hover {
+        background-color: #374151;
+    }
+    
+    .actions-column {
+        background: #1f2937;
+        border-left-color: #374151;
+    }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .status-change-dropdown {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+    }
+    
+    .status-dropdown-menu {
+        min-width: 180px;
+    }
+    
+    .modern-table thead th,
+    .modern-table tbody td {
+        padding: 0.75rem 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .modern-table {
+        font-size: 0.875rem;
+    }
+    
+    .status-badge {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+    }
+    
+    .modern-toast {
+        min-width: 250px;
+        margin: 0 1rem;
+    }
+}

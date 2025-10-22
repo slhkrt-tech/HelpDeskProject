@@ -1,0 +1,104 @@
+{% extends "tickets/base.html" %}
+
+{% block title %}Ticket #{{ ticket.pk }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 800px;">
+
+  <h3>
+    {% if "[Yanlış Bölüm]" in ticket.title %}
+      <span class="badge bg-danger" title="Yanlış bölümden açılmış ticket">Yanlış Bölüm</span>
+    {% endif %}
+    {{ ticket.title|cut:"[Yanlış Bölüm] " }}
+    <small class="text-muted">#{{ ticket.pk }}</small>
+  </h3>
+
+  <p><strong>Oluşturulma Tarihi:</strong> {{ ticket.created_at|date:"Y-m-d H:i" }}</p>
+
+  <p>
+    <strong>Durum:</strong>
+    {% if ticket.status == 'new' %}Alındı
+    {% elif ticket.status == 'open' %}Görüldü
+    {% elif ticket.status == 'pending' %}Beklemede
+    {% elif ticket.status == 'closed' %}
+      {% if "[Yanlış Bölüm]" in ticket.title %}Yanlış Bölüm / Kapatıldı
+      {% else %}Kapatıldı{% endif %}
+    {% else %}{{ ticket.status }}{% endif %}
+    | <strong>Öncelik:</strong> {{ ticket.get_priority_display }}
+  </p>
+
+  <p>
+    <strong>Kategori:</strong> 
+    {% if ticket.category %}{{ ticket.category.name }}{% else %}Kategori yok{% endif %} |
+    <strong>SLA:</strong> 
+    {% if ticket.sla %}{{ ticket.sla.name }}{% else %}SLA yok{% endif %} |
+    <strong>Atanan:</strong> 
+    {% if ticket.assigned_to %}{{ ticket.assigned_to.username }}{% else %}Atanmamış{% endif %}
+  </p>
+
+  <hr>
+
+  <!-- Collapsible description -->
+   
+  <div class="textarea-container mb-3">
+    <textarea class="collapsible-textarea" readonly>{{ ticket.description|linebreaks }}</textarea>
+    <span class="toggle-arrow">▼</span>
+  </div>
+
+  <h5>Yorumlar</h5>
+  <ul class="list-group mb-3">
+    {% for c in ticket.comments.all %}
+      <li class="list-group-item">
+        <strong>{{ c.user.username }}</strong>
+        <small class="text-muted">{{ c.created_at|date:"Y-m-d H:i" }}</small>
+        <p class="mb-0">{{ c.message|linebreaks }}</p>
+      </li>
+    {% empty %}
+      <li class="list-group-item">Yorum yok.</li>
+    {% endfor %}
+  </ul>
+
+  <form method="post" class="mb-4">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <button type="submit" name="comment_submit" class="btn btn-primary">Yorum Ekle</button>
+  </form>
+
+  {% if user.is_staff %}
+    <hr>
+    <h5>Agent Kontrolleri</h5>
+    <form method="post" class="row g-3 align-items-end">
+      {% csrf_token %}
+      <div class="col-md-3">
+        <label for="status" class="form-label">Durum</label>
+        <select name="status" id="status" class="form-select">
+          <option value="new" {% if ticket.status == 'new' %}selected{% endif %}>Yeni</option>
+          <option value="open" {% if ticket.status == 'open' %}selected{% endif %}>Açık</option>
+          <option value="pending" {% if ticket.status == 'pending' %}selected{% endif %}>Beklemede</option>
+          <option value="closed" {% if ticket.status == 'closed' %}selected{% endif %}>Kapatıldı</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label for="assign_to" class="form-label">Atama</label>
+        <select name="assign_to" id="assign_to" class="form-select">
+          <option value="">(Seçiniz)</option>
+          {% for u in users %}
+            <option value="{{ u.pk }}" {% if ticket.assigned_to and ticket.assigned_to.pk == u.pk %}selected{% endif %}>{{ u.username }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-auto">
+        <button type="submit" name="assign" class="btn btn-success">Güncelle</button>
+      </div>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tickets/css/talep_list.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'tickets/js/talep_list.js' %}"></script>
+{% endblock %}

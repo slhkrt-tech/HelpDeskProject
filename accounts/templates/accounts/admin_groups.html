@@ -22,6 +22,7 @@
 {% endblock %}
 
 {% block content %}
+{% csrf_token %}
 <div class="container-fluid">
   <!-- Page Header -->
   <div class="row mb-4">
@@ -152,7 +153,7 @@
                       </td>
                       <td>
                         <span class="badge bg-primary">
-                          <i class="bi bi-people me-1"></i>{{ group.user_set.count }}
+                          <i class="bi bi-people me-1"></i>{{ group.customuser_set.count }}
                         </span>
                       </td>
                       <td>
@@ -163,20 +164,20 @@
                       </td>
                       <td>
                         <div class="user-avatars">
-                          {% for user in group.user_set.all|slice:":5" %}
+                          {% for user in group.customuser_set.all|slice:":5" %}
                             <span class="badge bg-secondary me-1" title="{{ user.username }}">
                               {{ user.username|slice:":2"|upper }}
                             </span>
                           {% endfor %}
-                          {% if group.user_set.count > 5 %}
-                            <span class="text-muted small">+{{ group.user_set.count|add:"-5" }} daha</span>
+                          {% if group.customuser_set.count > 5 %}
+                            <span class="text-muted small">+{{ group.customuser_set.count|add:"-5" }} daha</span>
                           {% endif %}
                         </div>
                       </td>
                       <td>
                         <div class="btn-group" role="group">
                           <button class="btn btn-sm btn-outline-info" 
-                                  onclick="showGroupUsers('{{ group.name }}', '{{ group.user_set.count }}')"
+                                  onclick="showGroupUsers('{{ group.name }}', '{{ group.customuser_set.count }}')"
                                   title="Kullanıcıları Görüntüle">
                             <i class="bi bi-eye"></i>
                           </button>
@@ -309,11 +310,132 @@ function showGroupUsers(groupName, userCount) {
 }
 
 function deleteGroup(groupId, groupName) {
-    if (confirm(`"${groupName}" grubunu silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz!`)) {
+    if (confirm(`"${groupName}" grubunu silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz ve gruptaki tüm kullanıcılar gruptan çıkarılacak!`)) {
+        
+        // Loading state göster
+        const deleteButton = document.querySelector(`button[onclick="deleteGroup('${groupId}', '${groupName}')"]`);
+        const originalContent = deleteButton.innerHTML;
+        deleteButton.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+        deleteButton.disabled = true;
+        
+        // CSRF token'ını al
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                         getCookie('csrftoken');
+        
         // AJAX delete request
-        console.log(`Deleting group ${groupId}: ${groupName}`);
-        // Burada delete API çağrısı yapılabilir
+        fetch(`/accounts/admin/groups/${groupId}/delete/`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Başarılı silme
+                showAlert('success', data.message);
+                
+                // Tablo satırını kaldır
+                const row = deleteButton.closest('tr');
+                row.style.transition = 'all 0.3s ease';
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(-100%)';
+                
+                setTimeout(() => {
+                    row.remove();
+                    
+                    // Grup sayısını güncelle
+                    updateGroupCount();
+                    
+                    // Eğer hiç grup kalmadıysa empty state göster
+                    checkEmptyState();
+                }, 300);
+                
+            } else {
+                // Hata durumu
+                showAlert('danger', data.error || 'Grup silinirken bir hata oluştu.');
+                
+                // Button'ı eski haline getir
+                deleteButton.innerHTML = originalContent;
+                deleteButton.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Delete error:', error);
+            showAlert('danger', 'Grup silinirken bir hata oluştu. Lütfen tekrar deneyin.');
+            
+            // Button'ı eski haline getir
+            deleteButton.innerHTML = originalContent;
+            deleteButton.disabled = false;
+        });
     }
+}
+
+// Alert gösterme fonksiyonu
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    // Sayfanın üstüne ekle
+    const container = document.querySelector('.container-fluid');
+    container.insertBefore(alertDiv, container.firstChild);
+    
+    // 5 saniye sonra otomatik kaldır
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
+}
+
+// Grup sayısını güncelle
+function updateGroupCount() {
+    const groupRows = document.querySelectorAll('.group-row');
+    const countElement = document.querySelector('.card-body h4.text-primary');
+    if (countElement) {
+        countElement.textContent = groupRows.length;
+    }
+}
+
+// Empty state kontrolü
+function checkEmptyState() {
+    const groupRows = document.querySelectorAll('.group-row');
+    const tableContainer = document.querySelector('.table-responsive');
+    
+    if (groupRows.length === 0) {
+        tableContainer.innerHTML = `
+            <div class="text-center py-5">
+                <i class="bi bi-collection display-1 text-muted"></i>
+                <h5 class="mt-3 text-muted">Henüz grup bulunmamaktadır.</h5>
+                <p class="text-muted">Yeni bir grup oluşturmak için yukarıdaki butonu kullanabilirsiniz.</p>
+                <a href="/accounts/admin/groups/create/" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>İlk Grubu Oluşturun
+                </a>
+            </div>
+        `;
+    }
+}
+
+// CSRF Cookie helper
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 </script>
 

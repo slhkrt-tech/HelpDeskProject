@@ -1,6 +1,38 @@
 {% extends 'tickets/base.html' %}
+{% load static %}
 
 {% block title %}{{ panel_title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'tickets/css/ticket_list_modern.css' %}">
+<style>
+/* Customer panel için özel stiller */
+.customer-panel-table {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.customer-panel-table thead th {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: white;
+    font-weight: 600;
+    padding: 1rem;
+    border: none;
+}
+
+.customer-panel-table tbody td {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.customer-panel-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+</style>
+{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
@@ -35,8 +67,8 @@
                             </div>
                         </div>
                         <div class="card-footer border-0" style="background-color: var(--primary-color);">
-                            <a href="/tickets/?user={{ current_user.id }}&status=open" class="text-white text-decoration-none small">
-                                Detayları Gör <i class="bi bi-arrow-right"></i>
+                            <a href="/tickets/" class="text-white text-decoration-none small">
+                                Tüm Taleplerim <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
                     </div>
@@ -101,7 +133,7 @@
                             </div>
                         </div>
                         <div class="card-footer border-0" style="background-color: var(--warning-color);">
-                            <a href="#" class="text-white text-decoration-none small">
+                            <a href="/accounts/customer/profile/" class="text-white text-decoration-none small">
                                 Profil Ayarları <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
@@ -113,6 +145,11 @@
             <div class="card">
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs" id="customerTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a href="/tickets/" class="nav-link text-decoration-none">
+                                <i class="bi bi-house-door me-2"></i>Ana Sayfa
+                            </a>
+                        </li>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="my-tickets-tab" data-bs-toggle="tab" data-bs-target="#my-tickets" type="button" role="tab">
                                 <i class="bi bi-ticket-perforated me-2"></i>Taleplerim
@@ -148,18 +185,18 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table table-hover">
+                            <div class="table-responsive-modern">
+                                <table class="table customer-panel-table mb-0">
                                     <thead>
                                         <tr>
-                                            <th>Ticket #</th>
-                                            <th>Başlık</th>
-                                            <th>Kategori</th>
-                                            <th>Öncelik</th>
-                                            <th>Durum</th>
-                                            <th>Oluşturulma</th>
-                                            <th>Son Güncelleme</th>
-                                            <th>İşlemler</th>
+                                            <th><i class="bi bi-hash me-1"></i>Ticket #</th>
+                                            <th><i class="bi bi-card-text me-1"></i>Başlık</th>
+                                            <th><i class="bi bi-folder me-1"></i>Kategori</th>
+                                            <th><i class="bi bi-exclamation-circle me-1"></i>Öncelik</th>
+                                            <th><i class="bi bi-circle me-1"></i>Durum</th>
+                                            <th><i class="bi bi-calendar me-1"></i>Oluşturulma</th>
+                                            <th><i class="bi bi-clock me-1"></i>Son Güncelleme</th>
+                                            <th><i class="bi bi-gear me-1"></i>İşlemler</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -167,64 +204,73 @@
                                             {% for ticket in my_tickets %}
                                             <tr>
                                                 <td>
-                                                    <span class="badge bg-secondary">#{{ ticket.ticket_number|default:ticket.id }}</span>
+                                                    <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-3 py-2">
+                                                        #{{ ticket.talep_numarasi|default:ticket.id }}
+                                                    </span>
                                                 </td>
                                                 <td>
-                                                    <a href="/tickets/{{ ticket.id }}/" class="text-decoration-none">
-                                                        {{ ticket.title }}
+                                                    <a href="/tickets/{{ ticket.id }}/" class="text-decoration-none text-dark fw-medium">
+                                                        {{ ticket.title|truncatechars:40 }}
                                                     </a>
                                                 </td>
                                                 <td>
                                                     {% if ticket.category %}
-                                                        <span class="badge bg-info">{{ ticket.category.name }}</span>
+                                                        <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-3 py-2">
+                                                            <i class="bi bi-folder me-1"></i>{{ ticket.category.name }}
+                                                        </span>
                                                     {% else %}
-                                                        <span class="text-muted">Kategori yok</span>
+                                                        <span class="text-muted">-</span>
                                                     {% endif %}
                                                 </td>
                                                 <td>
-                                                    {% if ticket.priority == 'urgent' %}
-                                                        <span class="badge bg-danger">Acil</span>
-                                                    {% elif ticket.priority == 'high' %}
-                                                        <span class="badge bg-warning">Yüksek</span>
-                                                    {% elif ticket.priority == 'normal' %}
-                                                        <span class="badge bg-primary">Normal</span>
-                                                    {% else %}
-                                                        <span class="badge bg-secondary">Düşük</span>
-                                                    {% endif %}
+                                                    <span class="badge 
+                                                      {% if ticket.priority == 'low' %}bg-success bg-opacity-10 text-success border border-success border-opacity-25
+                                                      {% elif ticket.priority == 'normal' %}bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25
+                                                      {% elif ticket.priority == 'high' %}bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25
+                                                      {% elif ticket.priority == 'urgent' %}bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25
+                                                      {% endif %} px-3 py-2">
+                                                      {% if ticket.priority == 'low' %}<i class="bi bi-arrow-down me-1"></i>Düşük
+                                                      {% elif ticket.priority == 'normal' %}<i class="bi bi-dash me-1"></i>Normal
+                                                      {% elif ticket.priority == 'high' %}<i class="bi bi-arrow-up me-1"></i>Yüksek
+                                                      {% elif ticket.priority == 'urgent' %}<i class="bi bi-exclamation-triangle me-1"></i>Acil
+                                                      {% endif %}
+                                                    </span>
                                                 </td>
                                                 <td>
-                                                    {% if ticket.status == 'open' %}
-                                                        <span class="badge bg-primary">Açık</span>
-                                                    {% elif ticket.status == 'in_progress' %}
-                                                        <span class="badge bg-warning">Devam Eden</span>
-                                                    {% elif ticket.status == 'closed' %}
-                                                        <span class="badge bg-success">Çözülmüş</span>
-                                                    {% else %}
-                                                        <span class="badge bg-secondary">{{ ticket.status|title }}</span>
-                                                    {% endif %}
+                                                    <span class="status-badge status-{{ ticket.status }}">
+                                                        {{ ticket.get_status_display }}
+                                                    </span>
                                                 </td>
                                                 <td>
-                                                    <small class="text-muted">{{ ticket.created_at|date:"d.m.Y H:i" }}</small>
+                                                    <div class="d-flex flex-column">
+                                                        <span class="fw-medium">{{ ticket.created_at|date:"d.m.Y" }}</span>
+                                                        <small class="text-muted">{{ ticket.created_at|date:"H:i" }}</small>
+                                                    </div>
                                                 </td>
                                                 <td>
-                                                    <small class="text-muted">{{ ticket.updated_at|date:"d.m.Y H:i" }}</small>
+                                                    <div class="d-flex flex-column">
+                                                        <span class="fw-medium">{{ ticket.updated_at|date:"d.m.Y" }}</span>
+                                                        <small class="text-muted">{{ ticket.updated_at|date:"H:i" }}</small>
+                                                    </div>
                                                 </td>
                                                 <td>
-                                                    <a href="/tickets/{{ ticket.id }}/" class="btn btn-sm btn-outline-primary" title="Detay Görüntüle">
-                                                        <i class="bi bi-eye"></i>
+                                                    <a href="/tickets/{{ ticket.id }}/" class="btn btn-sm" style="background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; border-radius: 8px;" title="Detay Görüntüle">
+                                                        <i class="bi bi-eye me-1"></i>Detay
                                                     </a>
                                                 </td>
                                             </tr>
                                             {% endfor %}
                                         {% else %}
                                             <tr>
-                                                <td colspan="8" class="text-center text-muted py-4">
-                                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                                                    Henüz hiç talebiniz bulunmamaktadır.
-                                                    <br>
-                                                    <a href="#" class="btn btn-primary btn-sm mt-2" data-bs-toggle="tab" data-bs-target="#create-ticket">
-                                                        İlk Talebinizi Oluşturun
-                                                    </a>
+                                                <td colspan="8" class="text-center text-muted py-5">
+                                                    <div class="d-flex flex-column align-items-center">
+                                                        <i class="bi bi-inbox fs-1 mb-3 text-muted"></i>
+                                                        <h5 class="text-muted">Henüz hiç talebiniz bulunmamaktadır</h5>
+                                                        <p class="text-muted mb-3">İlk talebinizi oluşturarak başlayabilirsiniz.</p>
+                                                        <a href="#" class="btn btn-primary" data-bs-toggle="tab" data-bs-target="#create-ticket">
+                                                            <i class="bi bi-plus-circle me-2"></i>İlk Talebinizi Oluşturun
+                                                        </a>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         {% endif %}
@@ -422,7 +468,7 @@
                                                     <td>{{ current_user.last_login|date:"d.m.Y H:i"|default:"Bilinmiyor" }}</td>
                                                 </tr>
                                             </table>
-                                            <button class="btn btn-primary btn-sm">
+                                            <button class="btn btn-primary btn-sm" onclick="location.href='/accounts/customer/profile-edit/'">
                                                 <i class="bi bi-pencil me-1"></i>Bilgileri Düzenle
                                             </button>
                                         </div>
@@ -457,10 +503,10 @@
                                         <div class="card-body">
                                             <h6 class="card-title">Güvenlik</h6>
                                             <div class="d-grid gap-2">
-                                                <button class="btn btn-outline-primary btn-sm">
+                                                <button class="btn btn-outline-primary btn-sm" onclick="location.href='/accounts/customer/change-password/'">
                                                     <i class="bi bi-key me-1"></i>Şifre Değiştir
                                                 </button>
-                                                <button class="btn btn-outline-danger btn-sm">
+                                                <button class="btn btn-outline-danger btn-sm" onclick="secureLogout()">
                                                     <i class="bi bi-shield-exclamation me-1"></i>Hesabı Güvenli Çıkış
                                                 </button>
                                             </div>
@@ -727,5 +773,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('Customer Panel JavaScript initialized successfully');
 });
+
+// Güvenli çıkış fonksiyonu
+function secureLogout() {
+    if (confirm('Güvenli çıkış yapmak istediğinizden emin misiniz? Tüm oturumlarınız sonlandırılacak.')) {
+        safeLogout(); // Base template'deki güvenli çıkış fonksiyonu
+    }
+}
 </script>
 {% endblock %}

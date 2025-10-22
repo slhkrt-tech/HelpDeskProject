@@ -1,0 +1,181 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block breadcrumb %}
+<!-- No breadcrumb for customer profile edit -->
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <!-- Page Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="h3 mb-0">
+            <i class="bi bi-pencil-square text-primary me-2"></i>Profil Düzenle
+          </h1>
+          <p class="text-muted mb-0">Kişisel bilgilerinizi güncelleyin</p>
+        </div>
+        <div>
+          <a href="/accounts/customer/profile/" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Geri Dön
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Form -->
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <!-- Error Message -->
+      {% if error %}
+      <div class="alert alert-danger" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+      </div>
+      {% endif %}
+
+      <!-- Edit Form Card -->
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">
+            <i class="bi bi-person-gear me-2"></i>Kişisel Bilgileri Düzenle
+          </h5>
+        </div>
+        <div class="card-body">
+          <form method="post" id="profileEditForm">
+            {% csrf_token %}
+            
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="first_name" class="form-label">Adı</label>
+                <input type="text" class="form-control" id="first_name" name="first_name" 
+                       value="{{ current_user.first_name }}" placeholder="Adınızı girin">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="last_name" class="form-label">Soyadı</label>
+                <input type="text" class="form-control" id="last_name" name="last_name" 
+                       value="{{ current_user.last_name }}" placeholder="Soyadınızı girin">
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">E-posta Adresi</label>
+              <input type="email" class="form-control" id="email" name="email" 
+                     value="{{ current_user.email }}" placeholder="E-posta adresinizi girin" required>
+              <div class="form-text">
+                E-posta adresiniz hesap bildirimleriniz için kullanılır.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="username" class="form-label">Kullanıcı Adı</label>
+              <input type="text" class="form-control" id="username" name="username" 
+                     value="{{ current_user.username }}" readonly disabled>
+              <div class="form-text">
+                Kullanıcı adınız değiştirilemez.
+              </div>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save me-2"></i>Değişiklikleri Kaydet
+              </button>
+              <a href="/accounts/customer/profile/" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle me-2"></i>İptal
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Additional Actions -->
+      <div class="card mt-4">
+        <div class="card-header">
+          <h5 class="card-title mb-0">
+            <i class="bi bi-shield-lock me-2"></i>Güvenlik İşlemleri
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h6>Şifre Değiştir</h6>
+              <p class="text-muted small">Hesabınızın güvenliği için şifrenizi düzenli olarak değiştirin.</p>
+              <a href="/accounts/customer/change-password/" class="btn btn-outline-warning">
+                <i class="bi bi-key me-2"></i>Şifre Değiştir
+              </a>
+            </div>
+            <div class="col-md-6">
+              <h6>Hesap Güvenliği</h6>
+              <p class="text-muted small">Tüm cihazlardan güvenli bir şekilde çıkış yapın.</p>
+              <button class="btn btn-outline-danger" onclick="secureLogout()">
+                <i class="bi bi-shield-exclamation me-2"></i>Güvenli Çıkış
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.card {
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.25);
+}
+
+.btn {
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.alert {
+  border-radius: 8px;
+  border: none;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    const form = document.getElementById('profileEditForm');
+    
+    form.addEventListener('submit', function(e) {
+        const email = document.getElementById('email').value.trim();
+        
+        if (!email) {
+            e.preventDefault();
+            alert('E-posta adresi zorunludur.');
+            return;
+        }
+        
+        // Email format validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            e.preventDefault();
+            alert('Geçerli bir e-posta adresi girin.');
+            return;
+        }
+    });
+});
+
+function secureLogout() {
+    if (confirm('Tüm cihazlardan güvenli çıkış yapmak istediğinizden emin misiniz?')) {
+        logout();
+    }
+}
+</script>
+{% endblock %}

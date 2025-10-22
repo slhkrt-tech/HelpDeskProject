@@ -51,7 +51,7 @@
     <!-- Ana Menü -->
     <ul class="sidebar-nav">
       <li class="nav-item">
-        <a href="{% url 'home' %}" class="nav-link" data-page="home">
+        <a href="{% url 'home' %}" class="nav-link" data-page="home" data-title="Ana Sayfa">
           <i class="bi bi-house-door"></i>
           <span class="sidebar-text">Ana Sayfa</span>
         </a>
@@ -65,28 +65,28 @@
       </div>
       <ul class="sidebar-nav">
         <li class="nav-item">
-          <a href="/accounts/admin-panel/" class="nav-link" data-page="admin">
+          <a href="/accounts/admin-panel/" class="nav-link" data-page="admin" data-title="Admin Paneli">
             <i class="bi bi-gear"></i>
             <span class="sidebar-text">Admin Paneli</span>
           </a>
         </li>
         
         <li class="nav-item">
-          <a href="/accounts/admin/users/" class="nav-link" data-page="users">
+          <a href="/accounts/admin/users/" class="nav-link" data-page="users" data-title="Kullanıcılar">
             <i class="bi bi-people"></i>
             <span class="sidebar-text">Kullanıcılar</span>
           </a>
         </li>
         
         <li class="nav-item">
-          <a href="#" class="nav-link" data-page="reports">
+          <a href="/accounts/admin/reports/" class="nav-link" data-page="reports" data-title="Raporlar">
             <i class="bi bi-graph-up"></i>
             <span class="sidebar-text">Raporlar</span>
           </a>
         </li>
 
         <li class="nav-item">
-          <a href="#" class="nav-link" data-page="settings">
+          <a href="/accounts/admin/settings/" class="nav-link" data-page="settings" data-title="Sistem Ayarları">
             <i class="bi bi-sliders"></i>
             <span class="sidebar-text">Sistem Ayarları</span>
           </a>
@@ -101,21 +101,21 @@
       </div>
       <ul class="sidebar-nav">
         <li class="nav-item">
-          <a href="/accounts/support-panel/" class="nav-link" data-page="support">
+          <a href="/accounts/support-panel/" class="nav-link" data-page="support" data-title="Destek Paneli">
             <i class="bi bi-headset"></i>
             <span class="sidebar-text">Destek Paneli</span>
           </a>
         </li>
         
         <li class="nav-item">
-          <a href="#" class="nav-link" data-page="tickets-all">
+          <a href="#" class="nav-link" data-page="tickets-all" data-title="Tüm Talepler">
             <i class="bi bi-list-ul"></i>
             <span class="sidebar-text">Tüm Talepler</span>
           </a>
         </li>
         
         <li class="nav-item">
-          <a href="#" class="nav-link" data-page="tickets-assigned">
+          <a href="#" class="nav-link" data-page="tickets-assigned" data-title="Atanan Talepler">
             <i class="bi bi-person-check"></i>
             <span class="sidebar-text">Atanan Talepler</span>
           </a>
@@ -130,14 +130,14 @@
       </div>
       <ul class="sidebar-nav">
         <li class="nav-item">
-          <a href="/tickets/" class="nav-link" data-page="tickets">
+          <a href="/tickets/" class="nav-link" data-page="tickets" data-title="Taleplerim">
             <i class="bi bi-list"></i>
             <span class="sidebar-text">Taleplerim</span>
           </a>
         </li>
         
         <li class="nav-item">
-          <a href="/tickets/create/" class="nav-link" data-page="create">
+          <a href="/tickets/create/" class="nav-link" data-page="create" data-title="Yeni Talep">
             <i class="bi bi-plus-circle"></i>
             <span class="sidebar-text">Yeni Talep</span>
           </a>
@@ -162,7 +162,7 @@
         
         <ul class="sidebar-nav border-top pt-2">
           <li class="nav-item">
-            <a href="#" class="nav-link" onclick="logout()">
+            <a href="#" class="nav-link" onclick="logout()" data-title="Çıkış">
               <i class="bi bi-box-arrow-right text-danger"></i>
               <span class="sidebar-text">Çıkış</span>
             </a>
@@ -173,13 +173,13 @@
       <div id="guestSection">
         <ul class="sidebar-nav">
           <li class="nav-item">
-            <a href="{% url 'login' %}" class="nav-link">
+            <a href="{% url 'login' %}" class="nav-link" data-title="Giriş">
               <i class="bi bi-box-arrow-in-right"></i>
               <span class="sidebar-text">Giriş</span>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'signup' %}" class="nav-link">
+            <a href="{% url 'signup' %}" class="nav-link" data-title="Kayıt">
               <i class="bi bi-person-plus"></i>
               <span class="sidebar-text">Kayıt</span>
             </a>
@@ -438,7 +438,7 @@ async function validateTokenWithServer(token) {
 function clearAuthData() {
   localStorage.removeItem('authToken');
   localStorage.removeItem('userData');
-  document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+  sessionStorage.clear();
 }
 
 // Sekme değiştiğinde kontrol et
@@ -531,8 +531,8 @@ function showUnauthenticatedState() {
 async function logout() {
   const token = localStorage.getItem('authToken');
   
-  if (token) {
-    try {
+  try {
+    if (token) {
       // CSRF token'ını al
       const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
                        getCookie('csrftoken');
@@ -551,17 +551,84 @@ async function logout() {
       } else {
         console.log('Logout failed, but clearing local data anyway');
       }
-      
-    } catch (error) {
-      console.error('Logout error:', error);
     }
+  } catch (error) {
+    console.error('Logout error:', error);
   }
   
-  // Her durumda local auth data'yı temizle
+  // Her durumda tüm auth data'yı temizle
   clearAuthData();
+  
+  // Tüm authentication cookie'lerini temizle
+  clearAllAuthCookies();
   
   // Login sayfasına yönlendir
   window.location.href = '/accounts/login/';
+}
+
+// Güvenli çıkış fonksiyonu - Tüm token'ları sunucudan siler
+async function safeLogout() {
+  const token = localStorage.getItem('authToken');
+  
+  try {
+    if (token) {
+      // CSRF token'ını al
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                       getCookie('csrftoken');
+      
+      const response = await fetch('/accounts/api/safe-logout/', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Token ' + token,
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Safe logout successful:', data.message);
+      } else {
+        console.log('Safe logout failed, but clearing local data anyway');
+      }
+    }
+  } catch (error) {
+    console.error('Safe logout error:', error);
+  }
+  
+  // Her durumda tüm auth data'yı temizle
+  clearAuthData();
+  
+  // Tüm authentication cookie'lerini temizle
+  clearAllAuthCookies();
+  
+  // Login sayfasına yönlendir
+  window.location.href = '/accounts/login/';
+}
+
+// Auth data'yı temizle
+function clearAuthData() {
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('userData');
+  sessionStorage.clear();
+}
+
+// Tüm auth cookie'lerini temizle
+function clearAllAuthCookies() {
+  const cookiesToClear = [
+    'auth_token',
+    'user_id', 
+    'user_role',
+    'sessionid',
+    'csrftoken'
+  ];
+  
+  cookiesToClear.forEach(cookieName => {
+    // Farklı path'ler için temizle
+    document.cookie = `${cookieName}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${window.location.hostname}`;
+    document.cookie = `${cookieName}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+    document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+  });
 }
 
 // CSRF Cookie yardımcı fonksiyonu
