@@ -5160,3 +5160,10 @@ INFO 2025-10-24 11:47:48,038 views 10532 20280 No auth_token found in cookies
 INFO 2025-10-24 11:47:48,038 views 10532 20280 No valid authentication found
 INFO 2025-10-24 11:47:48,038 basehttp 10532 20280 "GET /accounts/admin/reports/?id=3774767b-4e96-4818-9c26-57e209141599&vscodeBrowserReqId=1761295668034 HTTP/1.1" 302 0
 INFO 2025-10-24 11:47:48,041 basehttp 10532 20280 "GET /accounts/login/?next=admin-reports HTTP/1.1" 200 29096
+WARNING 2025-10-24 12:19:29,427 log 19956 19644 Unauthorized: /accounts/api/logout/
+WARNING 2025-10-24 12:20:10,465 log 19956 17176 Unauthorized: /accounts/api/logout/
+WARNING 2025-10-24 12:20:48,016 log 19956 3876 Unauthorized: /accounts/api/logout/
+WARNING 2025-10-24 12:20:55,612 log 19956 17176 Bad Request: /accounts/api/login/
+WARNING 2025-10-24 12:22:44,991 log 19956 3876 Unauthorized: /accounts/api/logout/
+WARNING 2025-10-24 12:22:54,749 log 19956 11484 Bad Request: /accounts/api/login/
+WARNING 2025-10-24 12:23:14,565 log 19956 17176 Unauthorized: /accounts/api/logout/

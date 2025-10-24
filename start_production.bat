@@ -43,7 +43,75 @@ echo ✅ Alpha Production server ready!
 echo.
 echo 🌐 Starting Waitress production server (Windows optimized)...
 echo 📍 Access at: http://localhost:8000
-echo 🔑 Admin credentials: admin / alpha123!
+@echo off
+REM HelpDesk System - One-Click Production Deployment
+REM Download from GitHub and run locally with production settings
+
+echo.
+echo 🎫 HelpDesk System - Production Deployment
+echo ==========================================
+echo.
+
+REM Check Python
+echo 🐍 Checking Python installation...
+python --version >nul 2>&1
+if errorlevel 1 (
+    echo ❌ Python not found! Please install Python 3.8+ first.
+    echo    Download from: https://www.python.org/downloads/
+    pause
+    exit /b 1
+)
+python --version
+
+echo.
+echo 📦 Installing dependencies...
+pip install -r requirements.txt
+if errorlevel 1 (
+    echo ❌ Failed to install dependencies!
+    pause
+    exit /b 1
+)
+
+echo.
+echo 🗄️  Setting up database...
+python manage.py migrate --noinput
+if errorlevel 1 (
+    echo ❌ Database setup failed!
+    pause
+    exit /b 1
+)
+
+echo.
+echo � Creating admin user and setting up system...
+python manage.py alpha_production --setup
+if errorlevel 1 (
+    echo ❌ Setup failed!
+    pause
+    exit /b 1
+)
+
+echo.
+echo 📁 Collecting static files...
+python manage.py collectstatic --noinput
+
+echo.
+echo ✅ HelpDesk Production Setup Complete!
+echo.
+echo 🌐 Starting production server...
+echo.
+echo 📍 URL: http://localhost:8000
+echo 👤 Admin: admin / alpha123!
+echo 🛑 Stop: Ctrl+C
+echo.
+echo ==========================================
+
+REM Start production server
+python production_server.py
+
+echo.
+echo 🛑 HelpDesk server stopped.
+echo Thank you for using HelpDesk System!
+pause
 echo  Stop server: Ctrl+C
 echo.
 
