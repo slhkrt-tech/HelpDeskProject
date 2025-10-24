@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
+                    // Hata oluştu
                     showMessage('İstek gönderilirken bir hata oluştu', 'error');
                     // Butonu eski haline getir
                     resetButton(this, buttonText);
