@@ -199,23 +199,15 @@
                       </td>
                       {% if is_admin or is_support %}
                         <td class="actions-column">
-                          <div class="status-action-container">
-                            <button class="status-change-dropdown" type="button" data-ticket-id="{{ ticket.pk }}">
-                              <i class="bi bi-arrow-repeat me-1"></i>Durum Değiştir
-                              <i class="bi bi-chevron-down ms-1"></i>
-                            </button>
-                            <div class="status-dropdown-menu" style="display: none;">
-                              {% for status_value, status_display in status_choices %}
-                                {% if status_value != ticket.status %}
-                                  <button class="status-dropdown-item" 
-                                          data-ticket-id="{{ ticket.pk }}" 
-                                          data-status="{{ status_value }}">
-                                    {{ status_display }}
-                                  </button>
-                                {% endif %}
-                              {% endfor %}
-                            </div>
-                          </div>
+                          <button class="btn btn-sm btn-outline-primary status-change-btn" 
+                                  type="button" 
+                                  data-ticket-id="{{ ticket.pk }}" 
+                                  data-current-status="{{ ticket.status }}"
+                                  data-ticket-title="{{ ticket.title|truncatechars:30 }}"
+                                  title="Durum Değiştir">
+                            <i class="bi bi-arrow-repeat me-1"></i>
+                            <span class="d-none d-lg-inline">Durum</span>
+                          </button>
                         </td>
                       {% endif %}
                     </tr>
@@ -234,6 +226,47 @@
             </div>
           {% endif %}
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Status Change Modal -->
+<div class="modal fade" id="statusChangeModal" tabindex="-1" aria-labelledby="statusChangeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="statusChangeModalLabel">
+          <i class="bi bi-arrow-repeat me-2"></i>Talep Durumu Değiştir
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label text-muted">Talep:</label>
+          <div class="fw-bold" id="modalTicketTitle"></div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label text-muted">Mevcut Durum:</label>
+          <div class="current-status-display" id="modalCurrentStatus"></div>
+        </div>
+        <div class="mb-3">
+          <label for="newStatusSelect" class="form-label">Yeni Durum:</label>
+          <select class="form-select" id="newStatusSelect">
+            <option value="">Yeni durum seçin...</option>
+            {% for status_value, status_display in status_choices %}
+              <option value="{{ status_value }}">{{ status_display }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x-circle me-1"></i>İptal
+        </button>
+        <button type="button" class="btn btn-primary" id="confirmStatusChange" disabled>
+          <i class="bi bi-check-circle me-1"></i>Durumu Değiştir
+        </button>
       </div>
     </div>
   </div>

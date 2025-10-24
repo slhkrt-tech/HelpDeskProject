@@ -362,7 +362,7 @@ async function checkAuthState() {
   // Yeni login olduysa kısa süre bekle
   const justLoggedIn = sessionStorage.getItem('justLoggedIn');
   if (justLoggedIn) {
-    console.log('Just logged in, waiting for token...');
+
     sessionStorage.removeItem('justLoggedIn');
     // Token set edilmesi için kısa süre bekle
     setTimeout(() => {
@@ -385,12 +385,12 @@ async function checkAuthState() {
         showAuthenticatedState(user);
       } else {
         // Token geçersiz, temizle ve login'e yönlendir
-        console.log('Token validation failed, clearing auth data');
+
         clearAuthData();
         window.location.href = '/accounts/login/';
       }
     } catch (e) {
-      console.error('User data parse error:', e);
+
       clearAuthData();
       showUnauthenticatedState();
     }
@@ -400,7 +400,7 @@ async function checkAuthState() {
         !currentPath.includes('/signup/') && 
         !currentPath.includes('/auth/password_reset/') &&
         !currentPath.includes('/auth/reset/')) {
-      console.log('No token found, redirecting to login');
+
       window.location.href = '/accounts/login/';
     } else {
       showUnauthenticatedState();
@@ -425,11 +425,11 @@ async function validateTokenWithServer(token) {
       localStorage.setItem('userData', JSON.stringify(data.user));
       return true;
     } else {
-      console.log('Token validation failed:', response.status);
+
       return false;
     }
   } catch (error) {
-    console.error('Token validation error:', error);
+
     return false;
   }
 }
@@ -547,13 +547,13 @@ async function logout() {
       });
       
       if (response.ok) {
-        console.log('Logout successful');
+
       } else {
-        console.log('Logout failed, but clearing local data anyway');
+
       }
     }
   } catch (error) {
-    console.error('Logout error:', error);
+
   }
   
   // Her durumda tüm auth data'yı temizle
@@ -587,13 +587,13 @@ async function safeLogout() {
       
       if (response.ok) {
         const data = await response.json();
-        console.log('Safe logout successful:', data.message);
+
       } else {
-        console.log('Safe logout failed, but clearing local data anyway');
+
       }
     }
   } catch (error) {
-    console.error('Safe logout error:', error);
+
   }
   
   // Her durumda tüm auth data'yı temizle

@@ -30,8 +30,15 @@
                      name="username" 
                      class="form-control" 
                      placeholder="Kullanıcı Adı" 
+                     minlength="3"
+                     maxlength="150"
+                     pattern="[a-zA-Z0-9_-]+"
+                     title="En az 3 karakter, sadece harf, rakam, alt çizgi (_) ve tire (-) kullanılabilir"
                      required>
-              <label for="username">Kullanıcı Adı</label>
+              <label for="username">Kullanıcı Adı <small class="text-muted">(En az 3 karakter)</small></label>
+              <div class="invalid-feedback">
+                  Kullanıcı adı en az 3 karakter olmalı ve sadece harf, rakam, _ ve - içerebilir.
+              </div>
           </div>
 
           <!-- E-posta -->
@@ -90,17 +97,48 @@ document.addEventListener('DOMContentLoaded', function() {
     var errorDiv = document.getElementById('errorMessages');
     var successDiv = document.getElementById('successMessages');
 
-    // Token kontrolü
-    var token = localStorage.getItem('authToken');
-    if (token) {
-        window.location.href = '/';
-        return;
-    }
+    // Sayfa yüklendiğinde eski authentication verilerini temizle
+
+    
+    // LocalStorage temizle
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userData');
+    sessionStorage.clear();
+    
+    // Mevcut session cookie'leri temizle (güvenlik için)
+    document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+    });
+    
+
+
+    // Real-time username validation
+    const usernameInput = document.getElementById('username');
+    const usernameFeedback = usernameInput.nextElementSibling;
+    
+    usernameInput.addEventListener('input', function() {
+        const username = this.value.trim();
+        const isValid = validateUsernameInput(username);
+        
+        if (username.length === 0) {
+            // Boş ise herhangi bir feedback gösterme
+            this.classList.remove('is-valid', 'is-invalid');
+            usernameFeedback.style.display = 'none';
+        } else if (isValid) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+            usernameFeedback.style.display = 'none';
+        } else {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+            usernameFeedback.style.display = 'block';
+        }
+    });
 
     signupForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        console.log('Form submit edildi');
+
         
         // Loading state
         signupBtn.disabled = true;
@@ -113,11 +151,32 @@ document.addEventListener('DOMContentLoaded', function() {
         var password1 = document.getElementById('password1').value;
         var password2 = document.getElementById('password2').value;
         
-        console.log('Form data:', { username: username, email: email });
+
         
         // Client-side validasyon
         if (!username || !email || !password1 || !password2) {
             showMessage(errorDiv, 'Lütfen tüm alanları doldurun.');
+            resetLoadingState();
+            return;
+        }
+        
+        // Username validation
+        if (username.length < 3) {
+            showMessage(errorDiv, 'Kullanıcı adı en az 3 karakter olmalıdır.');
+            resetLoadingState();
+            return;
+        }
+        
+        if (username.length > 150) {
+            showMessage(errorDiv, 'Kullanıcı adı en fazla 150 karakter olabilir.');
+            resetLoadingState();
+            return;
+        }
+        
+        // Username character validation
+        var usernamePattern = /^[a-zA-Z0-9_-]+$/;
+        if (!usernamePattern.test(username)) {
+            showMessage(errorDiv, 'Kullanıcı adı sadece harf, rakam, alt çizgi (_) ve tire (-) içerebilir.');
             resetLoadingState();
             return;
         }
@@ -141,31 +200,28 @@ document.addEventListener('DOMContentLoaded', function() {
         
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
-                console.log('Response status:', xhr.status);
-                console.log('Response text:', xhr.responseText);
+
+
                 
                 try {
                     var data = JSON.parse(xhr.responseText);
-                    console.log('Parsed data:', data);
+
                     
                     if (xhr.status === 200 || xhr.status === 201) {
                         // Başarılı kayıt
-                        console.log('Signup successful:', data);
+
                         
-                        // Token'ları kaydet
+                        showMessage(successDiv, data.message || 'Hesap başarıyla oluşturuldu! Yönlendiriliyorsunuz...');
+                        
+                        // Yeni token'ları localStorage'a kaydet
                         if (data.token) {
+
                             localStorage.setItem('authToken', data.token);
                         }
                         if (data.user) {
+
                             localStorage.setItem('userData', JSON.stringify(data.user));
                         }
-                        
-                        // Cookie kaydet
-                        if (data.token) {
-                            document.cookie = 'auth_token=' + data.token + '; path=/; max-age=' + (7*24*60*60);
-                        }
-                        
-                        showMessage(successDiv, data.message || 'Hesap başarıyla oluşturuldu! Yönlendiriliyorsunuz...');
                         
                         // Güvenli çıkış önerisi butonu ekle
                         const safeLogoutBtn = document.createElement('button');
@@ -190,25 +246,22 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         successDiv.appendChild(safeLogoutBtn);
                         
-                        // Yönlendirme
+                        // Direkt customer panel'e yönlendirme (home_view bypass)
                         setTimeout(function() {
-                            if (data.redirect_url) {
-                                window.location.href = data.redirect_url;
-                            } else {
-                                window.location.href = '/';
-                            }
-                        }, 2000);
+
+                            window.location.href = '/accounts/customer-panel/';
+                        }, 3000); // 3 saniye bekle
                         
                     } else {
                         // Hata durumu
-                        console.log('Signup error:', data);
+
                         showMessage(errorDiv, data.error || 'Kayıt olurken bir hata oluştu.');
                         resetLoadingState();
                     }
                     
                 } catch (e) {
-                    console.error('JSON parse error:', e);
-                    console.error('Raw response:', xhr.responseText);
+
+
                     showMessage(errorDiv, 'Sunucu yanıtı işlenirken hata oluştu.');
                     resetLoadingState();
                 }
@@ -216,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         
         xhr.onerror = function() {
-            console.error('XHR request error');
+
             showMessage(errorDiv, 'Ağ hatası. İnternet bağlantınızı kontrol edin.');
             resetLoadingState();
         };
@@ -229,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function() {
             password2: password2
         };
         
-        console.log('Sending signup request:', requestData);
+
         xhr.send(JSON.stringify(requestData));
     });
     

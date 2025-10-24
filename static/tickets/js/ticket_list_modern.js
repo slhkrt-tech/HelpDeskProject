@@ -1,331 +1,287 @@
-// Modern Ticket List JavaScript
-// ================================================================================
+// Modern Ticket List JavaScript - Modal Version
+document.addEventListener('DOMContentLoaded', function() {
 
-class TicketStatusManager {
-    constructor() {
-        this.init();
-    }
-
-    init() {
-        this.bindEvents();
-        this.initializeTooltips();
-    }
-
-    bindEvents() {
-        // Durum değiştirme butonları
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('status-dropdown-item')) {
-                this.handleStatusChange(e);
-            }
-        });
-
-        // Dropdown toggle
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('status-change-dropdown')) {
-                this.toggleDropdown(e);
-            } else {
-                this.closeAllDropdowns();
-            }
-        });
-
-        // ESC tuşu ile dropdown kapat
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.closeAllDropdowns();
-            }
-        });
-    }
-
-    async handleStatusChange(event) {
-        event.preventDefault();
+    
+    // Modal elements
+    const statusModal = document.getElementById('statusChangeModal');
+    const modalTitle = document.getElementById('modalTicketTitle');
+    const modalCurrentStatus = document.getElementById('modalCurrentStatus');
+    const newStatusSelect = document.getElementById('newStatusSelect');
+    const confirmButton = document.getElementById('confirmStatusChange');
+    
+    let currentTicketId = null;
+    let currentTicketStatus = null;
+    
+    // Status display names mapping
+    const statusDisplayNames = {
+        'open': 'Açık',
+        'in_progress': 'İşlemde',
+        'resolved': 'Çözümlendi',
+        'closed': 'Kapalı'
+    };
+    
+    // Bootstrap modal instance
+    let modalInstance = null;
+    
+    // Initialize modal
+    if (statusModal) {
+        modalInstance = new bootstrap.Modal(statusModal);
         
-        const button = event.target;
-        const ticketId = button.dataset.ticketId;
-        const newStatus = button.dataset.status;
-        const statusDisplay = button.textContent.trim();
+        // Modal show event
+        statusModal.addEventListener('show.bs.modal', function(event) {
 
-        // Onay dialog
-        const confirmed = await this.showConfirmDialog(
-            `Talep #${ticketId} durumunu "${statusDisplay}" olarak değiştirmek istediğinizden emin misiniz?`
-        );
+            updateModalContent();
+        });
+        
+        // Modal hide event
+        statusModal.addEventListener('hide.bs.modal', function(event) {
+            resetModal();
+        });
+    }
+    
+    // Event delegation for status change buttons
+    document.addEventListener('click', function(event) {
+        if (event.target.closest('.status-change-btn')) {
+            const button = event.target.closest('.status-change-btn');
+            handleStatusChangeClick(button);
+        }
+    });
+    
+    // New status select change event
+    if (newStatusSelect) {
+        newStatusSelect.addEventListener('change', function() {
+            const selectedValue = this.value;
+            const isValid = selectedValue && selectedValue !== currentTicketStatus;
+            
+            if (confirmButton) {
+                confirmButton.disabled = !isValid;
+            }
+            
 
-        if (!confirmed) return;
-
-        // Loading başlat
-        this.showLoading();
-
+        });
+    }
+    
+    // Confirm button click
+    if (confirmButton) {
+        confirmButton.addEventListener('click', function() {
+            const newStatus = newStatusSelect.value;
+            if (newStatus && currentTicketId) {
+                changeTicketStatus(currentTicketId, newStatus);
+            }
+        });
+    }
+    
+    function handleStatusChangeClick(button) {
         try {
+            currentTicketId = button.dataset.ticketId;
+            currentTicketStatus = button.dataset.currentStatus;
+            const ticketTitle = button.dataset.ticketTitle;
+            
+            console.log('Opening status change modal:', {
+                ticketId: currentTicketId,
+                currentStatus: currentTicketStatus,
+                title: ticketTitle
+            });
+            
+            if (modalInstance) {
+                modalInstance.show();
+            }
+        } catch (error) {
+
+            showToast('Bir hata oluştu: ' + error.message, 'error');
+        }
+    }
+    
+    function updateModalContent() {
+        if (!currentTicketId || !currentTicketStatus) return;
+        
+        // Update ticket title
+        if (modalTitle) {
+            const button = document.querySelector(`[data-ticket-id="${currentTicketId}"]`);
+            const title = button ? button.dataset.ticketTitle : `Talep #${currentTicketId}`;
+            modalTitle.textContent = title;
+        }
+        
+        // Update current status display
+        if (modalCurrentStatus) {
+            const statusDisplay = statusDisplayNames[currentTicketStatus] || currentTicketStatus;
+            modalCurrentStatus.textContent = statusDisplay;
+            modalCurrentStatus.className = `current-status-display status-${currentTicketStatus}`;
+        }
+        
+        // Reset and populate new status select
+        if (newStatusSelect) {
+            newStatusSelect.value = '';
+            
+            // Hide current status option
+            Array.from(newStatusSelect.options).forEach(option => {
+                if (option.value === currentTicketStatus) {
+                    option.style.display = 'none';
+                } else {
+                    option.style.display = 'block';
+                }
+            });
+        }
+        
+        // Disable confirm button initially
+        if (confirmButton) {
+            confirmButton.disabled = true;
+        }
+    }
+    
+    function resetModal() {
+        currentTicketId = null;
+        currentTicketStatus = null;
+        
+        if (modalTitle) modalTitle.textContent = '';
+        if (modalCurrentStatus) {
+            modalCurrentStatus.textContent = '';
+            modalCurrentStatus.className = 'current-status-display';
+        }
+        if (newStatusSelect) newStatusSelect.value = '';
+        if (confirmButton) confirmButton.disabled = true;
+        
+
+    }
+    
+    async function changeTicketStatus(ticketId, newStatus) {
+        if (!ticketId || !newStatus) {
+
+            return;
+        }
+        
+
+        
+        // Show loading state
+        showLoadingOverlay('Durum değiştiriliyor...');
+        
+        try {
+            // Get CSRF token
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
             const response = await fetch(`/tickets/${ticketId}/change-status/`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': this.getCSRFToken(),
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                    'Accept': 'application/json'
                 },
-                body: `status=${newStatus}`
+                body: JSON.stringify({
+                    status: newStatus
+                })
             });
+            
+            const result = await response.json();
+            
+            if (response.ok && result.success) {
 
-            const data = await response.json();
-
-            if (data.success) {
-                this.updateStatusUI(ticketId, newStatus, data.new_status_display || statusDisplay);
-                this.showToast('Durum başarıyla güncellendi!', 'success');
                 
-                // Dropdown'ı güncelle
-                this.updateDropdownOptions(ticketId, newStatus);
-            } else {
-                this.showToast(data.error || 'Durum güncellenirken bir hata oluştu.', 'error');
-            }
-        } catch (error) {
-            console.error('Status change error:', error);
-            this.showToast('Bağlantı hatası oluştu.', 'error');
-        } finally {
-            this.hideLoading();
-            this.closeAllDropdowns();
-        }
-    }
-
-    updateStatusUI(ticketId, newStatus, statusDisplay) {
-        const statusBadge = document.getElementById(`status-badge-${ticketId}`);
-        if (statusBadge) {
-            // Eski class'ları temizle
-            statusBadge.className = 'status-badge';
-            
-            // Yeni status class'ını ekle
-            statusBadge.classList.add(`status-${newStatus}`);
-            statusBadge.textContent = statusDisplay;
-
-            // Animasyon efekti
-            statusBadge.style.transform = 'scale(1.1)';
-            setTimeout(() => {
-                statusBadge.style.transform = 'scale(1)';
-            }, 200);
-        }
-    }
-
-    updateDropdownOptions(ticketId, currentStatus) {
-        const dropdown = document.querySelector(`[data-ticket-id="${ticketId}"]`).closest('.status-action-container');
-        const dropdownItems = dropdown.querySelectorAll('.status-dropdown-item');
-        
-        dropdownItems.forEach(item => {
-            const itemStatus = item.dataset.status;
-            // Mevcut durumu gizle, diğerlerini göster
-            item.style.display = itemStatus === currentStatus ? 'none' : 'flex';
-        });
-    }
-
-    toggleDropdown(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        
-        const button = event.target;
-        const container = button.closest('.status-action-container');
-        const dropdown = container.querySelector('.status-dropdown-menu');
-        
-        // Diğer dropdown'ları kapat
-        this.closeAllDropdowns(container);
-        
-        // Bu dropdown'ı aç/kapat
-        const isOpen = dropdown.style.display === 'block';
-        dropdown.style.display = isOpen ? 'none' : 'block';
-        
-        if (!isOpen) {
-            // Pozisyon ayarla
-            this.positionDropdown(button, dropdown);
-        }
-    }
-
-    positionDropdown(button, dropdown) {
-        const buttonRect = button.getBoundingClientRect();
-        const dropdownRect = dropdown.getBoundingClientRect();
-        const viewportHeight = window.innerHeight;
-        
-        // Eğer dropdown aşağı sığmıyorsa yukarı aç
-        if (buttonRect.bottom + dropdownRect.height > viewportHeight) {
-            dropdown.style.bottom = '100%';
-            dropdown.style.top = 'auto';
-            dropdown.style.marginBottom = '0.5rem';
-            dropdown.style.marginTop = '0';
-        } else {
-            dropdown.style.top = '100%';
-            dropdown.style.bottom = 'auto';
-            dropdown.style.marginTop = '0.5rem';
-            dropdown.style.marginBottom = '0';
-        }
-    }
-
-    closeAllDropdowns(except = null) {
-        const dropdowns = document.querySelectorAll('.status-dropdown-menu');
-        dropdowns.forEach(dropdown => {
-            if (except && except.contains(dropdown)) return;
-            dropdown.style.display = 'none';
-        });
-    }
-
-    showConfirmDialog(message) {
-        return new Promise((resolve) => {
-            // Modern confirmation dialog
-            const overlay = document.createElement('div');
-            overlay.className = 'loading-overlay';
-            overlay.style.background = 'rgba(0, 0, 0, 0.7)';
-            
-            const dialog = document.createElement('div');
-            dialog.className = 'loading-spinner';
-            dialog.style.maxWidth = '400px';
-            dialog.innerHTML = `
-                <div class="mb-3">
-                    <i class="bi bi-question-circle text-warning" style="font-size: 2rem;"></i>
-                </div>
-                <h5 class="mb-3">Onay</h5>
-                <p class="mb-4">${message}</p>
-                <div class="d-flex gap-2 justify-content-center">
-                    <button class="btn btn-outline-secondary px-4" id="cancel-btn">İptal</button>
-                    <button class="btn btn-primary px-4" id="confirm-btn">Evet</button>
-                </div>
-            `;
-            
-            overlay.appendChild(dialog);
-            document.body.appendChild(overlay);
-            
-            // Event listeners
-            const confirmBtn = dialog.querySelector('#confirm-btn');
-            const cancelBtn = dialog.querySelector('#cancel-btn');
-            
-            confirmBtn.addEventListener('click', () => {
-                document.body.removeChild(overlay);
-                resolve(true);
-            });
-            
-            cancelBtn.addEventListener('click', () => {
-                document.body.removeChild(overlay);
-                resolve(false);
-            });
-            
-            // ESC tuşu
-            const escapeHandler = (e) => {
-                if (e.key === 'Escape') {
-                    document.body.removeChild(overlay);
-                    document.removeEventListener('keydown', escapeHandler);
-                    resolve(false);
+                // Update the status badge in the table
+                updateStatusBadge(ticketId, newStatus, result.status_display);
+                
+                // Close modal
+                if (modalInstance) {
+                    modalInstance.hide();
                 }
-            };
-            document.addEventListener('keydown', escapeHandler);
-            
-            // Focus
-            confirmBtn.focus();
-        });
-    }
+                
+                // Show success message
+                showToast(result.message || 'Durum başarıyla değiştirildi!', 'success');
+                
+            } else {
 
-    showLoading() {
+                showToast(result.message || 'Durum değiştirme başarısız!', 'error');
+            }
+            
+        } catch (error) {
+
+            showToast('Bir hata oluştu: ' + error.message, 'error');
+        } finally {
+            hideLoadingOverlay();
+        }
+    }
+    
+    function updateStatusBadge(ticketId, newStatus, statusDisplay) {
+        const badge = document.getElementById(`status-badge-${ticketId}`);
+        if (badge) {
+            badge.className = `status-badge status-${newStatus}`;
+            badge.textContent = statusDisplay;
+            
+            // Update button data
+            const button = document.querySelector(`[data-ticket-id="${ticketId}"]`);
+            if (button) {
+                button.dataset.currentStatus = newStatus;
+            }
+            
+
+        }
+    }
+    
+    function showLoadingOverlay(message = 'Yükleniyor...') {
+        // Remove existing overlay
+        const existingOverlay = document.querySelector('.loading-overlay');
+        if (existingOverlay) {
+            existingOverlay.remove();
+        }
+        
         const overlay = document.createElement('div');
-        overlay.id = 'status-loading-overlay';
         overlay.className = 'loading-overlay';
         overlay.innerHTML = `
             <div class="loading-spinner">
-                <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;"></div>
-                <h6>Durum güncelleniyor...</h6>
+                <div class="spinner-border text-primary mb-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="fw-medium">${message}</div>
             </div>
         `;
+        
         document.body.appendChild(overlay);
     }
-
-    hideLoading() {
-        const overlay = document.getElementById('status-loading-overlay');
+    
+    function hideLoadingOverlay() {
+        const overlay = document.querySelector('.loading-overlay');
         if (overlay) {
-            document.body.removeChild(overlay);
+            overlay.remove();
         }
     }
-
-    showToast(message, type = 'info') {
-        // Mevcut toast'ları temizle
+    
+    function showToast(message, type = 'success') {
+        // Remove existing toasts
         const existingToasts = document.querySelectorAll('.modern-toast');
         existingToasts.forEach(toast => toast.remove());
-
+        
         const toast = document.createElement('div');
         toast.className = `modern-toast ${type}`;
         
-        const icon = type === 'success' ? 'check-circle-fill' : 
-                    type === 'error' ? 'exclamation-triangle-fill' : 
-                    'info-circle-fill';
-        
-        const iconColor = type === 'success' ? '#10b981' : 
-                         type === 'error' ? '#ef4444' : 
-                         '#3b82f6';
+        const icon = type === 'success' ? 'check-circle' : 'exclamation-triangle';
+        const iconColor = type === 'success' ? 'text-success' : 'text-danger';
         
         toast.innerHTML = `
-            <i class="bi bi-${icon}" style="color: ${iconColor}; font-size: 1.25rem;"></i>
+            <i class="bi bi-${icon} ${iconColor}"></i>
             <span>${message}</span>
-            <button type="button" style="background: none; border: none; color: #6b7280; font-size: 1.25rem; margin-left: auto;" onclick="this.parentElement.remove()">×</button>
         `;
         
         document.body.appendChild(toast);
         
-        // Auto remove after 5 seconds
+        // Auto remove after 3 seconds
         setTimeout(() => {
-            if (toast.parentElement) {
-                toast.style.animation = 'slideOutRight 0.3s ease';
-                setTimeout(() => toast.remove(), 300);
+            if (toast.parentNode) {
+                toast.remove();
             }
-        }, 5000);
-    }
-
-    getCSRFToken() {
-        // Önce form input'undan al
-        const input = document.querySelector('[name=csrfmiddlewaretoken]');
-        if (input && input.value) {
-            return input.value;
-        }
+        }, 3000);
         
-        // Sonra meta tag'den al
-        const meta = document.querySelector('meta[name=csrf-token]');
-        if (meta && meta.content) {
-            return meta.content;
-        }
-        
-        // Son olarak cookie'den al
-        return this.getCookie('csrftoken') || '';
-    }
 
-    getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
+    }
+    
+    // Close modal on outside click
+    if (statusModal) {
+        statusModal.addEventListener('click', function(event) {
+            if (event.target === statusModal) {
+                if (modalInstance) {
+                    modalInstance.hide();
                 }
             }
-        }
-        return cookieValue;
-    }
-
-    initializeTooltips() {
-        // Bootstrap tooltip'leri başlat
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
         });
     }
-}
+    
 
-// CSS animation keyframes
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideOutRight {
-        to {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(style);
-
-// Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    new TicketStatusManager();
 });
-
-// Global functions for compatibility
-window.TicketStatusManager = TicketStatusManager;

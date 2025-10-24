@@ -156,24 +156,183 @@
                     <div class="tab-content" id="adminTabsContent">
                         <!-- Genel Bakış -->
                         <div class="tab-pane fade show active" id="overview" role="tabpanel">
-                            <h5>Sistem Durumu</h5>
-                            <div class="row g-3">
+                            <!-- Sistem İstatistikleri -->
+                            <div class="row g-4 mb-4">
+                                <div class="col-12">
+                                    <h5 class="mb-3">
+                                        <i class="bi bi-graph-up text-primary me-2"></i>
+                                        Sistem İstatistikleri
+                                    </h5>
+                                </div>
+                                
+                                <!-- Ticket İstatistikleri -->
+                                <div class="col-lg-8">
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-header bg-light">
+                                            <h6 class="mb-0">
+                                                <i class="bi bi-ticket-perforated me-2"></i>
+                                                Talep İstatistikleri
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row g-3">
+                                                <div class="col-md-3">
+                                                    <div class="text-center p-3 bg-primary bg-opacity-10 rounded">
+                                                        <i class="bi bi-inbox display-6 text-primary"></i>
+                                                        <h4 class="mt-2 mb-1" id="total-tickets">-</h4>
+                                                        <small class="text-muted">Toplam Talep</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="text-center p-3 bg-info bg-opacity-10 rounded">
+                                                        <i class="bi bi-circle display-6 text-info"></i>
+                                                        <h4 class="mt-2 mb-1" id="open-tickets">-</h4>
+                                                        <small class="text-muted">Açık</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="text-center p-3 bg-warning bg-opacity-10 rounded">
+                                                        <i class="bi bi-clock display-6 text-warning"></i>
+                                                        <h4 class="mt-2 mb-1" id="in-progress-tickets">-</h4>
+                                                        <small class="text-muted">İşlemde</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="text-center p-3 bg-success bg-opacity-10 rounded">
+                                                        <i class="bi bi-check-circle display-6 text-success"></i>
+                                                        <h4 class="mt-2 mb-1" id="resolved-tickets">-</h4>
+                                                        <small class="text-muted">Çözümlendi</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Kullanıcı İstatistikleri -->
+                                <div class="col-lg-4">
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-header bg-light">
+                                            <h6 class="mb-0">
+                                                <i class="bi bi-people me-2"></i>
+                                                Kullanıcı İstatistikleri
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row g-3">
+                                                <div class="col-6">
+                                                    <div class="text-center p-2">
+                                                        <h5 class="mb-1" id="total-users">-</h5>
+                                                        <small class="text-muted">Toplam</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="text-center p-2">
+                                                        <h5 class="mb-1 text-danger" id="admin-users">-</h5>
+                                                        <small class="text-muted">Admin</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="text-center p-2">
+                                                        <h5 class="mb-1 text-success" id="support-users">-</h5>
+                                                        <small class="text-muted">Destek</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="text-center p-2">
+                                                        <h5 class="mb-1 text-primary" id="customer-users">-</h5>
+                                                        <small class="text-muted">Müşteri</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Zaman Bazlı İstatistikler -->
+                            <div class="row g-4 mb-4">
+                                <div class="col-12">
+                                    <h5 class="mb-3">
+                                        <i class="bi bi-calendar3 text-primary me-2"></i>
+                                        Zaman Bazlı Analiz
+                                    </h5>
+                                </div>
                                 <div class="col-md-4">
-                                    <div class="border rounded p-3 text-center">
-                                        <h6 class="text-muted">Toplam Kullanıcı</h6>
-                                        <h4 class="text-primary">-</h4>
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-calendar-week display-5 text-primary mb-2"></i>
+                                            <h4 id="tickets-this-week">-</h4>
+                                            <p class="text-muted mb-0">Bu Hafta</p>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="border rounded p-3 text-center">
-                                        <h6 class="text-muted">Aktif Token'lar</h6>
-                                        <h4 class="text-success">-</h4>
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-calendar-month display-5 text-success mb-2"></i>
+                                            <h4 id="tickets-this-month">-</h4>
+                                            <p class="text-muted mb-0">Bu Ay</p>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="border rounded p-3 text-center">
-                                        <h6 class="text-muted">Bekleyen Ticket'lar</h6>
-                                        <h4 class="text-warning">-</h4>
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-person-check display-5 text-warning mb-2"></i>
+                                            <h4 id="my-assigned-tickets">-</h4>
+                                            <p class="text-muted mb-0">Bana Atanan</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Profil Bilgileri -->
+                            <div class="row g-4">
+                                <div class="col-12">
+                                    <h5 class="mb-3">
+                                        <i class="bi bi-person-circle text-primary me-2"></i>
+                                        Profil Bilgileri
+                                    </h5>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-header bg-light">
+                                            <h6 class="mb-0">Hesap Detayları</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row g-2">
+                                                <div class="col-4"><strong>Kullanıcı Adı:</strong></div>
+                                                <div class="col-8" id="profile-username">-</div>
+                                                <div class="col-4"><strong>E-posta:</strong></div>
+                                                <div class="col-8" id="profile-email">-</div>
+                                                <div class="col-4"><strong>Rol:</strong></div>
+                                                <div class="col-8" id="profile-role">-</div>
+                                                <div class="col-4"><strong>Gruplar:</strong></div>
+                                                <div class="col-8" id="profile-groups">-</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-header bg-light">
+                                            <h6 class="mb-0">Aktivite Bilgileri</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row g-2">
+                                                <div class="col-4"><strong>Hesap Oluşturma:</strong></div>
+                                                <div class="col-8" id="account-created">-</div>
+                                                <div class="col-4"><strong>Son Giriş:</strong></div>
+                                                <div class="col-8" id="last-login">-</div>
+                                                <div class="col-4"><strong>Yorumlarım:</strong></div>
+                                                <div class="col-8" id="my-comments">-</div>
+                                                <div class="col-12 mt-3">
+                                                    <strong>Son Talep:</strong>
+                                                    <div id="latest-ticket" class="mt-1">-</div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -342,6 +501,106 @@ document.addEventListener('DOMContentLoaded', function() {
             tabButton.click();
         }
     }
+    
+    // Profil ve istatistik bilgilerini yükle
+    loadProfileStatistics();
 });
+
+async function loadProfileStatistics() {
+    try {
+        const response = await fetch('/accounts/api/profile/');
+        const data = await response.json();
+        
+        if (data.user && data.statistics) {
+            updateStatisticsCards(data.statistics);
+            updateProfileInfo(data.user, data.activity);
+        }
+    } catch (error) {
+        // İstatistikler yüklenirken hata oluştu
+    }
+}
+
+function updateStatisticsCards(stats) {
+    // İstatistik kartlarını güncelle
+    const statElements = {
+        'total-tickets': stats.total_tickets,
+        'open-tickets': stats.open_tickets,
+        'in-progress-tickets': stats.in_progress_tickets,
+        'resolved-tickets': stats.resolved_tickets,
+        'closed-tickets': stats.closed_tickets,
+        'total-users': stats.total_users,
+        'admin-users': stats.admin_users,
+        'support-users': stats.support_users,
+        'customer-users': stats.customer_users,
+        'tickets-this-week': stats.tickets_this_week,
+        'tickets-this-month': stats.tickets_this_month,
+        'my-assigned-tickets': stats.my_assigned_tickets,
+        'my-comments': stats.my_comments
+    };
+    
+    Object.keys(statElements).forEach(key => {
+        const element = document.getElementById(key);
+        if (element && statElements[key] !== undefined) {
+            element.textContent = statElements[key];
+        }
+    });
+}
+
+function updateProfileInfo(user, activity) {
+    // Profil bilgilerini güncelle
+    const profileElements = {
+        'profile-username': user.username,
+        'profile-email': user.email,
+        'profile-role': user.role,
+        'profile-groups': user.groups ? user.groups.join(', ') : 'Grup yok'
+    };
+    
+    Object.keys(profileElements).forEach(key => {
+        const element = document.getElementById(key);
+        if (element) {
+            element.textContent = profileElements[key];
+        }
+    });
+    
+    // Aktivite bilgilerini güncelle
+    if (activity) {
+        if (activity.latest_ticket) {
+            const latestTicketElement = document.getElementById('latest-ticket');
+            if (latestTicketElement) {
+                latestTicketElement.innerHTML = `
+                    <strong>#${activity.latest_ticket.id}</strong> - ${activity.latest_ticket.title}<br>
+                    <small class="text-muted">${formatDate(activity.latest_ticket.created_at)} - ${activity.latest_ticket.status}</small>
+                `;
+            }
+        }
+        
+        if (activity.account_created) {
+            const accountCreatedElement = document.getElementById('account-created');
+            if (accountCreatedElement) {
+                accountCreatedElement.textContent = formatDate(activity.account_created);
+            }
+        }
+        
+        if (activity.last_login) {
+            const lastLoginElement = document.getElementById('last-login');
+            if (lastLoginElement) {
+                lastLoginElement.textContent = formatDate(activity.last_login);
+            }
+        }
+    }
+}
+
+function formatDate(dateString) {
+    if (!dateString) return 'Bilinmiyor';
+    
+    const date = new Date(dateString);
+    return date.toLocaleDateString('tr-TR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
 </script>
 {% endblock %}

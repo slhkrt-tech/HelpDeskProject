@@ -59,6 +59,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="flex-grow-1">
                                     <h6 class="card-title mb-0">Açık Taleplerim</h6>
+                                    <h3 class="mb-0" id="my-open-tickets">-</h3>
                                     <p class="card-text small mb-0">Devam eden talepler</p>
                                 </div>
                                 <div class="ms-3">
@@ -80,17 +81,18 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center">
                                 <div class="flex-grow-1">
-                                    <h6 class="card-title mb-0">Yeni Talep</h6>
-                                    <p class="card-text small mb-0">Talep oluştur</p>
+                                    <h6 class="card-title mb-0">Toplam Taleplerim</h6>
+                                    <h3 class="mb-0" id="my-tickets-count">-</h3>
+                                    <p class="card-text small mb-0">Tüm talepler</p>
                                 </div>
                                 <div class="ms-3">
-                                    <i class="bi bi-plus-circle fs-2"></i>
+                                    <i class="bi bi-inbox fs-2"></i>
                                 </div>
                             </div>
                         </div>
                         <div class="card-footer border-0" style="background-color: var(--success-color);">
                             <a href="/tickets/create/" class="text-white text-decoration-none small">
-                                Talep Oluştur <i class="bi bi-arrow-right"></i>
+                                Yeni Talep Oluştur <i class="bi bi-plus-circle"></i>
                             </a>
                         </div>
                     </div>
@@ -103,6 +105,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="flex-grow-1">
                                     <h6 class="card-title mb-0">Tamamlanan</h6>
+                                    <h3 class="mb-0" id="my-resolved-tickets">-</h3>
                                     <p class="card-text small mb-0">Çözülen talepler</p>
                                 </div>
                                 <div class="ms-3">
@@ -156,9 +159,9 @@
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="create-ticket-tab" data-bs-toggle="tab" data-bs-target="#create-ticket" type="button" role="tab">
+                            <a href="/tickets/create/" class="nav-link text-decoration-none">
                                 <i class="bi bi-plus-circle me-2"></i>Yeni Talep
-                            </button>
+                            </a>
                         </li>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab">
@@ -267,7 +270,7 @@
                                                         <i class="bi bi-inbox fs-1 mb-3 text-muted"></i>
                                                         <h5 class="text-muted">Henüz hiç talebiniz bulunmamaktadır</h5>
                                                         <p class="text-muted mb-3">İlk talebinizi oluşturarak başlayabilirsiniz.</p>
-                                                        <a href="#" class="btn btn-primary" data-bs-toggle="tab" data-bs-target="#create-ticket">
+                                                        <a href="/tickets/create/" class="btn btn-primary">
                                                             <i class="bi bi-plus-circle me-2"></i>İlk Talebinizi Oluşturun
                                                         </a>
                                                     </div>
@@ -342,99 +345,6 @@
                                         {% endif %}
                                     </tbody>
                                 </table>
-                            </div>
-                        </div>
-
-                        <!-- Yeni Talep -->
-                        <div class="tab-pane fade" id="create-ticket" role="tabpanel">
-                            <h5 class="mb-3">Yeni Talep Oluştur</h5>
-                            <div class="row">
-                                <div class="col-lg-8">
-                                    <form id="createTicketForm" method="post">
-                                        {% csrf_token %}
-                                        
-                                        <div class="mb-3">
-                                            <label for="ticket-title" class="form-label">Başlık <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="ticket-title" name="title" placeholder="Talebinizin kısa başlığını yazın..." required maxlength="200">
-                                        </div>
-                                        
-                                        <div class="mb-3">
-                                            <label for="ticket-description" class="form-label">Açıklama <span class="text-danger">*</span></label>
-                                            <textarea class="form-control" id="ticket-description" name="description" rows="6" placeholder="Sorununuzu detaylı bir şekilde açıklayın..." required></textarea>
-                                        </div>
-                                        
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="ticket-category" class="form-label">Kategori</label>
-                                                <select class="form-select" id="ticket-category" name="category">
-                                                    <option value="">Kategori seçiniz...</option>
-                                                    <!-- Kategoriler dinamik olarak yüklenecek -->
-                                                </select>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="ticket-priority" class="form-label">Öncelik</label>
-                                                <select class="form-select" id="ticket-priority" name="priority">
-                                                    <option value="low">Düşük</option>
-                                                    <option value="normal" selected>Normal</option>
-                                                    <option value="high">Yüksek</option>
-                                                    <option value="urgent">Acil</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="d-flex gap-2">
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="bi bi-send me-2"></i>Talep Gönder
-                                            </button>
-                                            <button type="reset" class="btn btn-outline-secondary">
-                                                <i class="bi bi-arrow-clockwise me-2"></i>Temizle
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="card bg-light border-0">
-                                        <div class="card-body">
-                                            <h6 class="card-title">
-                                                <i class="bi bi-info-circle text-primary me-2"></i>
-                                                Talep Gönderme İpuçları
-                                            </h6>
-                                            <ul class="list-unstyled small">
-                                                <li class="mb-2">
-                                                    <i class="bi bi-check text-success me-2"></i>
-                                                    Probleminizi mümkün olduğunca detaylı açıklayın
-                                                </li>
-                                                <li class="mb-2">
-                                                    <i class="bi bi-check text-success me-2"></i>
-                                                    Hata mesajları varsa ekran görüntüsü ekleyin
-                                                </li>
-                                                <li class="mb-2">
-                                                    <i class="bi bi-check text-success me-2"></i>
-                                                    Doğru kategori ve öncelik seçin
-                                                </li>
-                                                <li class="mb-2">
-                                                    <i class="bi bi-check text-success me-2"></i>
-                                                    İletişim bilgilerinizin güncel olduğundan emin olun
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="card bg-light border-0 mt-3">
-                                        <div class="card-body">
-                                            <h6 class="card-title">
-                                                <i class="bi bi-clock text-warning me-2"></i>
-                                                Yanıt Süreleri
-                                            </h6>
-                                            <ul class="list-unstyled small">
-                                                <li class="mb-1"><strong>Acil:</strong> 1 saat içinde</li>
-                                                <li class="mb-1"><strong>Yüksek:</strong> 4 saat içinde</li>
-                                                <li class="mb-1"><strong>Orta:</strong> 1 gün içinde</li>
-                                                <li class="mb-1"><strong>Düşük:</strong> 3 gün içinde</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
@@ -618,11 +528,8 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Customer Panel loaded');
-    
     // Bootstrap tabs'ları manuel olarak initialize et
     const tabLinks = document.querySelectorAll('#customerTabs button[data-bs-toggle="tab"]');
-    console.log('Found tab links:', tabLinks.length);
     
     // Bootstrap Tab instance'larını oluştur
     const tabs = [];
@@ -635,16 +542,16 @@ document.addEventListener('DOMContentLoaded', function() {
             // Click event ekle
             tabElement.addEventListener('click', function(e) {
                 e.preventDefault();
-                console.log('Tab clicked:', this.getAttribute('data-bs-target'));
+
                 tab.show();
             });
         } catch (error) {
-            console.error('Bootstrap Tab creation error:', error);
+
             
             // Fallback: Manuel tab sistemi
             tabElement.addEventListener('click', function(e) {
                 e.preventDefault();
-                console.log('Manual tab switching for:', this.getAttribute('data-bs-target'));
+
                 
                 // Tüm tab'ları inaktif yap
                 tabLinks.forEach(link => {
@@ -667,7 +574,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const targetPane = document.querySelector(targetId);
                 if (targetPane) {
                     targetPane.classList.add('show', 'active');
-                    console.log('Activated tab pane:', targetId);
+
                 }
             });
         }
@@ -686,7 +593,7 @@ document.addEventListener('DOMContentLoaded', function() {
             firstPane.classList.add('show', 'active');
         }
         
-        console.log('First tab activated:', firstTargetId);
+
     }
     
     // Card hover efekti
@@ -701,64 +608,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Form validasyonu (yeni talep formu için)
-    const createTicketForm = document.querySelector('#createTicketForm');
-    if (createTicketForm) {
-        createTicketForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const title = document.getElementById('ticket-title').value.trim();
-            const description = document.getElementById('ticket-description').value.trim();
-            const category = document.getElementById('ticket-category').value;
-            const priority = document.getElementById('ticket-priority').value;
-            
-            // Basit validasyon
-            if (!title || title.length < 5) {
-                alert('Başlık en az 5 karakter olmalıdır.');
-                return;
-            }
-            
-            if (!description || description.length < 10) {
-                alert('Açıklama en az 10 karakter olmalıdır.');
-                return;
-            }
-            
-            try {
-                // CSRF token'ını al
-                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-                
-                const response = await fetch('/tickets/create/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-CSRFToken': csrfToken,
-                    },
-                    body: new URLSearchParams({
-                        'title': title,
-                        'description': description,
-                        'category': category,
-                        'priority': priority
-                    })
-                });
-                
-                if (response.ok) {
-                    alert('Talep başarıyla oluşturuldu!');
-                    // Formu temizle
-                    createTicketForm.reset();
-                    // Taleplerim sekmesine geç
-                    document.querySelector('#my-tickets-tab').click();
-                    // Sayfayı yenile
-                    window.location.reload();
-                } else {
-                    alert('Talep oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
-                }
-            } catch (error) {
-                console.error('Talep oluşturma hatası:', error);
-                alert('Bir hata oluştu. Lütfen tekrar deneyin.');
-            }
-        });
-    }
-    
     // URL'deki tab parametresini kontrol et
     const urlParams = new URLSearchParams(window.location.search);
     const activeTab = urlParams.get('tab');
@@ -766,13 +615,52 @@ document.addEventListener('DOMContentLoaded', function() {
     if (activeTab) {
         const tabButton = document.querySelector(`#customerTabs button[data-bs-target="#${activeTab}"]`);
         if (tabButton) {
-            console.log('Activating tab from URL:', activeTab);
+
             tabButton.click();
         }
     }
     
-    console.log('Customer Panel JavaScript initialized successfully');
+    // Profil ve istatistik bilgilerini yükle
+    loadCustomerStatistics();
+    
+
 });
+
+// Müşteri istatistiklerini yükle
+async function loadCustomerStatistics() {
+    try {
+        const response = await fetch('/accounts/api/profile/');
+        const data = await response.json();
+        
+        if (data.user && data.statistics) {
+            updateCustomerStatistics(data.statistics);
+        }
+    } catch (error) {
+
+    }
+}
+
+function updateCustomerStatistics(stats) {
+    // Müşteri istatistik kartlarını güncelle
+    const statElements = {
+        'my-tickets-count': stats.my_tickets,
+        'my-open-tickets': stats.my_open_tickets,
+        'my-in-progress-tickets': stats.my_in_progress_tickets,
+        'my-resolved-tickets': stats.my_resolved_tickets,
+        'my-closed-tickets': stats.my_closed_tickets,
+        'my-comments-count': stats.my_comments,
+        'group-tickets-count': stats.group_tickets,
+        'tickets-this-week': stats.tickets_this_week,
+        'tickets-this-month': stats.tickets_this_month
+    };
+    
+    Object.keys(statElements).forEach(key => {
+        const element = document.getElementById(key);
+        if (element && statElements[key] !== undefined) {
+            element.textContent = statElements[key];
+        }
+    });
+}
 
 // Güvenli çıkış fonksiyonu
 function secureLogout() {

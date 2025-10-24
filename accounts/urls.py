@@ -28,6 +28,7 @@ urlpatterns = [
     path('api/safe-logout/', views.api_safe_logout, name='api_safe_logout'),
     path('api/signup/', views.api_signup, name='api_signup'),
     path('api/profile/', views.api_user_profile, name='api_user_profile'),
+    path('api/debug-tokens/', views.api_debug_tokens, name='api_debug_tokens'),
     
     # ================================
     # Role-Based Dashboard Panels
