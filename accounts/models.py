@@ -108,3 +108,45 @@ class CustomAuthToken(models.Model):
     
     def __str__(self):
         return f"Custom Token for {self.username}"
+
+
+class SystemSettings(models.Model):
+    """
+    Sistem ayarları tablosu - Admin panel ayarları
+    """
+    # Genel ayarlar
+    site_name = models.CharField(max_length=200, default='Yardım Masası')
+    site_description = models.TextField(default='Müşteri destek ve talep yönetim sistemi')
+    admin_email = models.EmailField(default='admin@example.com')
+    timezone = models.CharField(max_length=50, default='Europe/Istanbul')
+    
+    # E-posta ayarları
+    smtp_host = models.CharField(max_length=200, blank=True, null=True)
+    smtp_port = models.PositiveIntegerField(default=587)
+    smtp_username = models.CharField(max_length=200, blank=True, null=True)
+    smtp_password = models.CharField(max_length=200, blank=True, null=True)
+    smtp_use_tls = models.BooleanField(default=True)
+    
+    # Güvenlik ayarları
+    token_expiry_days = models.PositiveIntegerField(default=30)
+    max_login_attempts = models.PositiveIntegerField(default=5)
+    session_timeout_minutes = models.PositiveIntegerField(default=30)
+    require_password_change = models.BooleanField(default=False)
+    
+    # Meta bilgiler
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    class Meta:
+        verbose_name = 'System Settings'
+        verbose_name_plural = 'System Settings'
+    
+    def __str__(self):
+        return f"System Settings - {self.site_name}"
+    
+    @classmethod
+    def get_settings(cls):
+        """Singleton pattern - tek bir settings instance döndür"""
+        settings, created = cls.objects.get_or_create(pk=1)
+        return settings

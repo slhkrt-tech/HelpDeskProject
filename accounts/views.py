@@ -31,7 +31,7 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from .serializers import LoginSerializer, UserSerializer
 from .models import CustomAuthToken, CustomUser
 from .security import (
-    rate_limit_login, sanitize_input, validate_password_strength, 
+    rate_limit_login, sanitize_input, sanitize_username, validate_password_strength, 
     admin_required, get_client_ip
 )
 
@@ -127,7 +127,6 @@ def api_login(request):
     
     # Temel validasyon
     if not username or not password:
-        logger.warning(f"Login attempt with missing credentials from IP: {get_client_ip(request)}")
         return Response({
             'error': 'Username and password are required.'
         }, status=status.HTTP_400_BAD_REQUEST)
@@ -140,8 +139,6 @@ def api_login(request):
         # Eski session temizleme
         if request.user.is_authenticated and request.user != user:
             logout(request)
-        
-        logger.info(f"Successful login for user: {user.username} from IP: {get_client_ip(request)}")
         
         # Token yönetimi - eski token'ları temizle
         CustomAuthToken.objects.filter(user=user).delete()
@@ -216,7 +213,6 @@ def api_login(request):
         return response
     
     # Log failed login attempt
-    logger.warning(f"Failed login attempt for username: {username} from IP: {get_client_ip(request)}")
     return Response({
         'error': 'Invalid username or password.'
     }, status=status.HTTP_400_BAD_REQUEST)
@@ -277,12 +273,8 @@ def api_safe_logout(request):
     Signup sonrası role karışıklığını önlemek için kullanılır
     """
     try:
-        logger.info(f"Safe logout requested from IP: {get_client_ip(request)}")
-        
         # Mevcut kullanıcı bilgilerini al
         user = verify_token_auth(request)
-        if user:
-            logger.info(f"Safe logout for user: {user.username} (role: {user.role})")
         
         # Session'ı tamamen temizle
         if request.user.is_authenticated:
@@ -306,11 +298,10 @@ def api_safe_logout(request):
         # Tüm authentication çerezlerini temizle
         response.delete_cookie('auth_token')
         response.delete_cookie('user_id')
-        response.delete_cookie('user_role')
+        response.delete_cookie('user_role') 
         response.delete_cookie('sessionid')
         response.delete_cookie('csrftoken')
         
-        logger.info("Safe logout completed successfully")
         return response
         
     except Exception as e:
@@ -338,8 +329,6 @@ def api_debug_tokens(request):
     Debug endpoint - Mevcut kullanıcının token durumunu gösterir
     """
     try:
-        logger.info(f"Debug tokens request from IP: {get_client_ip(request)}")
-        
         # Cookie'den token al
         cookie_token = request.COOKIES.get('auth_token')
         
@@ -398,22 +387,14 @@ def api_user_profile(request):
     """
     Mevcut kullanıcının profil bilgilerini ve hesap istatistiklerini getir - Hybrid authentication (Session + Token)
     """
-    logger.info(f"api_user_profile called from IP: {get_client_ip(request)}")
-    logger.info(f"Request user: {request.user}, authenticated: {request.user.is_authenticated}")
-    logger.info(f"Authorization header: {request.META.get('HTTP_AUTHORIZATION', 'None')}")
-    logger.info(f"Cookies: {list(request.COOKIES.keys())}")
-    
     # Önce session-based authentication kontrol et
     if request.user.is_authenticated:
         user = request.user
-        logger.info(f"User authenticated via Django session: {user.username}")
     else:
         # Token tabanlı kimlik doğrulama
         user = verify_token_auth(request)
-        logger.info(f"verify_token_auth result: {user}")
     
     if not user:
-        logger.warning(f"api_user_profile: No authenticated user found")
         return Response({
             'error': 'Authentication required'
         }, status=status.HTTP_401_UNAUTHORIZED)
@@ -550,22 +531,15 @@ def api_signup(request):
     """
     Token-based signup endpoint - Enhanced security
     """
-    logger.info(f"api_signup called from IP: {get_client_ip(request)}")
-    logger.info(f"Request method: {request.method}")
-    logger.info(f"Request data: {request.data}")
-    
     try:
-        # Input sanitization
-        username = sanitize_input(request.data.get('username', ''), max_length=150)
+        # Input sanitization - username için özel sanitization
+        username = sanitize_username(request.data.get('username', ''), max_length=150)
         email = sanitize_input(request.data.get('email', ''), max_length=254)
         password1 = request.data.get('password1', '')
         password2 = request.data.get('password2', '')
         
-        logger.info(f"Sanitized data - username: {username}, email: {email}")
-        
         # Validations
         if not all([username, email, password1, password2]):
-            logger.warning(f"Missing fields - username: {bool(username)}, email: {bool(email)}, password1: {bool(password1)}, password2: {bool(password2)}")
             return Response({
                 'error': 'Tüm alanlar doldurulmalıdır.'
             }, status=status.HTTP_400_BAD_REQUEST)
@@ -576,8 +550,10 @@ def api_signup(request):
                 'error': 'Kullanıcı adı en az 3 karakter olmalıdır.'
             }, status=status.HTTP_400_BAD_REQUEST)
         
-        # Username character validation
-        if not username.replace('_', '').replace('-', '').isalnum():
+        # Username character validation - Regex kullanarak daha güvenilir kontrol
+        import re
+        username_pattern = re.compile(r'^[a-zA-Z0-9_-]+$')
+        if not username_pattern.match(username):
             return Response({
                 'error': 'Kullanıcı adı sadece harf, rakam, alt çizgi (_) ve tire (-) içerebilir.'
             }, status=status.HTTP_400_BAD_REQUEST)
@@ -617,24 +593,19 @@ def api_signup(request):
         user.is_superuser = False  # Güvenlik: Yeni kullanıcılar superuser değil
         user.save()
         
-        # Log user creation
-        logger.info(f"New user created: {username} from IP: {get_client_ip(request)}")
-        
         # ÖNEMLI: Signup öncesi tüm session/token temizliği
         # Eğer tarayıcıda başka bir kullanıcının token'ı varsa temizle
         existing_token = request.COOKIES.get('auth_token')
         if existing_token:
-            logger.info(f"Found existing token during signup, cleaning up: {existing_token[-8:]}")
             # Eski token'ı geçersiz kıl
             try:
                 old_custom_token = CustomAuthToken.objects.get(key=existing_token)
                 old_user = old_custom_token.user
-                logger.info(f"Deleting old tokens for user: {old_user.username}")
                 # O kullanıcının tüm token'larını sil
                 CustomAuthToken.objects.filter(user=old_user).delete()
                 Token.objects.filter(user=old_user).delete()
             except CustomAuthToken.DoesNotExist:
-                logger.info("Old token not found in CustomAuthToken, skipping cleanup")
+                pass
         
         # Yeni kullanıcı için temiz token oluştur
         # Önce varsa eski token'ları temizle (güvenlik için)
@@ -676,7 +647,6 @@ def api_signup(request):
         response.delete_cookie('user_role')
         response.delete_cookie('sessionid')  # Django session cookie
         response.delete_cookie('csrftoken')  # CSRF token
-        logger.info("Cleared all old authentication cookies before setting new ones")
         
         # YENİ: Token'ı çerezlere kaydet (browser için)
         response.set_cookie(
@@ -734,25 +704,19 @@ def verify_token_auth(request):
     """
     user = None
     
-    logger.info(f"verify_token_auth called for path: {request.path}")
-    
     # 1. Authorization header'dan token kontrolü (EN ÖNCELİKLİ)
     auth_header = request.META.get('HTTP_AUTHORIZATION')
     if auth_header and auth_header.startswith('Token '):
         token_key = auth_header.split(' ')[1]
         user = get_user_by_token(token_key)
         if user:
-            logger.info(f"User authenticated via header token: {user.username} (role: {user.role})")
             return user
     
     # 2. Cookie'den token kontrolü (İKİNCİ ÖNCELİK)
     token_key = request.COOKIES.get('auth_token')
     if token_key:
-        logger.info(f"Found auth_token in cookies: {token_key[-8:]}...")
         user = get_user_by_token(token_key)
         if user:
-            logger.info(f"User authenticated via cookie token: {user.username} (role: {user.role})")
-            
             # Çerezlerdeki kullanıcı bilgilerini doğrula
             cookie_user_id = request.COOKIES.get('user_id')
             cookie_user_role = request.COOKIES.get('user_role')
@@ -766,23 +730,18 @@ def verify_token_auth(request):
             return user
         else:
             logger.warning(f"Cookie token {token_key[-8:]}... is invalid or expired")
-    else:
-        logger.info("No auth_token found in cookies")
     
     # 3. POST/GET parametrelerinden token kontrolü
     token_key = request.POST.get('token') or request.GET.get('token')
     if token_key:
         user = get_user_by_token(token_key)
         if user:
-            logger.info(f"User authenticated via parameter token: {user.username} (role: {user.role})")
             return user
     
     # 4. Django session authentication (FALLBACK)
     if request.user.is_authenticated:
-        logger.info(f"Fallback to session authentication: {request.user.username} (role: {getattr(request.user, 'role', 'unknown')})")
         return request.user
     
-    logger.info("No valid authentication found")
     return None
 
 def get_user_by_token(token_key):
@@ -790,36 +749,27 @@ def get_user_by_token(token_key):
     Token key ile kullanıcı bulma ve token güncelleme
     """
     if not token_key:
-        logger.info("No token key provided")
         return None
-    
-    logger.info(f"Looking up token: {token_key[-8:]}...")
         
     # Custom token kontrolü
     try:
         custom_token = CustomAuthToken.objects.get(key=token_key)
         if not custom_token.is_expired():
             custom_token.use_token()  # Son kullanım zamanını güncelle
-            logger.info(f"Valid custom token found for user: {custom_token.user.username} (role: {custom_token.user.role})")
             return custom_token.user
         else:
             # Token süresi dolmuş, otomatik yenile
-            logger.info(f"Custom token expired for user: {custom_token.user.username}, refreshing...")
             custom_token.refresh_token()
             custom_token.use_token()
             return custom_token.user
     except CustomAuthToken.DoesNotExist:
-        logger.warning(f"Custom token not found: {token_key[-8:]}...")
-        logger.info(f"Custom token not found: {token_key[-8:]}...")
         pass
         
     # Fallback: Normal DRF token kontrolü
     try:
         normal_token = Token.objects.get(key=token_key)
-        logger.info(f"Valid DRF token found for user: {normal_token.user.username}")
         return normal_token.user
     except Token.DoesNotExist:
-        logger.warning(f"No valid token found: {token_key[-8:]}...")
         pass
     
     return None
@@ -847,25 +797,19 @@ def admin_panel_view(request):
     Admin Panel - Sadece admin ve superuser'lar erişebilir
     Gelişmiş yetki kontrolü ve token yönetimi
     """
-    logger.info(f"Admin panel access attempt from {request.user}")
     
     # Token tabanlı kimlik doğrulama
     user = verify_token_auth(request)
-    logger.info(f"Token auth result: {user}")
     
     if not user:
         # Ana sayfaya yönlendir (home_view token kontrolü yapacak)
-        logger.warning("No user found, redirecting to home with admin-panel redirect")
         return redirect('/?redirect=admin-panel')
     
     # Admin yetki kontrolü - Katı güvenlik
     if not (user.is_superuser or (user.role == 'admin' and user.is_staff)):
         # Yetkisiz erişim - kullanıcı rolüne göre doğru panele yönlendir
-        logger.warning(f"User {user.username} (role: {user.role}, is_staff: {user.is_staff}) does not have admin access, redirecting to customer panel")
         # Tüm non-admin kullanıcılar customer panel'e gitsin
         return redirect('/accounts/customer-panel/')
-    
-    logger.info(f"Admin panel access granted for {user.username}")
     
     # Admin panel context'i hazırla
     context = {
@@ -893,7 +837,6 @@ def support_panel_view(request):
     # Support yetki kontrolü - Katı güvenlik
     if not (user.is_superuser or (user.role in ['admin', 'support'] and user.is_staff)):
         # Yetkisiz erişim - customer paneline yönlendir
-        logger.warning(f"User {user.username} (role: {user.role}, is_staff: {user.is_staff}) does not have support access, redirecting to customer panel")
         return redirect('/accounts/customer-panel/')
     
     context = {
@@ -1023,7 +966,6 @@ def admin_user_create_view(request):
                 last_name=last_name
             )
             
-            logger.info(f"Admin {user.username} tarafından yeni kullanıcı oluşturuldu: {new_user.username}")
             return redirect('/accounts/admin/users/')
             
         except Exception as e:
@@ -1127,7 +1069,6 @@ def admin_user_edit_view(request, user_id):
             
             target_user.save()
             
-            logger.info(f"Admin {user.username} tarafından kullanıcı güncellendi: {target_user.username}")
             messages.success(request, f'{target_user.username} kullanıcısı başarıyla güncellendi.')
             return redirect('/accounts/admin/users/')
             
@@ -1175,7 +1116,6 @@ def admin_user_delete_view(request, user_id):
             username = target_user.username
             target_user.delete()
             
-            logger.info(f"Admin {user.username} tarafından kullanıcı silindi: {username}")
             return redirect('/accounts/admin/users/')
             
     except User.DoesNotExist:
@@ -1241,7 +1181,6 @@ def admin_group_create_view(request):
             # Yeni grup oluştur
             new_group = Group.objects.create(name=group_name)
             
-            logger.info(f"Admin {user.username} tarafından yeni grup oluşturuldu: {new_group.name}")
             return redirect('/accounts/admin/groups/')
             
         except Exception as e:
@@ -1283,8 +1222,6 @@ def admin_group_delete_view(request, group_id):
         
         # Grup silme işlemi
         group.delete()
-        
-        logger.info(f"Admin {user.username} tarafından '{group_name}' grubu silindi (önceki kullanıcı sayısı: {user_count})")
         
         return JsonResponse({
             'success': True,
@@ -1338,7 +1275,6 @@ def admin_user_assign_groups_view(request, user_id):
             except Group.DoesNotExist:
                 continue
         
-        logger.info(f"Admin {user.username} tarafından {target_user.username} kullanıcısının grupları güncellendi")
         return redirect('/accounts/admin/users/')
     
     context = {
@@ -1371,10 +1307,45 @@ def admin_settings_view(request):
     if not (user.is_superuser or user.role == 'admin'):
         return HttpResponseForbidden("Bu sayfaya erişim yetkiniz yok.")
     
+    from .models import SystemSettings
+    
+    # Mevcut ayarları al
+    settings = SystemSettings.get_settings()
+    
+    if request.method == 'POST':
+        # Form verilerini kaydet
+        settings.site_name = request.POST.get('site_name', settings.site_name)
+        settings.site_description = request.POST.get('site_description', settings.site_description)
+        settings.admin_email = request.POST.get('admin_email', settings.admin_email)
+        settings.timezone = request.POST.get('timezone', settings.timezone)
+        
+        # E-posta ayarları
+        settings.smtp_host = request.POST.get('smtp_host', settings.smtp_host)
+        settings.smtp_port = int(request.POST.get('smtp_port', settings.smtp_port))
+        settings.smtp_username = request.POST.get('smtp_username', settings.smtp_username)
+        smtp_password = request.POST.get('smtp_password', '')
+        if smtp_password:  # Sadece dolu ise güncelle
+            settings.smtp_password = smtp_password
+        settings.smtp_use_tls = 'smtp_use_tls' in request.POST
+        
+        # Güvenlik ayarları
+        settings.token_expiry_days = int(request.POST.get('token_expiry_days', settings.token_expiry_days))
+        settings.max_login_attempts = int(request.POST.get('max_login_attempts', settings.max_login_attempts))
+        settings.session_timeout_minutes = int(request.POST.get('session_timeout_minutes', settings.session_timeout_minutes))
+        settings.require_password_change = 'require_password_change' in request.POST
+        
+        # Güncelleyen kullanıcıyı kaydet
+        settings.updated_by = user
+        settings.save()
+        
+        messages.success(request, 'Sistem ayarları başarıyla kaydedildi.')
+        return redirect('admin_settings')
+    
     context = {
         'current_user': user,
         'user_role': 'Admin',
-        'page_title': 'Sistem Ayarları'
+        'page_title': 'Sistem Ayarları',
+        'settings': settings,
     }
     
     return render(request, 'accounts/admin_settings.html', context)
@@ -1393,13 +1364,126 @@ def admin_reports_view(request):
     if not (user.is_superuser or user.role == 'admin'):
         return HttpResponseForbidden("Bu sayfaya erişim yetkiniz yok.")
     
+    # İstatistikleri hesapla
+    from tickets.models import Talep
+    from django.db.models import Count
+    from datetime import datetime, timedelta
+    
+    # Genel istatistikler
+    total_tickets = Talep.objects.count()
+    open_tickets = Talep.objects.filter(status='open').count()
+    in_progress_tickets = Talep.objects.filter(status='in_progress').count()
+    closed_tickets = Talep.objects.filter(status='closed').count()
+    
+    # Son 30 gün
+    last_30_days = datetime.now() - timedelta(days=30)
+    recent_tickets = Talep.objects.filter(created_at__gte=last_30_days).count()
+    
+    # Durum dağılımı
+    status_distribution = Talep.objects.values('status').annotate(count=Count('status'))
+    
+    # Kullanıcı istatistikleri
+    total_users = User.objects.count()
+    admin_users = User.objects.filter(role='admin').count()
+    support_users = User.objects.filter(role='support').count()
+    customer_users = User.objects.filter(role='customer').count()
+    
+    # Son aktiviteler
+    recent_tickets_detailed = Talep.objects.select_related('user', 'assigned_to').order_by('-created_at')[:10]
+    
     context = {
         'current_user': user,
         'user_role': 'Admin',
-        'page_title': 'Raporlar'
+        'page_title': 'Raporlar',
+        'stats': {
+            'total_tickets': total_tickets,
+            'open_tickets': open_tickets,
+            'in_progress_tickets': in_progress_tickets,
+            'closed_tickets': closed_tickets,
+            'recent_tickets': recent_tickets,
+            'total_users': total_users,
+            'admin_users': admin_users,
+            'support_users': support_users,
+            'customer_users': customer_users,
+        },
+        'status_distribution': status_distribution,
+        'recent_activities': recent_tickets_detailed,
     }
     
     return render(request, 'accounts/admin_reports.html', context)
+
+
+@login_required
+def export_report(request):
+    """
+    Rapor export fonksiyonu - Excel ve CSV desteği
+    """
+    # Token tabanlı kimlik doğrulama
+    user = verify_token_auth(request)
+    
+    if not user:
+        return JsonResponse({'error': 'Authentication required'}, status=401)
+    
+    # Admin kontrolü
+    if not (user.is_superuser or user.role == 'admin'):
+        return JsonResponse({'error': 'Permission denied'}, status=403)
+    
+    # Export formatını al
+    export_format = request.GET.get('format', 'csv')  # csv veya excel
+    report_type = request.GET.get('type', 'tickets')  # tickets veya users
+    
+    from tickets.models import Talep
+    from django.http import HttpResponse
+    import csv
+    from datetime import datetime
+    
+    # CSV Export
+    if export_format == 'csv':
+        response = HttpResponse(content_type='text/csv; charset=utf-8')
+        response['Content-Disposition'] = f'attachment; filename="helpdesk_report_{report_type}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv"'
+        
+        # UTF-8 BOM ekle (Excel'de Türkçe karakterler için)
+        response.write('\ufeff')
+        
+        writer = csv.writer(response)
+        
+        if report_type == 'tickets':
+            # Ticket raporu
+            writer.writerow(['ID', 'Başlık', 'Kullanıcı', 'Durum', 'Öncelik', 'Kategori', 'Oluşturma Tarihi', 'Atanan'])
+            
+            tickets = Talep.objects.select_related('user', 'category', 'assigned_to').order_by('-created_at')
+            for ticket in tickets:
+                writer.writerow([
+                    ticket.id,
+                    ticket.title,
+                    ticket.user.username,
+                    ticket.get_status_display(),
+                    ticket.get_priority_display(),
+                    ticket.category.name if ticket.category else '',
+                    ticket.created_at.strftime('%d.%m.%Y %H:%M'),
+                    ticket.assigned_to.username if ticket.assigned_to else 'Atanmamış'
+                ])
+        
+        elif report_type == 'users':
+            # Kullanıcı raporu
+            writer.writerow(['ID', 'Kullanıcı Adı', 'E-posta', 'Rol', 'Aktif', 'Kayıt Tarihi', 'Son Giriş'])
+            
+            users = User.objects.order_by('-date_joined')
+            for user in users:
+                writer.writerow([
+                    user.id,
+                    user.username,
+                    user.email,
+                    user.get_role_display(),
+                    'Evet' if user.is_active else 'Hayır',
+                    user.date_joined.strftime('%d.%m.%Y %H:%M'),
+                    user.last_login.strftime('%d.%m.%Y %H:%M') if user.last_login else 'Hiç'
+                ])
+        
+        return response
+    
+    else:
+        return JsonResponse({'error': 'Unsupported format'}, status=400)
 
 
 # ================================
@@ -1441,7 +1525,6 @@ def customer_profile_edit_view(request):
             user.email = request.POST.get('email', user.email)
             user.save()
             
-            logger.info(f"Kullanıcı {user.username} profil bilgilerini güncelledi")
             return redirect('/accounts/customer/profile/')
             
         except Exception as e:
@@ -1511,7 +1594,6 @@ def customer_change_password_view(request):
             user.set_password(new_password)
             user.save()
             
-            logger.info(f"Kullanıcı {user.username} şifresini değiştirdi")
             return redirect('/accounts/customer/profile/')
             
         except Exception as e:

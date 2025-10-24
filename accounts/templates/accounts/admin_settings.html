@@ -68,31 +68,38 @@
         <!-- Genel Ayarlar -->
         <div class="tab-pane fade show active" id="general" role="tabpanel">
           <h5>Genel Sistem Ayarları</h5>
-          <form>
+          <form method="post" action="{% url 'admin_settings' %}">
+            {% csrf_token %}
+            <input type="hidden" name="tab" value="general">
             <div class="row">
               <div class="col-md-6">
                 <div class="mb-3">
-                  <label for="site-name" class="form-label">Site Adı</label>
-                  <input type="text" class="form-control" id="site-name" value="Yardım Masası">
+                  <label for="site_name" class="form-label">Site Adı</label>
+                  <input type="text" class="form-control" id="site_name" name="site_name" value="{{ settings.site_name }}">
                 </div>
                 <div class="mb-3">
-                  <label for="site-description" class="form-label">Site Açıklaması</label>
-                  <textarea class="form-control" id="site-description" rows="3">Müşteri destek ve talep yönetim sistemi</textarea>
+                  <label for="site_description" class="form-label">Site Açıklaması</label>
+                  <textarea class="form-control" id="site_description" name="site_description" rows="3">{{ settings.site_description }}</textarea>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="mb-3">
-                  <label for="admin-email" class="form-label">Yönetici E-postası</label>
-                  <input type="email" class="form-control" id="admin-email" value="admin@example.com">
+                  <label for="admin_email" class="form-label">Yönetici E-postası</label>
+                  <input type="email" class="form-control" id="admin_email" name="admin_email" value="{{ settings.admin_email }}">
                 </div>
                 <div class="mb-3">
                   <label for="timezone" class="form-label">Zaman Dilimi</label>
-                  <select class="form-select" id="timezone">
-                    <option value="Europe/Istanbul" selected>Türkiye (UTC+3)</option>
-                    <option value="UTC">UTC</option>
+                  <select class="form-select" id="timezone" name="timezone">
+                    <option value="Europe/Istanbul" {% if settings.timezone == 'Europe/Istanbul' %}selected{% endif %}>Türkiye (UTC+3)</option>
+                    <option value="UTC" {% if settings.timezone == 'UTC' %}selected{% endif %}>UTC</option>
                   </select>
                 </div>
               </div>
+            </div>
+            <div class="text-end">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check2 me-2"></i>Genel Ayarları Kaydet
+              </button>
             </div>
           </form>
         </div>
@@ -100,54 +107,92 @@
         <!-- E-posta Ayarları -->
         <div class="tab-pane fade" id="email" role="tabpanel">
           <h5>E-posta Konfigürasyonu</h5>
-          <form>
+          <form method="post" action="{% url 'admin_settings' %}">
+            {% csrf_token %}
+            <input type="hidden" name="tab" value="email">
             <div class="row">
               <div class="col-md-6">
                 <div class="mb-3">
-                  <label for="smtp-host" class="form-label">SMTP Sunucusu</label>
-                  <input type="text" class="form-control" id="smtp-host" placeholder="smtp.gmail.com">
+                  <label for="smtp_host" class="form-label">SMTP Sunucusu</label>
+                  <input type="text" class="form-control" id="smtp_host" name="smtp_host" value="{{ settings.smtp_host|default:'' }}" placeholder="smtp.gmail.com">
                 </div>
                 <div class="mb-3">
-                  <label for="smtp-port" class="form-label">SMTP Portu</label>
-                  <input type="number" class="form-control" id="smtp-port" value="587">
+                  <label for="smtp_port" class="form-label">SMTP Portu</label>
+                  <input type="number" class="form-control" id="smtp_port" name="smtp_port" value="{{ settings.smtp_port }}">
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="mb-3">
-                  <label for="smtp-username" class="form-label">SMTP Kullanıcı Adı</label>
-                  <input type="text" class="form-control" id="smtp-username" placeholder="email@domain.com">
+                  <label for="smtp_username" class="form-label">SMTP Kullanıcı Adı</label>
+                  <input type="text" class="form-control" id="smtp_username" name="smtp_username" value="{{ settings.smtp_username|default:'' }}" placeholder="email@domain.com">
                 </div>
                 <div class="mb-3">
-                  <label for="smtp-password" class="form-label">SMTP Şifresi</label>
-                  <input type="password" class="form-control" id="smtp-password" placeholder="••••••••">
+                  <label for="smtp_password" class="form-label">SMTP Şifresi</label>
+                  <input type="password" class="form-control" id="smtp_password" name="smtp_password" placeholder="Değiştirmek için yeni şifre girin">
+                  {% if settings.smtp_password %}
+                    <div class="form-text">Mevcut şifre kaydedilmiş. Değiştirmek için yeni şifre girin.</div>
+                  {% endif %}
                 </div>
               </div>
             </div>
             <div class="mb-3">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="smtp-tls" checked>
-                <label class="form-check-label" for="smtp-tls">
+                <input class="form-check-input" type="checkbox" id="smtp_use_tls" name="smtp_use_tls" {% if settings.smtp_use_tls %}checked{% endif %}>
+                <label class="form-check-label" for="smtp_use_tls">
                   TLS/SSL Kullan
                 </label>
               </div>
             </div>
-            <button type="button" class="btn btn-outline-primary">
-              <i class="bi bi-envelope-check me-2"></i>Test E-postası Gönder
-            </button>
+            <div class="text-end">
+              <button type="button" class="btn btn-outline-primary me-2">
+                <i class="bi bi-envelope-check me-2"></i>Test E-postası Gönder
+              </button>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check2 me-2"></i>E-posta Ayarları Kaydet
+              </button>
+            </div>
           </form>
         </div>
 
         <!-- Güvenlik Ayarları -->
         <div class="tab-pane fade" id="security" role="tabpanel">
           <h5>Güvenlik Ayarları</h5>
-          <form>
+          <form method="post" action="{% url 'admin_settings' %}">
+            {% csrf_token %}
+            <input type="hidden" name="tab" value="security">
             <div class="row">
               <div class="col-md-6">
                 <div class="mb-3">
-                  <label for="token-expiry" class="form-label">Token Geçerlilik Süresi (Gün)</label>
-                  <input type="number" class="form-control" id="token-expiry" value="30">
+                  <label for="token_expiry_days" class="form-label">Token Geçerlilik Süresi (Gün)</label>
+                  <input type="number" class="form-control" id="token_expiry_days" name="token_expiry_days" value="{{ settings.token_expiry_days }}" min="1" max="365">
                 </div>
                 <div class="mb-3">
+                  <label for="max_login_attempts" class="form-label">Maksimum Giriş Denemesi</label>
+                  <input type="number" class="form-control" id="max_login_attempts" name="max_login_attempts" value="{{ settings.max_login_attempts }}" min="1" max="20">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="session_timeout_minutes" class="form-label">Oturum Zaman Aşımı (Dakika)</label>
+                  <input type="number" class="form-control" id="session_timeout_minutes" name="session_timeout_minutes" value="{{ settings.session_timeout_minutes }}" min="5" max="480">
+                </div>
+                <div class="mb-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="require_password_change" name="require_password_change" {% if settings.require_password_change %}checked{% endif %}>
+                    <label class="form-check-label" for="require_password_change">
+                      Düzenli Parola Değişikliği Zorunlu
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="text-end">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check2 me-2"></i>Güvenlik Ayarları Kaydet
+              </button>
+            </div>
+          </form>
+        </div>
                   <label for="max-login-attempts" class="form-label">Maksimum Giriş Denemesi</label>
                   <input type="number" class="form-control" id="max-login-attempts" value="5">
                 </div>
@@ -209,11 +254,24 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-});
 
-function saveSettings() {
-    // Ayarları kaydetme fonksiyonu
-    alert('Ayarlar kaydedildi! (Bu özellik henüz geliştirilmemiştir)');
-}
+    // Tab'dan tab'a geçerken form verilerini koruma
+    window.addEventListener('beforeunload', function(e) {
+        const forms = document.querySelectorAll('form');
+        let hasChanges = false;
+        
+        forms.forEach(form => {
+            const formData = new FormData(form);
+            if (formData.entries().next().value) {
+                hasChanges = true;
+            }
+        });
+        
+        if (hasChanges) {
+            e.preventDefault();
+            e.returnValue = 'Kaydedilmemiş değişiklikler var. Sayfadan ayrılmak istediğinizden emin misiniz?';
+        }
+    });
+});
 </script>
 {% endblock %}

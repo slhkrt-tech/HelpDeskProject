@@ -3417,3 +3417,1746 @@ INFO 2025-10-24 10:34:54,269 basehttp 18528 6324 "GET /accounts/api/profile/ HTT
 WARNING 2025-10-24 10:35:00,872 log 18528 6324 Unauthorized: /accounts/api/logout/
 WARNING 2025-10-24 10:35:00,872 basehttp 18528 6324 "POST /accounts/api/logout/ HTTP/1.1" 401 29
 INFO 2025-10-24 10:35:00,911 basehttp 18528 6324 "GET /accounts/login/ HTTP/1.1" 200 29774
+INFO 2025-10-24 11:06:26,843 autoreload 23348 21184 Watching for file changes with StatReloader
+INFO 2025-10-24 11:06:41,156 views 23348 14144 verify_token_auth called for path: /
+INFO 2025-10-24 11:06:41,156 views 23348 14144 No auth_token found in cookies
+INFO 2025-10-24 11:06:41,156 views 23348 14144 No valid authentication found
+INFO 2025-10-24 11:06:41,162 basehttp 23348 14144 "GET / HTTP/1.1" 200 25623
+INFO 2025-10-24 11:06:41,218 basehttp 23348 14144 "GET /static/css/theme.css HTTP/1.1" 200 7004
+INFO 2025-10-24 11:06:41,218 basehttp 23348 19368 "GET /static/css/sidebar.css HTTP/1.1" 200 8277
+INFO 2025-10-24 11:06:41,405 basehttp 23348 19368 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:06:41,518 basehttp 23348 19368 "GET /static/favicon.svg HTTP/1.1" 200 298
+INFO 2025-10-24 11:07:09,657 views 23348 19368 Successful login for user: admin from IP: 127.0.0.1
+INFO 2025-10-24 11:07:09,920 security 23348 19368 Successful login from IP: 127.0.0.1
+INFO 2025-10-24 11:07:09,920 basehttp 23348 19368 "POST /accounts/api/login/ HTTP/1.1" 200 436
+INFO 2025-10-24 11:07:09,961 middleware 23348 19368 User admin authenticated via cookie
+INFO 2025-10-24 11:07:09,962 views 23348 19368 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:07:09,962 views 23348 19368 Found auth_token in cookies: uQg8eATw...
+INFO 2025-10-24 11:07:09,962 views 23348 19368 Looking up token: uQg8eATw...
+INFO 2025-10-24 11:07:09,963 views 23348 19368 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:07:09,963 views 23348 19368 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:07:09,963 views 23348 19368 Admin panel access attempt from admin (Customer)
+INFO 2025-10-24 11:07:09,963 views 23348 19368 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:07:09,963 views 23348 19368 Found auth_token in cookies: uQg8eATw...
+INFO 2025-10-24 11:07:09,963 views 23348 19368 Looking up token: uQg8eATw...
+INFO 2025-10-24 11:07:09,965 views 23348 19368 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:07:09,965 views 23348 19368 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:07:09,965 views 23348 19368 Token auth result: admin (Customer)
+INFO 2025-10-24 11:07:09,965 views 23348 19368 Admin panel access granted for admin
+INFO 2025-10-24 11:07:09,989 basehttp 23348 19368 "GET /accounts/admin-panel/ HTTP/1.1" 200 51305
+INFO 2025-10-24 11:07:10,031 views 23348 19368 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:07:10,031 views 23348 19368 Request user: admin (Customer), authenticated: True
+INFO 2025-10-24 11:07:10,032 views 23348 19368 Authorization header: None
+INFO 2025-10-24 11:07:10,032 views 23348 19368 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:07:10,032 views 23348 19368 User authenticated via Django session: admin
+INFO 2025-10-24 11:07:10,069 basehttp 23348 19368 "GET /accounts/api/profile/ HTTP/1.1" 200 690
+INFO 2025-10-24 11:07:10,544 views 23348 19368 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:07:10,544 views 23348 19368 Request user: admin (Customer), authenticated: True
+INFO 2025-10-24 11:07:10,544 views 23348 19368 Authorization header: Token JH_euwOvinSBMvmk9Xlu4VSdqkjgB75Cw0n3ztncppqAyNXX-s57K5CFRyAQHBhwj22oGvKE7HhwzduQg8eATw
+INFO 2025-10-24 11:07:10,544 views 23348 19368 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:07:10,544 views 23348 19368 User authenticated via Django session: admin
+INFO 2025-10-24 11:07:10,555 basehttp 23348 19368 "GET /accounts/api/profile/ HTTP/1.1" 200 690
+INFO 2025-10-24 11:07:22,863 views 23348 19368 verify_token_auth called for path: /accounts/admin/users/
+INFO 2025-10-24 11:07:22,863 views 23348 19368 Found auth_token in cookies: uQg8eATw...
+INFO 2025-10-24 11:07:22,863 views 23348 19368 Looking up token: uQg8eATw...
+INFO 2025-10-24 11:07:22,866 views 23348 19368 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:07:22,866 views 23348 19368 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:07:22,889 basehttp 23348 19368 "GET /accounts/admin/users/ HTTP/1.1" 200 30130
+INFO 2025-10-24 11:07:22,931 views 23348 19368 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:07:22,931 views 23348 19368 Request user: admin (Customer), authenticated: True
+INFO 2025-10-24 11:07:22,931 views 23348 19368 Authorization header: Token JH_euwOvinSBMvmk9Xlu4VSdqkjgB75Cw0n3ztncppqAyNXX-s57K5CFRyAQHBhwj22oGvKE7HhwzduQg8eATw
+INFO 2025-10-24 11:07:22,931 views 23348 19368 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:07:22,931 views 23348 19368 User authenticated via Django session: admin
+INFO 2025-10-24 11:07:22,942 basehttp 23348 19368 "GET /accounts/api/profile/ HTTP/1.1" 200 690
+INFO 2025-10-24 11:07:24,563 views 23348 19368 verify_token_auth called for path: /accounts/admin/users/1/edit/
+INFO 2025-10-24 11:07:24,563 views 23348 19368 Found auth_token in cookies: uQg8eATw...
+INFO 2025-10-24 11:07:24,563 views 23348 19368 Looking up token: uQg8eATw...
+INFO 2025-10-24 11:07:24,566 views 23348 19368 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:07:24,566 views 23348 19368 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:07:24,577 basehttp 23348 19368 "GET /accounts/admin/users/1/edit/ HTTP/1.1" 200 29583
+INFO 2025-10-24 11:07:24,621 views 23348 19368 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:07:24,621 views 23348 19368 Request user: admin (Customer), authenticated: True
+INFO 2025-10-24 11:07:24,621 views 23348 19368 Authorization header: Token JH_euwOvinSBMvmk9Xlu4VSdqkjgB75Cw0n3ztncppqAyNXX-s57K5CFRyAQHBhwj22oGvKE7HhwzduQg8eATw
+INFO 2025-10-24 11:07:24,621 views 23348 19368 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:07:24,621 views 23348 19368 User authenticated via Django session: admin
+INFO 2025-10-24 11:07:24,632 basehttp 23348 19368 "GET /accounts/api/profile/ HTTP/1.1" 200 690
+INFO 2025-10-24 11:07:32,061 views 23348 19368 verify_token_auth called for path: /accounts/admin/users/1/edit/
+INFO 2025-10-24 11:07:32,061 views 23348 19368 Found auth_token in cookies: uQg8eATw...
+INFO 2025-10-24 11:07:32,061 views 23348 19368 Looking up token: uQg8eATw...
+INFO 2025-10-24 11:07:32,063 views 23348 19368 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:07:32,063 views 23348 19368 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:07:32,065 views 23348 19368 Admin admin tarafýndan kullanýcý güncellendi: admin
+INFO 2025-10-24 11:07:32,066 basehttp 23348 19368 "POST /accounts/admin/users/1/edit/ HTTP/1.1" 302 0
+INFO 2025-10-24 11:07:32,097 views 23348 19368 verify_token_auth called for path: /accounts/admin/users/
+INFO 2025-10-24 11:07:32,097 views 23348 19368 Found auth_token in cookies: uQg8eATw...
+INFO 2025-10-24 11:07:32,097 views 23348 19368 Looking up token: uQg8eATw...
+INFO 2025-10-24 11:07:32,100 views 23348 19368 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:07:32,100 views 23348 19368 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:07:32,101 views 23348 19368 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:07:32,104 basehttp 23348 19368 "GET /accounts/admin/users/ HTTP/1.1" 200 30238
+INFO 2025-10-24 11:07:32,146 views 23348 19368 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:07:32,146 views 23348 19368 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:07:32,146 views 23348 19368 Authorization header: Token JH_euwOvinSBMvmk9Xlu4VSdqkjgB75Cw0n3ztncppqAyNXX-s57K5CFRyAQHBhwj22oGvKE7HhwzduQg8eATw
+INFO 2025-10-24 11:07:32,147 views 23348 19368 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:07:32,147 views 23348 19368 User authenticated via Django session: admin
+INFO 2025-10-24 11:07:32,157 basehttp 23348 19368 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:07:34,123 views 23348 19368 verify_token_auth called for path: /
+INFO 2025-10-24 11:07:34,123 views 23348 19368 Found auth_token in cookies: uQg8eATw...
+INFO 2025-10-24 11:07:34,123 views 23348 19368 Looking up token: uQg8eATw...
+INFO 2025-10-24 11:07:34,125 views 23348 19368 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:07:34,125 views 23348 19368 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:07:34,126 views 23348 19368 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:07:34,127 basehttp 23348 19368 "GET / HTTP/1.1" 302 0
+INFO 2025-10-24 11:07:34,156 views 23348 19368 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:07:34,156 views 23348 19368 Found auth_token in cookies: uQg8eATw...
+INFO 2025-10-24 11:07:34,156 views 23348 19368 Looking up token: uQg8eATw...
+INFO 2025-10-24 11:07:34,159 views 23348 19368 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:07:34,159 views 23348 19368 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:07:34,159 views 23348 19368 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:07:34,159 views 23348 19368 Admin panel access attempt from admin (Admin)
+INFO 2025-10-24 11:07:34,159 views 23348 19368 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:07:34,159 views 23348 19368 Found auth_token in cookies: uQg8eATw...
+INFO 2025-10-24 11:07:34,159 views 23348 19368 Looking up token: uQg8eATw...
+INFO 2025-10-24 11:07:34,161 views 23348 19368 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:07:34,161 views 23348 19368 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:07:34,161 views 23348 19368 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:07:34,161 views 23348 19368 Token auth result: admin (Admin)
+INFO 2025-10-24 11:07:34,161 views 23348 19368 Admin panel access granted for admin
+INFO 2025-10-24 11:07:34,162 basehttp 23348 19368 "GET /accounts/admin-panel/ HTTP/1.1" 200 51305
+INFO 2025-10-24 11:07:34,201 views 23348 19368 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:07:34,202 views 23348 19368 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:07:34,202 views 23348 19368 Authorization header: None
+INFO 2025-10-24 11:07:34,202 views 23348 19368 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:07:34,202 views 23348 19368 User authenticated via Django session: admin
+INFO 2025-10-24 11:07:34,212 basehttp 23348 19368 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:07:34,240 views 23348 19368 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:07:34,241 views 23348 19368 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:07:34,241 views 23348 19368 Authorization header: Token JH_euwOvinSBMvmk9Xlu4VSdqkjgB75Cw0n3ztncppqAyNXX-s57K5CFRyAQHBhwj22oGvKE7HhwzduQg8eATw
+INFO 2025-10-24 11:07:34,241 views 23348 19368 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:07:34,241 views 23348 19368 User authenticated via Django session: admin
+INFO 2025-10-24 11:07:34,251 basehttp 23348 19368 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+WARNING 2025-10-24 11:07:59,159 log 23348 19368 Unauthorized: /accounts/api/logout/
+WARNING 2025-10-24 11:07:59,160 basehttp 23348 19368 "POST /accounts/api/logout/ HTTP/1.1" 401 29
+INFO 2025-10-24 11:07:59,197 basehttp 23348 19368 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:08:00,286 basehttp 23348 19368 "GET /accounts/signup/ HTTP/1.1" 200 32797
+INFO 2025-10-24 11:12:39,588 autoreload 12840 10268 Watching for file changes with StatReloader
+INFO 2025-10-24 11:12:50,885 basehttp 12840 19972 "GET /accounts/signup/?id=68a25485-5d3c-44d6-ad75-6c8f3ae52731&vscodeBrowserReqId=1761293570873 HTTP/1.1" 200 32797
+INFO 2025-10-24 11:13:23,867 views 12840 2556 verify_token_auth called for path: /
+INFO 2025-10-24 11:13:23,867 views 12840 2556 No auth_token found in cookies
+INFO 2025-10-24 11:13:23,867 views 12840 2556 No valid authentication found
+INFO 2025-10-24 11:13:23,868 basehttp 12840 2556 "GET / HTTP/1.1" 200 25623
+INFO 2025-10-24 11:13:24,006 basehttp 12840 2556 "GET /static/css/theme.css HTTP/1.1" 200 7004
+INFO 2025-10-24 11:13:24,008 basehttp 12840 17972 "GET /static/css/sidebar.css HTTP/1.1" 200 8277
+INFO 2025-10-24 11:13:24,146 basehttp 12840 17972 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:13:24,273 basehttp 12840 17972 "GET /static/favicon.svg HTTP/1.1" 200 298
+INFO 2025-10-24 11:13:29,762 views 12840 17972 Successful login for user: admin from IP: 127.0.0.1
+INFO 2025-10-24 11:13:30,038 security 12840 17972 Successful login from IP: 127.0.0.1
+INFO 2025-10-24 11:13:30,039 basehttp 12840 17972 "POST /accounts/api/login/ HTTP/1.1" 200 442
+INFO 2025-10-24 11:13:30,087 middleware 12840 17972 User admin authenticated via cookie
+INFO 2025-10-24 11:13:30,087 views 12840 17972 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:13:30,088 views 12840 17972 Found auth_token in cookies: 7XYbBxEg...
+INFO 2025-10-24 11:13:30,088 views 12840 17972 Looking up token: 7XYbBxEg...
+INFO 2025-10-24 11:13:30,089 views 12840 17972 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:13:30,089 views 12840 17972 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:13:30,089 views 12840 17972 Admin panel access attempt from admin (Admin)
+INFO 2025-10-24 11:13:30,089 views 12840 17972 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:13:30,089 views 12840 17972 Found auth_token in cookies: 7XYbBxEg...
+INFO 2025-10-24 11:13:30,089 views 12840 17972 Looking up token: 7XYbBxEg...
+INFO 2025-10-24 11:13:30,090 views 12840 17972 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:13:30,091 views 12840 17972 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:13:30,091 views 12840 17972 Token auth result: admin (Admin)
+INFO 2025-10-24 11:13:30,091 views 12840 17972 Admin panel access granted for admin
+INFO 2025-10-24 11:13:30,093 basehttp 12840 17972 "GET /accounts/admin-panel/ HTTP/1.1" 200 51305
+INFO 2025-10-24 11:13:30,142 views 12840 17972 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:13:30,143 views 12840 17972 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:13:30,143 views 12840 17972 Authorization header: None
+INFO 2025-10-24 11:13:30,143 views 12840 17972 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:13:30,143 views 12840 17972 User authenticated via Django session: admin
+INFO 2025-10-24 11:13:30,163 basehttp 12840 17972 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:13:30,649 views 12840 17972 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:13:30,649 views 12840 17972 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:13:30,649 views 12840 17972 Authorization header: Token bRUdxZCzOWVwfXjhM48hws9XMI1K7vrMTAHOGLii9yUQYsOK2J9tBOjGgXOweZIht--oY5LMeKL3eq7XYbBxEg
+INFO 2025-10-24 11:13:30,649 views 12840 17972 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:13:30,649 views 12840 17972 User authenticated via Django session: admin
+INFO 2025-10-24 11:13:30,660 basehttp 12840 17972 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+WARNING 2025-10-24 11:13:35,823 log 12840 17972 Unauthorized: /accounts/api/logout/
+WARNING 2025-10-24 11:13:35,823 basehttp 12840 17972 "POST /accounts/api/logout/ HTTP/1.1" 401 29
+INFO 2025-10-24 11:13:35,862 basehttp 12840 17972 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:13:36,678 basehttp 12840 17972 "GET /accounts/signup/ HTTP/1.1" 200 32797
+INFO 2025-10-24 11:14:54,333 views 12840 16472 verify_token_auth called for path: /
+INFO 2025-10-24 11:14:54,334 views 12840 16472 No auth_token found in cookies
+INFO 2025-10-24 11:14:54,334 views 12840 16472 No valid authentication found
+INFO 2025-10-24 11:14:54,334 basehttp 12840 16472 "GET / HTTP/1.1" 200 25623
+INFO 2025-10-24 11:14:54,346 basehttp 12840 16472 "GET /static/css/theme.css HTTP/1.1" 200 7004
+INFO 2025-10-24 11:14:54,346 basehttp 12840 18656 "GET /static/css/sidebar.css HTTP/1.1" 200 8277
+INFO 2025-10-24 11:14:54,553 basehttp 12840 18656 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:14:54,659 basehttp 12840 18656 "GET /static/favicon.svg HTTP/1.1" 200 298
+INFO 2025-10-24 11:14:57,562 basehttp 12840 18656 "GET /accounts/signup/ HTTP/1.1" 200 32797
+INFO 2025-10-24 11:17:17,781 views 12840 24628 verify_token_auth called for path: /
+INFO 2025-10-24 11:17:17,781 views 12840 24628 No auth_token found in cookies
+INFO 2025-10-24 11:17:17,781 views 12840 24628 No valid authentication found
+INFO 2025-10-24 11:17:17,782 basehttp 12840 24628 "GET / HTTP/1.1" 200 25623
+INFO 2025-10-24 11:17:17,848 basehttp 12840 24628 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:17:19,222 basehttp 12840 24628 "GET /accounts/signup/ HTTP/1.1" 200 33416
+INFO 2025-10-24 11:17:40,860 views 12840 24628 api_signup called from IP: 127.0.0.1
+INFO 2025-10-24 11:17:40,860 views 12840 24628 Request method: POST
+INFO 2025-10-24 11:17:40,861 views 12840 24628 Request data: {'username': 'Bilgilem', 'email': 'bilgiþlem@example.com', 'password1': '123456Bt!', 'password2': '123456Bt!'}
+INFO 2025-10-24 11:17:40,861 views 12840 24628 Sanitized data - username: Bilgilem, email: bilgiþlem@example.com
+INFO 2025-10-24 11:17:41,169 views 12840 24628 New user created: Bilgilem from IP: 127.0.0.1
+INFO 2025-10-24 11:17:41,456 views 12840 24628 Cleared all old authentication cookies before setting new ones
+INFO 2025-10-24 11:17:41,457 basehttp 12840 24628 "POST /accounts/api/signup/ HTTP/1.1" 201 468
+INFO 2025-10-24 11:17:44,504 middleware 12840 24628 User Bilgilem authenticated via cookie
+INFO 2025-10-24 11:17:44,504 views 12840 24628 verify_token_auth called for path: /accounts/customer-panel/
+INFO 2025-10-24 11:17:44,504 views 12840 24628 Found auth_token in cookies: 5nw-pXew...
+INFO 2025-10-24 11:17:44,504 views 12840 24628 Looking up token: 5nw-pXew...
+INFO 2025-10-24 11:17:44,506 views 12840 24628 Valid custom token found for user: Bilgilem (role: customer)
+INFO 2025-10-24 11:17:44,506 views 12840 24628 User authenticated via cookie token: Bilgilem (role: customer)
+INFO 2025-10-24 11:17:44,548 basehttp 12840 24628 "GET /accounts/customer-panel/ HTTP/1.1" 200 44152
+INFO 2025-10-24 11:17:44,562 basehttp 12840 24628 "GET /static/tickets/css/ticket_list_modern.css HTTP/1.1" 200 12564
+INFO 2025-10-24 11:17:44,618 views 12840 24628 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:17:44,618 views 12840 24628 Request user: Bilgilem (Customer), authenticated: True
+INFO 2025-10-24 11:17:44,618 views 12840 24628 Authorization header: None
+INFO 2025-10-24 11:17:44,618 views 12840 24628 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:17:44,618 views 12840 24628 User authenticated via Django session: Bilgilem
+INFO 2025-10-24 11:17:44,632 basehttp 12840 24628 "GET /accounts/api/profile/ HTTP/1.1" 200 697
+INFO 2025-10-24 11:17:44,665 views 12840 24628 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:17:44,665 views 12840 24628 Request user: Bilgilem (Customer), authenticated: True
+INFO 2025-10-24 11:17:44,665 views 12840 24628 Authorization header: Token wsVhiwwRSsRxz1lX5wdpchcuKw1tnins-m_6zn8gZUJlKOD1t7orFYRlJlmQIzaRADfNfRR1hifZMG5nw-pXew
+INFO 2025-10-24 11:17:44,666 views 12840 24628 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:17:44,666 views 12840 24628 User authenticated via Django session: Bilgilem
+INFO 2025-10-24 11:17:44,680 basehttp 12840 24628 "GET /accounts/api/profile/ HTTP/1.1" 200 697
+WARNING 2025-10-24 11:17:52,788 log 12840 24628 Unauthorized: /accounts/api/logout/
+WARNING 2025-10-24 11:17:52,788 basehttp 12840 24628 "POST /accounts/api/logout/ HTTP/1.1" 401 29
+INFO 2025-10-24 11:17:52,827 basehttp 12840 24628 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:17:58,961 views 12840 24628 Successful login for user: admin from IP: 127.0.0.1
+INFO 2025-10-24 11:17:59,230 security 12840 24628 Successful login from IP: 127.0.0.1
+INFO 2025-10-24 11:17:59,231 basehttp 12840 24628 "POST /accounts/api/login/ HTTP/1.1" 200 442
+INFO 2025-10-24 11:17:59,273 middleware 12840 24628 User admin authenticated via cookie
+INFO 2025-10-24 11:17:59,274 views 12840 24628 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:17:59,274 views 12840 24628 Found auth_token in cookies: --vPOWaw...
+INFO 2025-10-24 11:17:59,274 views 12840 24628 Looking up token: --vPOWaw...
+INFO 2025-10-24 11:17:59,275 views 12840 24628 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:17:59,275 views 12840 24628 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:17:59,275 views 12840 24628 Admin panel access attempt from admin (Admin)
+INFO 2025-10-24 11:17:59,275 views 12840 24628 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:17:59,276 views 12840 24628 Found auth_token in cookies: --vPOWaw...
+INFO 2025-10-24 11:17:59,276 views 12840 24628 Looking up token: --vPOWaw...
+INFO 2025-10-24 11:17:59,277 views 12840 24628 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:17:59,277 views 12840 24628 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:17:59,277 views 12840 24628 Token auth result: admin (Admin)
+INFO 2025-10-24 11:17:59,277 views 12840 24628 Admin panel access granted for admin
+INFO 2025-10-24 11:17:59,279 basehttp 12840 24628 "GET /accounts/admin-panel/ HTTP/1.1" 200 51305
+INFO 2025-10-24 11:17:59,321 views 12840 24628 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:17:59,321 views 12840 24628 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:17:59,321 views 12840 24628 Authorization header: None
+INFO 2025-10-24 11:17:59,321 views 12840 24628 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:17:59,321 views 12840 24628 User authenticated via Django session: admin
+INFO 2025-10-24 11:17:59,334 basehttp 12840 24628 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:17:59,828 views 12840 24628 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:17:59,828 views 12840 24628 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:17:59,828 views 12840 24628 Authorization header: Token RFsZgFQrBc94Bsf0dIVLCHpVtHZFxhnySL8oLSHJaaB8CgaS99TOHEkbWRaMqhpC2HaF9USPIGaNIQ--vPOWaw
+INFO 2025-10-24 11:17:59,828 views 12840 24628 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:17:59,828 views 12840 24628 User authenticated via Django session: admin
+INFO 2025-10-24 11:17:59,839 basehttp 12840 24628 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:18:04,673 views 12840 24628 verify_token_auth called for path: /accounts/admin/users/
+INFO 2025-10-24 11:18:04,673 views 12840 24628 Found auth_token in cookies: --vPOWaw...
+INFO 2025-10-24 11:18:04,673 views 12840 24628 Looking up token: --vPOWaw...
+INFO 2025-10-24 11:18:04,676 views 12840 24628 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:18:04,676 views 12840 24628 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:18:04,681 basehttp 12840 24628 "GET /accounts/admin/users/ HTTP/1.1" 200 33239
+INFO 2025-10-24 11:18:04,724 views 12840 24628 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:18:04,725 views 12840 24628 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:18:04,725 views 12840 24628 Authorization header: Token RFsZgFQrBc94Bsf0dIVLCHpVtHZFxhnySL8oLSHJaaB8CgaS99TOHEkbWRaMqhpC2HaF9USPIGaNIQ--vPOWaw
+INFO 2025-10-24 11:18:04,725 views 12840 24628 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:18:04,725 views 12840 24628 User authenticated via Django session: admin
+INFO 2025-10-24 11:18:04,737 basehttp 12840 24628 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:18:14,678 views 12840 24628 verify_token_auth called for path: /accounts/admin/users/2/delete/
+INFO 2025-10-24 11:18:14,678 views 12840 24628 Found auth_token in cookies: --vPOWaw...
+INFO 2025-10-24 11:18:14,678 views 12840 24628 Looking up token: --vPOWaw...
+INFO 2025-10-24 11:18:14,681 views 12840 24628 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:18:14,681 views 12840 24628 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:18:14,709 basehttp 12840 24628 "GET /accounts/admin/users/2/delete/ HTTP/1.1" 200 35588
+INFO 2025-10-24 11:18:14,762 views 12840 24628 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:18:14,762 views 12840 24628 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:18:14,763 views 12840 24628 Authorization header: Token RFsZgFQrBc94Bsf0dIVLCHpVtHZFxhnySL8oLSHJaaB8CgaS99TOHEkbWRaMqhpC2HaF9USPIGaNIQ--vPOWaw
+INFO 2025-10-24 11:18:14,763 views 12840 24628 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:18:14,763 views 12840 24628 User authenticated via Django session: admin
+INFO 2025-10-24 11:18:14,777 basehttp 12840 24628 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:19:11,230 autoreload 14416 26100 Watching for file changes with StatReloader
+INFO 2025-10-24 11:19:25,176 views 14416 9840 verify_token_auth called for path: /
+INFO 2025-10-24 11:19:25,176 views 14416 9840 No auth_token found in cookies
+INFO 2025-10-24 11:19:25,176 views 14416 9840 No valid authentication found
+INFO 2025-10-24 11:19:25,182 basehttp 14416 9840 "GET / HTTP/1.1" 200 25623
+INFO 2025-10-24 11:19:25,227 basehttp 14416 9840 "GET /static/css/theme.css HTTP/1.1" 200 7004
+INFO 2025-10-24 11:19:25,227 basehttp 14416 11220 "GET /static/css/sidebar.css HTTP/1.1" 200 8277
+INFO 2025-10-24 11:19:25,404 basehttp 14416 9840 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:19:25,545 basehttp 14416 9840 "GET /static/favicon.svg HTTP/1.1" 200 298
+INFO 2025-10-24 11:19:27,392 basehttp 14416 9840 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:19:33,588 views 14416 9840 Successful login for user: admin from IP: 127.0.0.1
+INFO 2025-10-24 11:19:33,856 security 14416 9840 Successful login from IP: 127.0.0.1
+INFO 2025-10-24 11:19:33,856 basehttp 14416 9840 "POST /accounts/api/login/ HTTP/1.1" 200 436
+INFO 2025-10-24 11:19:33,898 middleware 14416 9840 User admin authenticated via cookie
+INFO 2025-10-24 11:19:33,898 views 14416 9840 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:19:33,898 views 14416 9840 Found auth_token in cookies: yKeAdFRw...
+INFO 2025-10-24 11:19:33,898 views 14416 9840 Looking up token: yKeAdFRw...
+INFO 2025-10-24 11:19:33,900 views 14416 9840 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:19:33,900 views 14416 9840 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:19:33,900 views 14416 9840 Admin panel access attempt from admin (Customer)
+INFO 2025-10-24 11:19:33,900 views 14416 9840 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:19:33,900 views 14416 9840 Found auth_token in cookies: yKeAdFRw...
+INFO 2025-10-24 11:19:33,900 views 14416 9840 Looking up token: yKeAdFRw...
+INFO 2025-10-24 11:19:33,901 views 14416 9840 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:19:33,902 views 14416 9840 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:19:33,902 views 14416 9840 Token auth result: admin (Customer)
+INFO 2025-10-24 11:19:33,902 views 14416 9840 Admin panel access granted for admin
+INFO 2025-10-24 11:19:33,904 basehttp 14416 9840 "GET /accounts/admin-panel/ HTTP/1.1" 200 51305
+INFO 2025-10-24 11:19:33,950 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:19:33,951 views 14416 9840 Request user: admin (Customer), authenticated: True
+INFO 2025-10-24 11:19:33,951 views 14416 9840 Authorization header: None
+INFO 2025-10-24 11:19:33,951 views 14416 9840 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:19:33,951 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:19:33,972 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 690
+INFO 2025-10-24 11:19:34,447 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:19:34,447 views 14416 9840 Request user: admin (Customer), authenticated: True
+INFO 2025-10-24 11:19:34,448 views 14416 9840 Authorization header: Token hCS4ehlVbKVF88SzgjCCAAJLcMkkaP2PRCoN1YxUO-aMeEFTQVmB9cdxRtbxokTc_F3lvDJunmHomFyKeAdFRw
+INFO 2025-10-24 11:19:34,448 views 14416 9840 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:19:34,448 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:19:34,459 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 690
+INFO 2025-10-24 11:19:36,250 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/
+INFO 2025-10-24 11:19:36,250 views 14416 9840 Found auth_token in cookies: yKeAdFRw...
+INFO 2025-10-24 11:19:36,251 views 14416 9840 Looking up token: yKeAdFRw...
+INFO 2025-10-24 11:19:36,253 views 14416 9840 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:19:36,253 views 14416 9840 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:19:36,261 basehttp 14416 9840 "GET /accounts/admin/users/ HTTP/1.1" 200 30130
+INFO 2025-10-24 11:19:36,303 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:19:36,303 views 14416 9840 Request user: admin (Customer), authenticated: True
+INFO 2025-10-24 11:19:36,304 views 14416 9840 Authorization header: Token hCS4ehlVbKVF88SzgjCCAAJLcMkkaP2PRCoN1YxUO-aMeEFTQVmB9cdxRtbxokTc_F3lvDJunmHomFyKeAdFRw
+INFO 2025-10-24 11:19:36,304 views 14416 9840 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:19:36,304 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:19:36,315 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 690
+INFO 2025-10-24 11:19:37,815 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/1/edit/
+INFO 2025-10-24 11:19:37,815 views 14416 9840 Found auth_token in cookies: yKeAdFRw...
+INFO 2025-10-24 11:19:37,815 views 14416 9840 Looking up token: yKeAdFRw...
+INFO 2025-10-24 11:19:37,818 views 14416 9840 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:19:37,818 views 14416 9840 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:19:37,821 basehttp 14416 9840 "GET /accounts/admin/users/1/edit/ HTTP/1.1" 200 29583
+INFO 2025-10-24 11:19:37,862 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:19:37,862 views 14416 9840 Request user: admin (Customer), authenticated: True
+INFO 2025-10-24 11:19:37,862 views 14416 9840 Authorization header: Token hCS4ehlVbKVF88SzgjCCAAJLcMkkaP2PRCoN1YxUO-aMeEFTQVmB9cdxRtbxokTc_F3lvDJunmHomFyKeAdFRw
+INFO 2025-10-24 11:19:37,862 views 14416 9840 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:19:37,862 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:19:37,874 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 690
+INFO 2025-10-24 11:19:51,555 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/1/edit/
+INFO 2025-10-24 11:19:51,556 views 14416 9840 Found auth_token in cookies: yKeAdFRw...
+INFO 2025-10-24 11:19:51,556 views 14416 9840 Looking up token: yKeAdFRw...
+INFO 2025-10-24 11:19:51,558 views 14416 9840 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:19:51,558 views 14416 9840 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:19:51,560 views 14416 9840 Admin admin tarafýndan kullanýcý güncellendi: admin
+INFO 2025-10-24 11:19:51,561 basehttp 14416 9840 "POST /accounts/admin/users/1/edit/ HTTP/1.1" 302 0
+INFO 2025-10-24 11:19:51,594 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/
+INFO 2025-10-24 11:19:51,594 views 14416 9840 Found auth_token in cookies: yKeAdFRw...
+INFO 2025-10-24 11:19:51,594 views 14416 9840 Looking up token: yKeAdFRw...
+INFO 2025-10-24 11:19:51,597 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:19:51,597 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:19:51,597 views 14416 9840 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:19:51,602 basehttp 14416 9840 "GET /accounts/admin/users/ HTTP/1.1" 200 30238
+INFO 2025-10-24 11:19:51,646 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:19:51,646 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:19:51,646 views 14416 9840 Authorization header: Token hCS4ehlVbKVF88SzgjCCAAJLcMkkaP2PRCoN1YxUO-aMeEFTQVmB9cdxRtbxokTc_F3lvDJunmHomFyKeAdFRw
+INFO 2025-10-24 11:19:51,646 views 14416 9840 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:19:51,646 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:19:51,656 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+WARNING 2025-10-24 11:19:54,674 log 14416 9840 Unauthorized: /accounts/api/logout/
+WARNING 2025-10-24 11:19:54,675 basehttp 14416 9840 "POST /accounts/api/logout/ HTTP/1.1" 401 29
+INFO 2025-10-24 11:19:54,713 basehttp 14416 9840 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:19:55,974 basehttp 14416 9840 "GET /accounts/signup/ HTTP/1.1" 200 33416
+INFO 2025-10-24 11:20:11,001 basehttp 14416 9840 "GET /accounts/signup/ HTTP/1.1" 200 33416
+INFO 2025-10-24 11:20:48,299 views 14416 9840 api_signup called from IP: 127.0.0.1
+INFO 2025-10-24 11:20:48,299 views 14416 9840 Request method: POST
+INFO 2025-10-24 11:20:48,299 views 14416 9840 Request data: {'username': 'bt_test', 'email': 'bt@example.com', 'password1': '123456Bt!', 'password2': '123456Bt!'}
+INFO 2025-10-24 11:20:48,299 views 14416 9840 Sanitized data - username: bt_test, email: bt@example.com
+INFO 2025-10-24 11:20:48,565 views 14416 9840 New user created: bt_test from IP: 127.0.0.1
+INFO 2025-10-24 11:20:48,565 views 14416 9840 Found existing token during signup, cleaning up: yKeAdFRw
+INFO 2025-10-24 11:20:48,567 views 14416 9840 Deleting old tokens for user: admin
+INFO 2025-10-24 11:20:48,831 views 14416 9840 Cleared all old authentication cookies before setting new ones
+INFO 2025-10-24 11:20:48,832 basehttp 14416 9840 "POST /accounts/api/signup/ HTTP/1.1" 201 459
+INFO 2025-10-24 11:20:51,872 middleware 14416 9840 User bt_test authenticated via cookie
+INFO 2025-10-24 11:20:51,872 views 14416 9840 verify_token_auth called for path: /accounts/customer-panel/
+INFO 2025-10-24 11:20:51,872 views 14416 9840 Found auth_token in cookies: SLUa0L9w...
+INFO 2025-10-24 11:20:51,872 views 14416 9840 Looking up token: SLUa0L9w...
+INFO 2025-10-24 11:20:51,874 views 14416 9840 Valid custom token found for user: bt_test (role: customer)
+INFO 2025-10-24 11:20:51,874 views 14416 9840 User authenticated via cookie token: bt_test (role: customer)
+INFO 2025-10-24 11:20:51,882 basehttp 14416 9840 "GET /accounts/customer-panel/ HTTP/1.1" 200 44142
+INFO 2025-10-24 11:20:51,888 basehttp 14416 9840 "GET /static/tickets/css/ticket_list_modern.css HTTP/1.1" 200 12564
+INFO 2025-10-24 11:20:51,933 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:20:51,933 views 14416 9840 Request user: bt_test (Customer), authenticated: True
+INFO 2025-10-24 11:20:51,933 views 14416 9840 Authorization header: None
+INFO 2025-10-24 11:20:51,933 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:20:51,933 views 14416 9840 User authenticated via Django session: bt_test
+INFO 2025-10-24 11:20:51,945 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 688
+INFO 2025-10-24 11:20:51,978 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:20:51,978 views 14416 9840 Request user: bt_test (Customer), authenticated: True
+INFO 2025-10-24 11:20:51,978 views 14416 9840 Authorization header: Token mCgk0Nbi-GutJKvViDlIE2An8Cz8PlZeO8oCfSI-qC1lIGLvVlqbG7lodjoKhhhtKCLhAkyc_AcU-PSLUa0L9w
+INFO 2025-10-24 11:20:51,978 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:20:51,978 views 14416 9840 User authenticated via Django session: bt_test
+INFO 2025-10-24 11:20:51,990 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 688
+INFO 2025-10-24 11:20:54,821 basehttp 14416 9840 "GET /tickets/ HTTP/1.1" 200 27110
+INFO 2025-10-24 11:20:54,827 basehttp 14416 9840 "GET /static/tickets/js/ticket_list_modern.js HTTP/1.1" 200 9484
+INFO 2025-10-24 11:20:54,867 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:20:54,867 views 14416 9840 Request user: bt_test (Customer), authenticated: True
+INFO 2025-10-24 11:20:54,868 views 14416 9840 Authorization header: Token mCgk0Nbi-GutJKvViDlIE2An8Cz8PlZeO8oCfSI-qC1lIGLvVlqbG7lodjoKhhhtKCLhAkyc_AcU-PSLUa0L9w
+INFO 2025-10-24 11:20:54,868 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:20:54,868 views 14416 9840 User authenticated via Django session: bt_test
+INFO 2025-10-24 11:20:54,879 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 688
+WARNING 2025-10-24 11:20:57,497 log 14416 9840 Unauthorized: /accounts/api/logout/
+WARNING 2025-10-24 11:20:57,497 basehttp 14416 9840 "POST /accounts/api/logout/ HTTP/1.1" 401 29
+INFO 2025-10-24 11:20:57,536 basehttp 14416 9840 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:20:58,840 basehttp 14416 9840 "GET /accounts/signup/ HTTP/1.1" 200 33416
+INFO 2025-10-24 11:21:40,358 views 14416 9840 api_signup called from IP: 127.0.0.1
+INFO 2025-10-24 11:21:40,358 views 14416 9840 Request method: POST
+INFO 2025-10-24 11:21:40,358 views 14416 9840 Request data: {'username': 'kartelaTest', 'email': 'kartela@example.com', 'password1': '123456Kartele!', 'password2': '123456Kartele!'}
+INFO 2025-10-24 11:21:40,358 views 14416 9840 Sanitized data - username: kartelaTest, email: kartela@example.com
+INFO 2025-10-24 11:21:40,622 views 14416 9840 New user created: kartelaTest from IP: 127.0.0.1
+INFO 2025-10-24 11:21:40,622 views 14416 9840 Found existing token during signup, cleaning up: SLUa0L9w
+INFO 2025-10-24 11:21:40,624 views 14416 9840 Deleting old tokens for user: bt_test
+INFO 2025-10-24 11:21:40,887 views 14416 9840 Cleared all old authentication cookies before setting new ones
+INFO 2025-10-24 11:21:40,888 basehttp 14416 9840 "POST /accounts/api/signup/ HTTP/1.1" 201 468
+INFO 2025-10-24 11:21:43,929 middleware 14416 9840 User kartelaTest authenticated via cookie
+INFO 2025-10-24 11:21:43,929 views 14416 9840 verify_token_auth called for path: /accounts/customer-panel/
+INFO 2025-10-24 11:21:43,929 views 14416 9840 Found auth_token in cookies: oeehAP7g...
+INFO 2025-10-24 11:21:43,930 views 14416 9840 Looking up token: oeehAP7g...
+INFO 2025-10-24 11:21:43,931 views 14416 9840 Valid custom token found for user: kartelaTest (role: customer)
+INFO 2025-10-24 11:21:43,931 views 14416 9840 User authenticated via cookie token: kartelaTest (role: customer)
+INFO 2025-10-24 11:21:43,938 basehttp 14416 9840 "GET /accounts/customer-panel/ HTTP/1.1" 200 44155
+INFO 2025-10-24 11:21:44,088 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:21:44,088 views 14416 9840 Request user: kartelaTest (Customer), authenticated: True
+INFO 2025-10-24 11:21:44,088 views 14416 9840 Authorization header: None
+INFO 2025-10-24 11:21:44,088 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:21:44,088 views 14416 9840 User authenticated via Django session: kartelaTest
+INFO 2025-10-24 11:21:44,102 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 697
+INFO 2025-10-24 11:21:44,134 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:21:44,134 views 14416 9840 Request user: kartelaTest (Customer), authenticated: True
+INFO 2025-10-24 11:21:44,134 views 14416 9840 Authorization header: Token s0TXGSs_j0RF7_x-CWixPoA6wjPWclD_czjAuTkPzXh43gyoWI8lSA9vZN_OuBCjtqBfPqOo5MunW3oeehAP7g
+INFO 2025-10-24 11:21:44,134 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:21:44,134 views 14416 9840 User authenticated via Django session: kartelaTest
+INFO 2025-10-24 11:21:44,147 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 697
+WARNING 2025-10-24 11:21:48,193 log 14416 9840 Unauthorized: /accounts/api/logout/
+WARNING 2025-10-24 11:21:48,193 basehttp 14416 9840 "POST /accounts/api/logout/ HTTP/1.1" 401 29
+INFO 2025-10-24 11:21:48,231 basehttp 14416 9840 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:21:51,810 basehttp 14416 9840 "GET /accounts/signup/ HTTP/1.1" 200 33416
+INFO 2025-10-24 11:22:14,127 views 14416 9840 api_signup called from IP: 127.0.0.1
+INFO 2025-10-24 11:22:14,127 views 14416 9840 Request method: POST
+INFO 2025-10-24 11:22:14,128 views 14416 9840 Request data: {'username': 'kimyaTest', 'email': 'kimya@example.com', 'password1': '123456Kimya!', 'password2': '123456Kimya!'}
+INFO 2025-10-24 11:22:14,128 views 14416 9840 Sanitized data - username: kimyaTest, email: kimya@example.com
+INFO 2025-10-24 11:22:14,391 views 14416 9840 New user created: kimyaTest from IP: 127.0.0.1
+INFO 2025-10-24 11:22:14,391 views 14416 9840 Found existing token during signup, cleaning up: oeehAP7g
+INFO 2025-10-24 11:22:14,393 views 14416 9840 Deleting old tokens for user: kartelaTest
+INFO 2025-10-24 11:22:14,656 views 14416 9840 Cleared all old authentication cookies before setting new ones
+INFO 2025-10-24 11:22:14,657 basehttp 14416 9840 "POST /accounts/api/signup/ HTTP/1.1" 201 464
+INFO 2025-10-24 11:22:17,701 middleware 14416 9840 User kimyaTest authenticated via cookie
+INFO 2025-10-24 11:22:17,701 views 14416 9840 verify_token_auth called for path: /accounts/customer-panel/
+INFO 2025-10-24 11:22:17,701 views 14416 9840 Found auth_token in cookies: 8NyQGa0A...
+INFO 2025-10-24 11:22:17,702 views 14416 9840 Looking up token: 8NyQGa0A...
+INFO 2025-10-24 11:22:17,703 views 14416 9840 Valid custom token found for user: kimyaTest (role: customer)
+INFO 2025-10-24 11:22:17,703 views 14416 9840 User authenticated via cookie token: kimyaTest (role: customer)
+INFO 2025-10-24 11:22:17,710 basehttp 14416 9840 "GET /accounts/customer-panel/ HTTP/1.1" 200 44149
+INFO 2025-10-24 11:22:17,753 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:22:17,753 views 14416 9840 Request user: kimyaTest (Customer), authenticated: True
+INFO 2025-10-24 11:22:17,753 views 14416 9840 Authorization header: None
+INFO 2025-10-24 11:22:17,753 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:22:17,753 views 14416 9840 User authenticated via Django session: kimyaTest
+INFO 2025-10-24 11:22:17,768 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 693
+INFO 2025-10-24 11:22:17,799 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:22:17,800 views 14416 9840 Request user: kimyaTest (Customer), authenticated: True
+INFO 2025-10-24 11:22:17,800 views 14416 9840 Authorization header: Token bha6RkPEZEAVEdjyejdGdBmbQMa0t4aiCY54skgwWdD5vTWA2jvkNrmZaLc10N0OCiv51PZFGale4b8NyQGa0A
+INFO 2025-10-24 11:22:17,800 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:22:17,800 views 14416 9840 User authenticated via Django session: kimyaTest
+INFO 2025-10-24 11:22:17,813 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 693
+WARNING 2025-10-24 11:22:19,334 log 14416 9840 Unauthorized: /accounts/api/logout/
+WARNING 2025-10-24 11:22:19,334 basehttp 14416 9840 "POST /accounts/api/logout/ HTTP/1.1" 401 29
+INFO 2025-10-24 11:22:19,373 basehttp 14416 9840 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:22:20,903 basehttp 14416 9840 "GET /accounts/signup/ HTTP/1.1" 200 33416
+INFO 2025-10-24 11:22:52,030 views 14416 9840 api_signup called from IP: 127.0.0.1
+INFO 2025-10-24 11:22:52,030 views 14416 9840 Request method: POST
+INFO 2025-10-24 11:22:52,030 views 14416 9840 Request data: {'username': 'fizikTest', 'email': 'fizik@example.com', 'password1': '123456Fizik!', 'password2': '123456Fizik!'}
+INFO 2025-10-24 11:22:52,031 views 14416 9840 Sanitized data - username: fizikTest, email: fizik@example.com
+INFO 2025-10-24 11:22:52,292 views 14416 9840 New user created: fizikTest from IP: 127.0.0.1
+INFO 2025-10-24 11:22:52,292 views 14416 9840 Found existing token during signup, cleaning up: 8NyQGa0A
+INFO 2025-10-24 11:22:52,294 views 14416 9840 Deleting old tokens for user: kimyaTest
+INFO 2025-10-24 11:22:52,558 views 14416 9840 Cleared all old authentication cookies before setting new ones
+INFO 2025-10-24 11:22:52,559 basehttp 14416 9840 "POST /accounts/api/signup/ HTTP/1.1" 201 464
+INFO 2025-10-24 11:22:55,602 middleware 14416 9840 User fizikTest authenticated via cookie
+INFO 2025-10-24 11:22:55,602 views 14416 9840 verify_token_auth called for path: /accounts/customer-panel/
+INFO 2025-10-24 11:22:55,602 views 14416 9840 Found auth_token in cookies: vciwbT2A...
+INFO 2025-10-24 11:22:55,602 views 14416 9840 Looking up token: vciwbT2A...
+INFO 2025-10-24 11:22:55,604 views 14416 9840 Valid custom token found for user: fizikTest (role: customer)
+INFO 2025-10-24 11:22:55,604 views 14416 9840 User authenticated via cookie token: fizikTest (role: customer)
+INFO 2025-10-24 11:22:55,611 basehttp 14416 9840 "GET /accounts/customer-panel/ HTTP/1.1" 200 44149
+INFO 2025-10-24 11:22:55,652 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:22:55,653 views 14416 9840 Request user: fizikTest (Customer), authenticated: True
+INFO 2025-10-24 11:22:55,653 views 14416 9840 Authorization header: None
+INFO 2025-10-24 11:22:55,653 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:22:55,653 views 14416 9840 User authenticated via Django session: fizikTest
+INFO 2025-10-24 11:22:55,671 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 693
+INFO 2025-10-24 11:22:55,706 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:22:55,707 views 14416 9840 Request user: fizikTest (Customer), authenticated: True
+INFO 2025-10-24 11:22:55,707 views 14416 9840 Authorization header: Token mgIcRpCVwxhGTAFyFSOeoHFQn7hC1EoVdClZHrUB07hN8Fpws9P2597HzQ91R25G54l_g9-PdNXuztvciwbT2A
+INFO 2025-10-24 11:22:55,707 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:22:55,707 views 14416 9840 User authenticated via Django session: fizikTest
+INFO 2025-10-24 11:22:55,725 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 693
+WARNING 2025-10-24 11:22:57,985 log 14416 9840 Unauthorized: /accounts/api/logout/
+WARNING 2025-10-24 11:22:57,985 basehttp 14416 9840 "POST /accounts/api/logout/ HTTP/1.1" 401 29
+INFO 2025-10-24 11:22:58,023 basehttp 14416 9840 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:23:03,764 basehttp 14416 9840 "GET /accounts/signup/ HTTP/1.1" 200 33416
+INFO 2025-10-24 11:23:37,685 views 14416 9840 api_signup called from IP: 127.0.0.1
+INFO 2025-10-24 11:23:37,685 views 14416 9840 Request method: POST
+INFO 2025-10-24 11:23:37,686 views 14416 9840 Request data: {'username': 'guvenlik', 'email': 'guvenlik@example.com', 'password1': '123456Guvenlik!', 'password2': '123456Guvenlik!'}
+INFO 2025-10-24 11:23:37,686 views 14416 9840 Sanitized data - username: guvenlik, email: guvenlik@example.com
+INFO 2025-10-24 11:23:37,948 views 14416 9840 New user created: guvenlik from IP: 127.0.0.1
+INFO 2025-10-24 11:23:37,948 views 14416 9840 Found existing token during signup, cleaning up: vciwbT2A
+INFO 2025-10-24 11:23:37,950 views 14416 9840 Deleting old tokens for user: fizikTest
+INFO 2025-10-24 11:23:38,215 views 14416 9840 Cleared all old authentication cookies before setting new ones
+INFO 2025-10-24 11:23:38,216 basehttp 14416 9840 "POST /accounts/api/signup/ HTTP/1.1" 201 466
+INFO 2025-10-24 11:23:41,257 middleware 14416 9840 User guvenlik authenticated via cookie
+INFO 2025-10-24 11:23:41,258 views 14416 9840 verify_token_auth called for path: /accounts/customer-panel/
+INFO 2025-10-24 11:23:41,258 views 14416 9840 Found auth_token in cookies: taqqd31Q...
+INFO 2025-10-24 11:23:41,258 views 14416 9840 Looking up token: taqqd31Q...
+INFO 2025-10-24 11:23:41,259 views 14416 9840 Valid custom token found for user: guvenlik (role: customer)
+INFO 2025-10-24 11:23:41,259 views 14416 9840 User authenticated via cookie token: guvenlik (role: customer)
+INFO 2025-10-24 11:23:41,266 basehttp 14416 9840 "GET /accounts/customer-panel/ HTTP/1.1" 200 44150
+INFO 2025-10-24 11:23:41,309 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:23:41,310 views 14416 9840 Request user: guvenlik (Customer), authenticated: True
+INFO 2025-10-24 11:23:41,310 views 14416 9840 Authorization header: None
+INFO 2025-10-24 11:23:41,310 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:23:41,310 views 14416 9840 User authenticated via Django session: guvenlik
+INFO 2025-10-24 11:23:41,324 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 695
+INFO 2025-10-24 11:23:41,356 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:23:41,356 views 14416 9840 Request user: guvenlik (Customer), authenticated: True
+INFO 2025-10-24 11:23:41,356 views 14416 9840 Authorization header: Token qju_V_zpy63SSxm-D9pCtUNvM-JSGgp7uMl_9AM6gpUhiySDTmf_dWOfFpy3M-iydmmHm8mNIJNhChtaqqd31Q
+INFO 2025-10-24 11:23:41,357 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:23:41,357 views 14416 9840 User authenticated via Django session: guvenlik
+INFO 2025-10-24 11:23:41,370 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 695
+WARNING 2025-10-24 11:23:44,744 log 14416 9840 Unauthorized: /accounts/api/logout/
+WARNING 2025-10-24 11:23:44,744 basehttp 14416 9840 "POST /accounts/api/logout/ HTTP/1.1" 401 29
+INFO 2025-10-24 11:23:44,783 basehttp 14416 9840 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:23:46,338 basehttp 14416 9840 "GET /accounts/signup/ HTTP/1.1" 200 33416
+INFO 2025-10-24 11:23:47,443 basehttp 14416 9840 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:23:48,358 basehttp 14416 9840 "GET /accounts/signup/ HTTP/1.1" 200 33416
+INFO 2025-10-24 11:24:22,464 views 14416 9840 api_signup called from IP: 127.0.0.1
+INFO 2025-10-24 11:24:22,465 views 14416 9840 Request method: POST
+INFO 2025-10-24 11:24:22,465 views 14416 9840 Request data: {'username': 'boyahaneTest', 'email': 'boyahane@example.com', 'password1': '123456Boyahane!', 'password2': '123456Boyahane!'}
+INFO 2025-10-24 11:24:22,465 views 14416 9840 Sanitized data - username: boyahaneTest, email: boyahane@example.com
+INFO 2025-10-24 11:24:22,727 views 14416 9840 New user created: boyahaneTest from IP: 127.0.0.1
+INFO 2025-10-24 11:24:22,727 views 14416 9840 Found existing token during signup, cleaning up: taqqd31Q
+INFO 2025-10-24 11:24:22,729 views 14416 9840 Deleting old tokens for user: guvenlik
+INFO 2025-10-24 11:24:22,992 views 14416 9840 Cleared all old authentication cookies before setting new ones
+INFO 2025-10-24 11:24:22,993 basehttp 14416 9840 "POST /accounts/api/signup/ HTTP/1.1" 201 470
+INFO 2025-10-24 11:24:26,036 middleware 14416 9840 User boyahaneTest authenticated via cookie
+INFO 2025-10-24 11:24:26,036 views 14416 9840 verify_token_auth called for path: /accounts/customer-panel/
+INFO 2025-10-24 11:24:26,036 views 14416 9840 Found auth_token in cookies: EOgVen-A...
+INFO 2025-10-24 11:24:26,036 views 14416 9840 Looking up token: EOgVen-A...
+INFO 2025-10-24 11:24:26,037 views 14416 9840 Valid custom token found for user: boyahaneTest (role: customer)
+INFO 2025-10-24 11:24:26,038 views 14416 9840 User authenticated via cookie token: boyahaneTest (role: customer)
+INFO 2025-10-24 11:24:26,044 basehttp 14416 9840 "GET /accounts/customer-panel/ HTTP/1.1" 200 44158
+INFO 2025-10-24 11:24:26,088 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:24:26,089 views 14416 9840 Request user: boyahaneTest (Customer), authenticated: True
+INFO 2025-10-24 11:24:26,089 views 14416 9840 Authorization header: None
+INFO 2025-10-24 11:24:26,089 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:24:26,089 views 14416 9840 User authenticated via Django session: boyahaneTest
+INFO 2025-10-24 11:24:26,102 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 699
+INFO 2025-10-24 11:24:26,134 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:24:26,134 views 14416 9840 Request user: boyahaneTest (Customer), authenticated: True
+INFO 2025-10-24 11:24:26,134 views 14416 9840 Authorization header: Token -J_NkJdyktSWioZ44ZtJNJouuYmqqKrZokj1COSr9VjbMaY3WslRzRyYlBlo58DGaZrZiirZthpsS-EOgVen-A
+INFO 2025-10-24 11:24:26,134 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:24:26,134 views 14416 9840 User authenticated via Django session: boyahaneTest
+INFO 2025-10-24 11:24:26,147 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 699
+WARNING 2025-10-24 11:24:28,462 log 14416 9840 Unauthorized: /accounts/api/logout/
+WARNING 2025-10-24 11:24:28,462 basehttp 14416 9840 "POST /accounts/api/logout/ HTTP/1.1" 401 29
+INFO 2025-10-24 11:24:28,503 basehttp 14416 9840 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:24:32,248 views 14416 9840 Successful login for user: admin from IP: 127.0.0.1
+INFO 2025-10-24 11:24:32,514 security 14416 9840 Successful login from IP: 127.0.0.1
+INFO 2025-10-24 11:24:32,515 basehttp 14416 9840 "POST /accounts/api/login/ HTTP/1.1" 200 442
+INFO 2025-10-24 11:24:32,557 middleware 14416 9840 User admin authenticated via cookie
+INFO 2025-10-24 11:24:32,557 views 14416 9840 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:24:32,557 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:24:32,557 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:24:32,558 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:24:32,558 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:24:32,558 views 14416 9840 Admin panel access attempt from admin (Admin)
+INFO 2025-10-24 11:24:32,558 views 14416 9840 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:24:32,558 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:24:32,559 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:24:32,560 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:24:32,560 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:24:32,560 views 14416 9840 Token auth result: admin (Admin)
+INFO 2025-10-24 11:24:32,560 views 14416 9840 Admin panel access granted for admin
+INFO 2025-10-24 11:24:32,562 basehttp 14416 9840 "GET /accounts/admin-panel/ HTTP/1.1" 200 51305
+INFO 2025-10-24 11:24:32,603 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:24:32,603 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:24:32,603 views 14416 9840 Authorization header: None
+INFO 2025-10-24 11:24:32,603 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:24:32,603 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:24:32,615 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:24:33,102 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:24:33,102 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:24:33,103 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:24:33,103 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:24:33,103 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:24:33,114 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:24:34,774 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/
+INFO 2025-10-24 11:24:34,774 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:24:34,774 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:24:34,777 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:24:34,777 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:24:34,784 basehttp 14416 9840 "GET /accounts/admin/users/ HTTP/1.1" 200 48210
+INFO 2025-10-24 11:24:34,824 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:24:34,824 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:24:34,825 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:24:34,825 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:24:34,825 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:24:34,835 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:24:51,824 views 14416 9840 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:24:51,824 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:24:51,824 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:24:51,827 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:24:51,827 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:24:51,827 views 14416 9840 Admin panel access attempt from admin (Admin)
+INFO 2025-10-24 11:24:51,828 views 14416 9840 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:24:51,828 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:24:51,828 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:24:51,829 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:24:51,829 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:24:51,829 views 14416 9840 Token auth result: admin (Admin)
+INFO 2025-10-24 11:24:51,829 views 14416 9840 Admin panel access granted for admin
+INFO 2025-10-24 11:24:51,831 basehttp 14416 9840 "GET /accounts/admin-panel/ HTTP/1.1" 200 51305
+INFO 2025-10-24 11:24:51,873 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:24:51,873 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:24:51,873 views 14416 9840 Authorization header: None
+INFO 2025-10-24 11:24:51,874 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:24:51,874 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:24:51,884 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:24:51,914 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:24:51,914 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:24:51,914 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:24:51,914 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:24:51,914 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:24:51,924 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:24:53,067 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/
+INFO 2025-10-24 11:24:53,067 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:24:53,067 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:24:53,069 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:24:53,069 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:24:53,097 basehttp 14416 9840 "GET /accounts/admin/groups/ HTTP/1.1" 200 32065
+INFO 2025-10-24 11:24:53,139 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:24:53,139 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:24:53,139 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:24:53,139 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:24:53,139 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:24:53,150 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:24:54,546 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/create/
+INFO 2025-10-24 11:24:54,546 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:24:54,547 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:24:54,549 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:24:54,549 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:24:54,570 basehttp 14416 9840 "GET /accounts/admin/groups/create/ HTTP/1.1" 200 29063
+INFO 2025-10-24 11:24:54,610 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:24:54,610 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:24:54,610 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:24:54,610 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:24:54,610 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:24:54,620 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:03,444 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/create/
+INFO 2025-10-24 11:25:03,444 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:03,445 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:03,447 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:03,447 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:03,449 views 14416 9840 Admin admin tarafýndan yeni grup oluþturuldu: IT Departmaný
+INFO 2025-10-24 11:25:03,450 basehttp 14416 9840 "POST /accounts/admin/groups/create/ HTTP/1.1" 302 0
+INFO 2025-10-24 11:25:03,585 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/
+INFO 2025-10-24 11:25:03,585 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:03,585 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:03,587 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:03,587 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:03,593 basehttp 14416 9840 "GET /accounts/admin/groups/ HTTP/1.1" 200 34404
+INFO 2025-10-24 11:25:03,641 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:03,641 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:03,641 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:03,641 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:03,641 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:03,651 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:05,072 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/create/
+INFO 2025-10-24 11:25:05,072 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:05,072 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:05,075 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:05,075 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:05,076 basehttp 14416 9840 "GET /accounts/admin/groups/create/ HTTP/1.1" 200 29063
+INFO 2025-10-24 11:25:05,115 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:05,116 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:05,116 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:05,116 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:05,116 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:05,127 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:10,461 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/create/
+INFO 2025-10-24 11:25:10,461 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:10,461 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:10,464 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:10,464 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:10,465 views 14416 9840 Admin admin tarafýndan yeni grup oluþturuldu: Kartela
+INFO 2025-10-24 11:25:10,466 basehttp 14416 9840 "POST /accounts/admin/groups/create/ HTTP/1.1" 302 0
+INFO 2025-10-24 11:25:10,499 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/
+INFO 2025-10-24 11:25:10,499 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:10,499 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:10,502 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:10,502 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:10,510 basehttp 14416 9840 "GET /accounts/admin/groups/ HTTP/1.1" 200 36257
+INFO 2025-10-24 11:25:10,652 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:10,652 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:10,652 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:10,652 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:10,652 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:10,663 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:11,705 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/create/
+INFO 2025-10-24 11:25:11,706 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:11,706 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:11,708 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:11,708 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:11,710 basehttp 14416 9840 "GET /accounts/admin/groups/create/ HTTP/1.1" 200 29063
+INFO 2025-10-24 11:25:11,751 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:11,752 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:11,752 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:11,752 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:11,752 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:11,763 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:16,611 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/create/
+INFO 2025-10-24 11:25:16,611 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:16,612 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:16,614 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:16,614 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:16,615 views 14416 9840 Admin admin tarafýndan yeni grup oluþturuldu: Kimya
+INFO 2025-10-24 11:25:16,616 basehttp 14416 9840 "POST /accounts/admin/groups/create/ HTTP/1.1" 302 0
+INFO 2025-10-24 11:25:16,649 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/
+INFO 2025-10-24 11:25:16,649 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:16,649 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:16,652 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:16,652 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:16,662 basehttp 14416 9840 "GET /accounts/admin/groups/ HTTP/1.1" 200 38104
+INFO 2025-10-24 11:25:16,705 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:16,705 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:16,705 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:16,705 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:16,705 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:16,716 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:17,647 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/create/
+INFO 2025-10-24 11:25:17,647 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:17,647 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:17,650 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:17,650 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:17,651 basehttp 14416 9840 "GET /accounts/admin/groups/create/ HTTP/1.1" 200 29063
+INFO 2025-10-24 11:25:17,792 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:17,792 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:17,792 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:17,792 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:17,792 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:17,804 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:21,882 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/create/
+INFO 2025-10-24 11:25:21,882 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:21,883 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:21,885 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:21,885 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:21,886 views 14416 9840 Admin admin tarafýndan yeni grup oluþturuldu: Fizik
+INFO 2025-10-24 11:25:21,887 basehttp 14416 9840 "POST /accounts/admin/groups/create/ HTTP/1.1" 302 0
+INFO 2025-10-24 11:25:21,919 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/
+INFO 2025-10-24 11:25:21,919 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:21,920 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:21,922 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:21,922 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:21,935 basehttp 14416 9840 "GET /accounts/admin/groups/ HTTP/1.1" 200 39951
+INFO 2025-10-24 11:25:21,978 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:21,978 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:21,979 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:21,979 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:21,979 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:21,990 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:23,799 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/create/
+INFO 2025-10-24 11:25:23,800 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:23,800 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:23,802 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:23,802 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:23,804 basehttp 14416 9840 "GET /accounts/admin/groups/create/ HTTP/1.1" 200 29063
+INFO 2025-10-24 11:25:23,845 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:23,845 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:23,845 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:23,845 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:23,845 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:23,856 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:28,427 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/create/
+INFO 2025-10-24 11:25:28,427 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:28,427 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:28,430 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:28,430 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:28,430 views 14416 9840 Admin admin tarafýndan yeni grup oluþturuldu: Güvenlik
+INFO 2025-10-24 11:25:28,431 basehttp 14416 9840 "POST /accounts/admin/groups/create/ HTTP/1.1" 302 0
+INFO 2025-10-24 11:25:28,464 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/
+INFO 2025-10-24 11:25:28,464 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:28,464 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:28,467 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:28,467 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:28,481 basehttp 14416 9840 "GET /accounts/admin/groups/ HTTP/1.1" 200 41810
+INFO 2025-10-24 11:25:28,525 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:28,526 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:28,526 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:28,526 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:28,526 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:28,537 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:30,363 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/create/
+INFO 2025-10-24 11:25:30,363 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:30,364 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:30,366 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:30,366 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:30,368 basehttp 14416 9840 "GET /accounts/admin/groups/create/ HTTP/1.1" 200 29063
+INFO 2025-10-24 11:25:30,409 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:30,409 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:30,409 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:30,409 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:30,409 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:30,420 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:39,205 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/create/
+INFO 2025-10-24 11:25:39,206 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:39,206 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:39,208 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:39,208 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:39,209 views 14416 9840 Admin admin tarafýndan yeni grup oluþturuldu: Boyahane
+INFO 2025-10-24 11:25:39,210 basehttp 14416 9840 "POST /accounts/admin/groups/create/ HTTP/1.1" 302 0
+INFO 2025-10-24 11:25:39,242 views 14416 9840 verify_token_auth called for path: /accounts/admin/groups/
+INFO 2025-10-24 11:25:39,242 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:39,243 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:39,246 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:39,246 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:39,262 basehttp 14416 9840 "GET /accounts/admin/groups/ HTTP/1.1" 200 43666
+INFO 2025-10-24 11:25:39,404 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:39,404 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:39,405 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:39,405 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:39,405 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:39,415 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:40,633 views 14416 9840 verify_token_auth called for path: /
+INFO 2025-10-24 11:25:40,633 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:40,633 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:40,636 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:40,636 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:40,637 basehttp 14416 9840 "GET / HTTP/1.1" 302 0
+INFO 2025-10-24 11:25:40,667 views 14416 9840 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:25:40,667 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:40,667 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:40,670 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:40,670 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:40,670 views 14416 9840 Admin panel access attempt from admin (Admin)
+INFO 2025-10-24 11:25:40,671 views 14416 9840 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:25:40,671 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:40,671 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:40,672 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:40,672 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:40,672 views 14416 9840 Token auth result: admin (Admin)
+INFO 2025-10-24 11:25:40,672 views 14416 9840 Admin panel access granted for admin
+INFO 2025-10-24 11:25:40,674 basehttp 14416 9840 "GET /accounts/admin-panel/ HTTP/1.1" 200 51305
+INFO 2025-10-24 11:25:40,715 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:40,715 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:40,715 views 14416 9840 Authorization header: None
+INFO 2025-10-24 11:25:40,715 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:40,715 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:40,726 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:40,853 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:40,854 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:40,854 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:40,854 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:40,854 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:40,864 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:42,534 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/
+INFO 2025-10-24 11:25:42,534 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:42,534 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:42,537 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:42,537 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:42,544 basehttp 14416 9840 "GET /accounts/admin/users/ HTTP/1.1" 200 48210
+INFO 2025-10-24 11:25:42,585 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:42,585 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:42,585 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:42,585 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:42,585 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:42,596 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:44,628 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/7/assign-groups/
+INFO 2025-10-24 11:25:44,628 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:44,628 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:44,630 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:44,630 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:44,658 basehttp 14416 9840 "GET /accounts/admin/users/7/assign-groups/ HTTP/1.1" 200 32927
+INFO 2025-10-24 11:25:44,702 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:44,702 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:44,702 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:44,702 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:44,702 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:44,713 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:46,852 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/7/assign-groups/
+INFO 2025-10-24 11:25:46,852 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:46,852 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:46,855 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:46,855 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:46,860 views 14416 9840 Admin admin tarafýndan boyahaneTest kullanýcýsýnýn gruplarý güncellendi
+INFO 2025-10-24 11:25:46,862 basehttp 14416 9840 "POST /accounts/admin/users/7/assign-groups/ HTTP/1.1" 302 0
+INFO 2025-10-24 11:25:46,900 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/
+INFO 2025-10-24 11:25:46,901 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:46,901 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:46,903 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:46,904 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:46,912 basehttp 14416 9840 "GET /accounts/admin/users/ HTTP/1.1" 200 48400
+INFO 2025-10-24 11:25:46,959 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:46,960 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:46,960 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:46,960 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:46,960 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:46,973 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:49,198 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/6/assign-groups/
+INFO 2025-10-24 11:25:49,198 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:49,198 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:49,201 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:49,201 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:49,206 basehttp 14416 9840 "GET /accounts/admin/users/6/assign-groups/ HTTP/1.1" 200 32911
+INFO 2025-10-24 11:25:49,349 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:49,349 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:49,349 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:49,349 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:49,349 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:49,360 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:53,459 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/6/assign-groups/
+INFO 2025-10-24 11:25:53,459 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:53,460 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:53,463 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:53,463 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:53,466 views 14416 9840 Admin admin tarafýndan guvenlik kullanýcýsýnýn gruplarý güncellendi
+INFO 2025-10-24 11:25:53,467 basehttp 14416 9840 "POST /accounts/admin/users/6/assign-groups/ HTTP/1.1" 302 0
+INFO 2025-10-24 11:25:53,499 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/
+INFO 2025-10-24 11:25:53,499 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:53,499 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:53,502 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:53,502 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:53,510 basehttp 14416 9840 "GET /accounts/admin/users/ HTTP/1.1" 200 48591
+INFO 2025-10-24 11:25:53,553 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:53,553 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:53,553 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:53,553 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:53,553 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:53,564 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:55,380 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/5/assign-groups/
+INFO 2025-10-24 11:25:55,380 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:55,380 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:55,383 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:55,383 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:55,387 basehttp 14416 9840 "GET /accounts/admin/users/5/assign-groups/ HTTP/1.1" 200 32912
+INFO 2025-10-24 11:25:55,428 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:55,428 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:55,428 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:55,428 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:55,428 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:55,439 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:25:57,955 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/5/assign-groups/
+INFO 2025-10-24 11:25:57,955 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:57,955 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:57,958 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:57,958 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:57,962 views 14416 9840 Admin admin tarafýndan fizikTest kullanýcýsýnýn gruplarý güncellendi
+INFO 2025-10-24 11:25:57,963 basehttp 14416 9840 "POST /accounts/admin/users/5/assign-groups/ HTTP/1.1" 302 0
+INFO 2025-10-24 11:25:57,994 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/
+INFO 2025-10-24 11:25:57,995 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:25:57,995 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:25:57,997 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:25:57,997 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:25:58,007 basehttp 14416 9840 "GET /accounts/admin/users/ HTTP/1.1" 200 48778
+INFO 2025-10-24 11:25:58,149 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:25:58,149 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:25:58,149 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:25:58,149 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:25:58,149 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:25:58,160 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:26:00,525 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/4/assign-groups/
+INFO 2025-10-24 11:26:00,525 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:26:00,526 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:26:00,528 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:26:00,528 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:26:00,533 basehttp 14416 9840 "GET /accounts/admin/users/4/assign-groups/ HTTP/1.1" 200 32912
+INFO 2025-10-24 11:26:00,676 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:26:00,676 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:26:00,676 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:26:00,677 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:26:00,677 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:26:00,687 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:26:03,382 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/4/assign-groups/
+INFO 2025-10-24 11:26:03,382 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:26:03,382 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:26:03,385 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:26:03,385 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:26:03,388 views 14416 9840 Admin admin tarafýndan kimyaTest kullanýcýsýnýn gruplarý güncellendi
+INFO 2025-10-24 11:26:03,389 basehttp 14416 9840 "POST /accounts/admin/users/4/assign-groups/ HTTP/1.1" 302 0
+INFO 2025-10-24 11:26:03,522 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/
+INFO 2025-10-24 11:26:03,523 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:26:03,523 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:26:03,525 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:26:03,526 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:26:03,537 basehttp 14416 9840 "GET /accounts/admin/users/ HTTP/1.1" 200 48965
+INFO 2025-10-24 11:26:03,682 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:26:03,683 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:26:03,683 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:26:03,683 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:26:03,683 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:26:03,693 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:26:06,019 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/3/assign-groups/
+INFO 2025-10-24 11:26:06,019 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:26:06,019 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:26:06,022 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:26:06,022 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:26:06,026 basehttp 14416 9840 "GET /accounts/admin/users/3/assign-groups/ HTTP/1.1" 200 32922
+INFO 2025-10-24 11:26:06,068 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:26:06,069 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:26:06,069 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:26:06,069 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:26:06,069 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:26:06,079 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:26:08,543 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/3/assign-groups/
+INFO 2025-10-24 11:26:08,543 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:26:08,544 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:26:08,546 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:26:08,546 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:26:08,550 views 14416 9840 Admin admin tarafýndan kartelaTest kullanýcýsýnýn gruplarý güncellendi
+INFO 2025-10-24 11:26:08,551 basehttp 14416 9840 "POST /accounts/admin/users/3/assign-groups/ HTTP/1.1" 302 0
+INFO 2025-10-24 11:26:08,582 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/
+INFO 2025-10-24 11:26:08,582 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:26:08,582 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:26:08,585 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:26:08,585 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:26:08,595 basehttp 14416 9840 "GET /accounts/admin/users/ HTTP/1.1" 200 49154
+INFO 2025-10-24 11:26:08,639 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:26:08,639 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:26:08,639 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:26:08,639 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:26:08,639 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:26:08,650 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:26:10,377 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/2/assign-groups/
+INFO 2025-10-24 11:26:10,377 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:26:10,377 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:26:10,380 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:26:10,380 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:26:10,385 basehttp 14416 9840 "GET /accounts/admin/users/2/assign-groups/ HTTP/1.1" 200 32901
+INFO 2025-10-24 11:26:10,426 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:26:10,426 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:26:10,426 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:26:10,427 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:26:10,427 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:26:10,437 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:26:12,700 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/2/assign-groups/
+INFO 2025-10-24 11:26:12,700 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:26:12,700 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:26:12,703 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:26:12,703 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:26:12,707 views 14416 9840 Admin admin tarafýndan bt_test kullanýcýsýnýn gruplarý güncellendi
+INFO 2025-10-24 11:26:12,708 basehttp 14416 9840 "POST /accounts/admin/users/2/assign-groups/ HTTP/1.1" 302 0
+INFO 2025-10-24 11:26:12,740 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/
+INFO 2025-10-24 11:26:12,740 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:26:12,740 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:26:12,743 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:26:12,743 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:26:12,754 basehttp 14416 9840 "GET /accounts/admin/users/ HTTP/1.1" 200 49350
+INFO 2025-10-24 11:26:12,799 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:26:12,799 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:26:12,799 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:26:12,799 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:26:12,799 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:26:12,810 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:26:14,363 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/1/assign-groups/
+INFO 2025-10-24 11:26:14,363 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:26:14,363 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:26:14,365 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:26:14,366 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:26:14,370 basehttp 14416 9840 "GET /accounts/admin/users/1/assign-groups/ HTTP/1.1" 200 32900
+INFO 2025-10-24 11:26:14,413 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:26:14,413 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:26:14,413 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:26:14,413 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:26:14,413 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:26:14,424 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:26:26,079 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/1/assign-groups/
+INFO 2025-10-24 11:26:26,079 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:26:26,079 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:26:26,082 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:26:26,082 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:26:26,092 views 14416 9840 Admin admin tarafýndan admin kullanýcýsýnýn gruplarý güncellendi
+INFO 2025-10-24 11:26:26,093 basehttp 14416 9840 "POST /accounts/admin/users/1/assign-groups/ HTTP/1.1" 302 0
+INFO 2025-10-24 11:26:26,126 views 14416 9840 verify_token_auth called for path: /accounts/admin/users/
+INFO 2025-10-24 11:26:26,126 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:26:26,126 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:26:26,130 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:26:26,130 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:26:26,143 basehttp 14416 9840 "GET /accounts/admin/users/ HTTP/1.1" 200 50710
+INFO 2025-10-24 11:26:26,185 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:26:26,185 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:26:26,185 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:26:26,185 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:26:26,185 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:26:26,197 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:27:08,959 views 14416 9840 verify_token_auth called for path: /accounts/admin/reports/
+INFO 2025-10-24 11:27:08,959 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:27:08,959 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:27:08,961 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:27:08,962 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:27:08,984 basehttp 14416 9840 "GET /accounts/admin/reports/ HTTP/1.1" 200 26596
+INFO 2025-10-24 11:27:09,026 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:27:09,026 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:27:09,026 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:27:09,027 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:27:09,027 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:27:09,038 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:27:12,549 views 14416 9840 verify_token_auth called for path: /accounts/admin/settings/
+INFO 2025-10-24 11:27:12,549 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:27:12,549 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:27:12,552 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:27:12,552 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:27:12,572 basehttp 14416 9840 "GET /accounts/admin/settings/ HTTP/1.1" 200 28683
+INFO 2025-10-24 11:27:12,612 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:27:12,612 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:27:12,612 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:27:12,613 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:27:12,613 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:27:12,623 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:27:13,398 views 14416 9840 verify_token_auth called for path: /accounts/admin/reports/
+INFO 2025-10-24 11:27:13,398 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:27:13,398 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:27:13,401 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:27:13,401 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:27:13,402 basehttp 14416 9840 "GET /accounts/admin/reports/ HTTP/1.1" 200 26596
+INFO 2025-10-24 11:27:13,442 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:27:13,443 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:27:13,443 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:27:13,443 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:27:13,443 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:27:13,453 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:27:15,019 views 14416 9840 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:27:15,019 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:27:15,019 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:27:15,022 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:27:15,022 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:27:15,022 views 14416 9840 Admin panel access attempt from admin (Admin)
+INFO 2025-10-24 11:27:15,022 views 14416 9840 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:27:15,022 views 14416 9840 Found auth_token in cookies: SY_YOASQ...
+INFO 2025-10-24 11:27:15,022 views 14416 9840 Looking up token: SY_YOASQ...
+INFO 2025-10-24 11:27:15,024 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:27:15,024 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:27:15,024 views 14416 9840 Token auth result: admin (Admin)
+INFO 2025-10-24 11:27:15,024 views 14416 9840 Admin panel access granted for admin
+INFO 2025-10-24 11:27:15,025 basehttp 14416 9840 "GET /accounts/admin-panel/ HTTP/1.1" 200 51305
+INFO 2025-10-24 11:27:15,065 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:27:15,065 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:27:15,065 views 14416 9840 Authorization header: None
+INFO 2025-10-24 11:27:15,065 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:27:15,065 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:27:15,076 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:27:15,105 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:27:15,105 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:27:15,106 views 14416 9840 Authorization header: Token R5DBLthaYKNE1s2NhfmaWX9lC_1XRg2vq-FNhUSIEuoyx3gi5yieGFltcjaPfR-hMxWse4Qo0WGeDYSY_YOASQ
+INFO 2025-10-24 11:27:15,106 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:27:15,106 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:27:15,116 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+WARNING 2025-10-24 11:27:19,230 log 14416 9840 Unauthorized: /accounts/api/logout/
+WARNING 2025-10-24 11:27:19,231 basehttp 14416 9840 "POST /accounts/api/logout/ HTTP/1.1" 401 29
+INFO 2025-10-24 11:27:19,270 basehttp 14416 9840 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:27:29,060 views 14416 9840 Successful login for user: bt_test from IP: 127.0.0.1
+INFO 2025-10-24 11:27:29,324 security 14416 9840 Successful login from IP: 127.0.0.1
+INFO 2025-10-24 11:27:29,325 basehttp 14416 9840 "POST /accounts/api/login/ HTTP/1.1" 200 437
+INFO 2025-10-24 11:27:29,365 middleware 14416 9840 User bt_test authenticated via cookie
+INFO 2025-10-24 11:27:29,366 views 14416 9840 verify_token_auth called for path: /accounts/customer-panel/
+INFO 2025-10-24 11:27:29,366 views 14416 9840 Found auth_token in cookies: RcSZVn2w...
+INFO 2025-10-24 11:27:29,366 views 14416 9840 Looking up token: RcSZVn2w...
+INFO 2025-10-24 11:27:29,367 views 14416 9840 Valid custom token found for user: bt_test (role: customer)
+INFO 2025-10-24 11:27:29,368 views 14416 9840 User authenticated via cookie token: bt_test (role: customer)
+INFO 2025-10-24 11:27:29,376 basehttp 14416 9840 "GET /accounts/customer-panel/ HTTP/1.1" 200 44142
+INFO 2025-10-24 11:27:29,419 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:27:29,419 views 14416 9840 Request user: bt_test (Customer), authenticated: True
+INFO 2025-10-24 11:27:29,419 views 14416 9840 Authorization header: None
+INFO 2025-10-24 11:27:29,419 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:27:29,420 views 14416 9840 User authenticated via Django session: bt_test
+INFO 2025-10-24 11:27:29,437 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 688
+INFO 2025-10-24 11:27:29,923 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:27:29,923 views 14416 9840 Request user: bt_test (Customer), authenticated: True
+INFO 2025-10-24 11:27:29,924 views 14416 9840 Authorization header: Token glmIoP59vLQirqr3Ig8jWJ7lTI8XKYsRpJOHlWV0uk0iD6JzJbJ8n6FciSfj1Si9hEZdSt-OdZijlHRcSZVn2w
+INFO 2025-10-24 11:27:29,924 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:27:29,924 views 14416 9840 User authenticated via Django session: bt_test
+INFO 2025-10-24 11:27:29,936 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 688
+INFO 2025-10-24 11:27:32,045 basehttp 14416 9840 "GET /tickets/create/ HTTP/1.1" 200 36321
+INFO 2025-10-24 11:27:32,060 basehttp 14416 9840 "GET /static/tickets/css/ticket_create.css HTTP/1.1" 200 10678
+INFO 2025-10-24 11:27:32,110 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:27:32,110 views 14416 9840 Request user: bt_test (Customer), authenticated: True
+INFO 2025-10-24 11:27:32,110 views 14416 9840 Authorization header: Token glmIoP59vLQirqr3Ig8jWJ7lTI8XKYsRpJOHlWV0uk0iD6JzJbJ8n6FciSfj1Si9hEZdSt-OdZijlHRcSZVn2w
+INFO 2025-10-24 11:27:32,110 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:27:32,111 views 14416 9840 User authenticated via Django session: bt_test
+INFO 2025-10-24 11:27:32,125 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 688
+INFO 2025-10-24 11:28:09,947 basehttp 14416 9840 "POST /tickets/create/ HTTP/1.1" 302 0
+INFO 2025-10-24 11:28:09,979 views 14416 9840 verify_token_auth called for path: /accounts/customer-panel/
+INFO 2025-10-24 11:28:09,979 views 14416 9840 Found auth_token in cookies: RcSZVn2w...
+INFO 2025-10-24 11:28:09,979 views 14416 9840 Looking up token: RcSZVn2w...
+INFO 2025-10-24 11:28:09,982 views 14416 9840 Valid custom token found for user: bt_test (role: customer)
+INFO 2025-10-24 11:28:09,982 views 14416 9840 User authenticated via cookie token: bt_test (role: customer)
+INFO 2025-10-24 11:28:09,993 basehttp 14416 9840 "GET /accounts/customer-panel/ HTTP/1.1" 200 46580
+INFO 2025-10-24 11:28:10,000 basehttp 14416 9840 "GET /static/tickets/css/ticket_list_modern.css HTTP/1.1" 304 0
+INFO 2025-10-24 11:28:10,036 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:28:10,037 views 14416 9840 Request user: bt_test (Customer), authenticated: True
+INFO 2025-10-24 11:28:10,037 views 14416 9840 Authorization header: None
+INFO 2025-10-24 11:28:10,037 views 14416 9840 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:28:10,037 views 14416 9840 User authenticated via Django session: bt_test
+INFO 2025-10-24 11:28:10,051 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 774
+INFO 2025-10-24 11:28:10,082 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:28:10,082 views 14416 9840 Request user: bt_test (Customer), authenticated: True
+INFO 2025-10-24 11:28:10,082 views 14416 9840 Authorization header: Token glmIoP59vLQirqr3Ig8jWJ7lTI8XKYsRpJOHlWV0uk0iD6JzJbJ8n6FciSfj1Si9hEZdSt-OdZijlHRcSZVn2w
+INFO 2025-10-24 11:28:10,082 views 14416 9840 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:28:10,082 views 14416 9840 User authenticated via Django session: bt_test
+INFO 2025-10-24 11:28:10,096 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 774
+WARNING 2025-10-24 11:28:44,780 log 14416 9840 Unauthorized: /accounts/api/logout/
+WARNING 2025-10-24 11:28:44,781 basehttp 14416 9840 "POST /accounts/api/logout/ HTTP/1.1" 401 29
+INFO 2025-10-24 11:28:44,820 basehttp 14416 9840 "GET /accounts/login/ HTTP/1.1" 200 29096
+WARNING 2025-10-24 11:28:54,578 views 14416 9840 Failed login attempt for username: kartelaTest from IP: 127.0.0.1
+INFO 2025-10-24 11:28:54,578 security 14416 9840 Failed login attempt from IP: 127.0.0.1, attempt: 1
+WARNING 2025-10-24 11:28:54,580 log 14416 9840 Bad Request: /accounts/api/login/
+WARNING 2025-10-24 11:28:54,580 basehttp 14416 9840 "POST /accounts/api/login/ HTTP/1.1" 400 41
+WARNING 2025-10-24 11:29:01,317 views 14416 9840 Failed login attempt for username: kartelaTest from IP: 127.0.0.1
+INFO 2025-10-24 11:29:01,317 security 14416 9840 Failed login attempt from IP: 127.0.0.1, attempt: 2
+WARNING 2025-10-24 11:29:01,319 log 14416 9840 Bad Request: /accounts/api/login/
+WARNING 2025-10-24 11:29:01,319 basehttp 14416 9840 "POST /accounts/api/login/ HTTP/1.1" 400 41
+INFO 2025-10-24 11:29:11,188 views 14416 9840 Successful login for user: admin from IP: 127.0.0.1
+INFO 2025-10-24 11:29:11,453 security 14416 9840 Successful login from IP: 127.0.0.1
+INFO 2025-10-24 11:29:11,453 basehttp 14416 9840 "POST /accounts/api/login/ HTTP/1.1" 200 442
+INFO 2025-10-24 11:29:11,495 middleware 14416 9840 User admin authenticated via cookie
+INFO 2025-10-24 11:29:11,495 views 14416 9840 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:29:11,495 views 14416 9840 Found auth_token in cookies: Bj8xFVSw...
+INFO 2025-10-24 11:29:11,495 views 14416 9840 Looking up token: Bj8xFVSw...
+INFO 2025-10-24 11:29:11,497 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:29:11,497 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:29:11,497 views 14416 9840 Admin panel access attempt from admin (Admin)
+INFO 2025-10-24 11:29:11,497 views 14416 9840 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:29:11,497 views 14416 9840 Found auth_token in cookies: Bj8xFVSw...
+INFO 2025-10-24 11:29:11,497 views 14416 9840 Looking up token: Bj8xFVSw...
+INFO 2025-10-24 11:29:11,498 views 14416 9840 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:29:11,498 views 14416 9840 User authenticated via cookie token: admin (role: admin)
+INFO 2025-10-24 11:29:11,499 views 14416 9840 Token auth result: admin (Admin)
+INFO 2025-10-24 11:29:11,499 views 14416 9840 Admin panel access granted for admin
+INFO 2025-10-24 11:29:11,500 basehttp 14416 9840 "GET /accounts/admin-panel/ HTTP/1.1" 200 51305
+INFO 2025-10-24 11:29:11,544 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:29:11,544 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:29:11,544 views 14416 9840 Authorization header: None
+INFO 2025-10-24 11:29:11,545 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:29:11,545 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:29:11,557 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:29:12,141 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:29:12,141 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:29:12,141 views 14416 9840 Authorization header: Token E8tVtGFGbEElGNeEQLZ1FSdp_cGG3J0GNMYUwygGr5wmYSpLOXe4laGattroof0YmSXLtUrcVKAVImBj8xFVSw
+INFO 2025-10-24 11:29:12,141 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:29:12,141 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:29:12,152 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:29:19,969 basehttp 14416 9840 "GET /tickets/ HTTP/1.1" 200 30905
+INFO 2025-10-24 11:29:19,975 basehttp 14416 9840 "GET /static/tickets/js/ticket_list_modern.js HTTP/1.1" 304 0
+INFO 2025-10-24 11:29:20,016 views 14416 9840 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:29:20,016 views 14416 9840 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:29:20,017 views 14416 9840 Authorization header: Token E8tVtGFGbEElGNeEQLZ1FSdp_cGG3J0GNMYUwygGr5wmYSpLOXe4laGattroof0YmSXLtUrcVKAVImBj8xFVSw
+INFO 2025-10-24 11:29:20,017 views 14416 9840 Cookies: ['messages', 'auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:29:20,017 views 14416 9840 User authenticated via Django session: admin
+INFO 2025-10-24 11:29:20,029 basehttp 14416 9840 "GET /accounts/api/profile/ HTTP/1.1" 200 762
+INFO 2025-10-24 11:29:25,911 basehttp 14416 9840 "POST /tickets/1/change-status/ HTTP/1.1" 200 172
+INFO 2025-10-24 11:30:24,376 autoreload 25428 21672 Watching for file changes with StatReloader
+INFO 2025-10-24 11:30:34,861 views 25428 7464 verify_token_auth called for path: /
+INFO 2025-10-24 11:30:34,861 views 25428 7464 No auth_token found in cookies
+INFO 2025-10-24 11:30:34,861 views 25428 7464 No valid authentication found
+INFO 2025-10-24 11:30:34,870 basehttp 25428 7464 "GET / HTTP/1.1" 200 25623
+INFO 2025-10-24 11:30:34,916 basehttp 25428 13184 "GET /static/css/sidebar.css HTTP/1.1" 200 8277
+INFO 2025-10-24 11:30:34,918 basehttp 25428 7464 "GET /static/css/theme.css HTTP/1.1" 200 7004
+INFO 2025-10-24 11:30:35,072 basehttp 25428 7464 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:30:35,204 basehttp 25428 7464 "GET /static/favicon.svg HTTP/1.1" 200 298
+INFO 2025-10-24 11:30:41,532 views 25428 7464 Successful login for user: admin from IP: 127.0.0.1
+INFO 2025-10-24 11:30:41,798 security 25428 7464 Successful login from IP: 127.0.0.1
+INFO 2025-10-24 11:30:41,798 basehttp 25428 7464 "POST /accounts/api/login/ HTTP/1.1" 200 434
+INFO 2025-10-24 11:30:41,840 middleware 25428 7464 User admin authenticated via cookie
+INFO 2025-10-24 11:30:41,840 views 25428 7464 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:30:41,840 views 25428 7464 Found auth_token in cookies: J2BsHQzA...
+INFO 2025-10-24 11:30:41,840 views 25428 7464 Looking up token: J2BsHQzA...
+INFO 2025-10-24 11:30:41,841 views 25428 7464 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:30:41,841 views 25428 7464 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:30:41,842 views 25428 7464 Admin panel access attempt from admin (Customer)
+INFO 2025-10-24 11:30:41,842 views 25428 7464 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:30:41,842 views 25428 7464 Found auth_token in cookies: J2BsHQzA...
+INFO 2025-10-24 11:30:41,842 views 25428 7464 Looking up token: J2BsHQzA...
+INFO 2025-10-24 11:30:41,843 views 25428 7464 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:30:41,843 views 25428 7464 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:30:41,843 views 25428 7464 Token auth result: admin (Customer)
+INFO 2025-10-24 11:30:41,843 views 25428 7464 Admin panel access granted for admin
+INFO 2025-10-24 11:30:41,845 basehttp 25428 7464 "GET /accounts/admin-panel/ HTTP/1.1" 200 51305
+INFO 2025-10-24 11:30:41,987 views 25428 7464 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:30:41,988 views 25428 7464 Request user: admin (Customer), authenticated: True
+INFO 2025-10-24 11:30:41,988 views 25428 7464 Authorization header: None
+INFO 2025-10-24 11:30:41,988 views 25428 7464 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:30:41,988 views 25428 7464 User authenticated via Django session: admin
+INFO 2025-10-24 11:30:42,007 basehttp 25428 7464 "GET /accounts/api/profile/ HTTP/1.1" 200 688
+INFO 2025-10-24 11:30:42,387 views 25428 7464 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:30:42,387 views 25428 7464 Request user: admin (Customer), authenticated: True
+INFO 2025-10-24 11:30:42,387 views 25428 7464 Authorization header: Token XsQLwKaVRTav1Xbk5mh_NjiEHMaXSrvQdPRkmWqaF0a89tL_WWUlIg1WIXHIuEdXYX1JiGEgccESjPJ2BsHQzA
+INFO 2025-10-24 11:30:42,387 views 25428 7464 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:30:42,388 views 25428 7464 User authenticated via Django session: admin
+INFO 2025-10-24 11:30:42,402 basehttp 25428 7464 "GET /accounts/api/profile/ HTTP/1.1" 200 688
+INFO 2025-10-24 11:31:07,424 views 25428 7464 verify_token_auth called for path: /accounts/admin/settings/
+INFO 2025-10-24 11:31:07,424 views 25428 7464 Found auth_token in cookies: J2BsHQzA...
+INFO 2025-10-24 11:31:07,424 views 25428 7464 Looking up token: J2BsHQzA...
+INFO 2025-10-24 11:31:07,426 views 25428 7464 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:31:07,427 views 25428 7464 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:31:07,429 basehttp 25428 7464 "GET /accounts/admin/settings/ HTTP/1.1" 200 28683
+INFO 2025-10-24 11:31:07,469 views 25428 7464 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:31:07,470 views 25428 7464 Request user: admin (Customer), authenticated: True
+INFO 2025-10-24 11:31:07,470 views 25428 7464 Authorization header: Token XsQLwKaVRTav1Xbk5mh_NjiEHMaXSrvQdPRkmWqaF0a89tL_WWUlIg1WIXHIuEdXYX1JiGEgccESjPJ2BsHQzA
+INFO 2025-10-24 11:31:07,470 views 25428 7464 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:31:07,470 views 25428 7464 User authenticated via Django session: admin
+INFO 2025-10-24 11:31:07,484 basehttp 25428 7464 "GET /accounts/api/profile/ HTTP/1.1" 200 688
+INFO 2025-10-24 11:38:31,952 autoreload 10056 17180 Watching for file changes with StatReloader
+INFO 2025-10-24 11:38:36,118 views 10056 17432 verify_token_auth called for path: /
+INFO 2025-10-24 11:38:36,118 views 10056 17432 No auth_token found in cookies
+INFO 2025-10-24 11:38:36,118 views 10056 17432 No valid authentication found
+INFO 2025-10-24 11:38:36,124 basehttp 10056 17432 "GET / HTTP/1.1" 200 25623
+INFO 2025-10-24 11:38:36,170 basehttp 10056 17432 "GET /static/css/theme.css HTTP/1.1" 200 7004
+INFO 2025-10-24 11:38:36,171 basehttp 10056 5164 "GET /static/css/sidebar.css HTTP/1.1" 200 8277
+INFO 2025-10-24 11:38:36,331 basehttp 10056 5164 "GET /accounts/login/ HTTP/1.1" 200 29096
+INFO 2025-10-24 11:38:36,494 basehttp 10056 5164 "GET /static/favicon.svg HTTP/1.1" 200 298
+INFO 2025-10-24 11:38:43,458 views 10056 5164 Successful login for user: admin from IP: 127.0.0.1
+INFO 2025-10-24 11:38:43,735 security 10056 5164 Successful login from IP: 127.0.0.1
+INFO 2025-10-24 11:38:43,735 basehttp 10056 5164 "POST /accounts/api/login/ HTTP/1.1" 200 434
+INFO 2025-10-24 11:38:43,779 middleware 10056 5164 User admin authenticated via cookie
+INFO 2025-10-24 11:38:43,779 views 10056 5164 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:38:43,779 views 10056 5164 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:38:43,779 views 10056 5164 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:38:43,781 views 10056 5164 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:38:43,781 views 10056 5164 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:38:43,781 views 10056 5164 Admin panel access attempt from admin (Customer)
+INFO 2025-10-24 11:38:43,781 views 10056 5164 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:38:43,781 views 10056 5164 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:38:43,781 views 10056 5164 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:38:43,783 views 10056 5164 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:38:43,783 views 10056 5164 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:38:43,783 views 10056 5164 Token auth result: admin (Customer)
+INFO 2025-10-24 11:38:43,783 views 10056 5164 Admin panel access granted for admin
+INFO 2025-10-24 11:38:43,785 basehttp 10056 5164 "GET /accounts/admin-panel/ HTTP/1.1" 200 51305
+INFO 2025-10-24 11:38:43,827 views 10056 5164 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:38:43,827 views 10056 5164 Request user: admin (Customer), authenticated: True
+INFO 2025-10-24 11:38:43,827 views 10056 5164 Authorization header: None
+INFO 2025-10-24 11:38:43,827 views 10056 5164 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:38:43,828 views 10056 5164 User authenticated via Django session: admin
+INFO 2025-10-24 11:38:43,850 basehttp 10056 5164 "GET /accounts/api/profile/ HTTP/1.1" 200 688
+INFO 2025-10-24 11:38:44,326 views 10056 5164 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:38:44,326 views 10056 5164 Request user: admin (Customer), authenticated: True
+INFO 2025-10-24 11:38:44,326 views 10056 5164 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:38:44,326 views 10056 5164 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:38:44,327 views 10056 5164 User authenticated via Django session: admin
+INFO 2025-10-24 11:38:44,339 basehttp 10056 5164 "GET /accounts/api/profile/ HTTP/1.1" 200 688
+INFO 2025-10-24 11:38:47,963 views 10056 5164 verify_token_auth called for path: /accounts/admin/settings/
+INFO 2025-10-24 11:38:47,963 views 10056 5164 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:38:47,963 views 10056 5164 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:38:47,965 views 10056 5164 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:38:47,965 views 10056 5164 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:38:47,967 basehttp 10056 5164 "GET /accounts/admin/settings/ HTTP/1.1" 200 28683
+INFO 2025-10-24 11:38:48,010 views 10056 5164 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:38:48,010 views 10056 5164 Request user: admin (Customer), authenticated: True
+INFO 2025-10-24 11:38:48,010 views 10056 5164 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:38:48,010 views 10056 5164 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:38:48,010 views 10056 5164 User authenticated via Django session: admin
+INFO 2025-10-24 11:38:48,023 basehttp 10056 5164 "GET /accounts/api/profile/ HTTP/1.1" 200 688
+INFO 2025-10-24 11:39:03,940 views 10056 5164 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:39:03,940 views 10056 5164 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:39:03,940 views 10056 5164 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:39:03,943 views 10056 5164 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:39:03,943 views 10056 5164 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:39:03,943 views 10056 5164 Admin panel access attempt from admin (Customer)
+INFO 2025-10-24 11:39:03,943 views 10056 5164 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:39:03,943 views 10056 5164 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:39:03,943 views 10056 5164 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:39:03,945 views 10056 5164 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:39:03,945 views 10056 5164 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:39:03,945 views 10056 5164 Token auth result: admin (Customer)
+INFO 2025-10-24 11:39:03,945 views 10056 5164 Admin panel access granted for admin
+INFO 2025-10-24 11:39:03,946 basehttp 10056 5164 "GET /accounts/admin-panel/ HTTP/1.1" 200 51305
+INFO 2025-10-24 11:39:03,989 views 10056 5164 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:39:03,989 views 10056 5164 Request user: admin (Customer), authenticated: True
+INFO 2025-10-24 11:39:03,989 views 10056 5164 Authorization header: None
+INFO 2025-10-24 11:39:03,990 views 10056 5164 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:39:03,990 views 10056 5164 User authenticated via Django session: admin
+INFO 2025-10-24 11:39:04,001 basehttp 10056 5164 "GET /accounts/api/profile/ HTTP/1.1" 200 688
+INFO 2025-10-24 11:39:04,031 views 10056 5164 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:39:04,032 views 10056 5164 Request user: admin (Customer), authenticated: True
+INFO 2025-10-24 11:39:04,032 views 10056 5164 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:39:04,032 views 10056 5164 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:39:04,032 views 10056 5164 User authenticated via Django session: admin
+INFO 2025-10-24 11:39:04,044 basehttp 10056 5164 "GET /accounts/api/profile/ HTTP/1.1" 200 688
+INFO 2025-10-24 11:39:06,240 views 10056 5164 verify_token_auth called for path: /accounts/admin/users/
+INFO 2025-10-24 11:39:06,241 views 10056 5164 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:39:06,241 views 10056 5164 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:39:06,243 views 10056 5164 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:39:06,244 views 10056 5164 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:39:06,251 basehttp 10056 5164 "GET /accounts/admin/users/ HTTP/1.1" 200 30126
+INFO 2025-10-24 11:39:06,292 views 10056 5164 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:39:06,292 views 10056 5164 Request user: admin (Customer), authenticated: True
+INFO 2025-10-24 11:39:06,292 views 10056 5164 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:39:06,292 views 10056 5164 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:39:06,292 views 10056 5164 User authenticated via Django session: admin
+INFO 2025-10-24 11:39:06,305 basehttp 10056 5164 "GET /accounts/api/profile/ HTTP/1.1" 200 688
+INFO 2025-10-24 11:39:07,719 views 10056 5164 verify_token_auth called for path: /accounts/admin/users/1/edit/
+INFO 2025-10-24 11:39:07,719 views 10056 5164 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:39:07,719 views 10056 5164 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:39:07,722 views 10056 5164 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:39:07,722 views 10056 5164 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:39:07,725 basehttp 10056 5164 "GET /accounts/admin/users/1/edit/ HTTP/1.1" 200 29581
+INFO 2025-10-24 11:39:07,768 views 10056 5164 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:39:07,769 views 10056 5164 Request user: admin (Customer), authenticated: True
+INFO 2025-10-24 11:39:07,769 views 10056 5164 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:39:07,769 views 10056 5164 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:39:07,769 views 10056 5164 User authenticated via Django session: admin
+INFO 2025-10-24 11:39:07,782 basehttp 10056 5164 "GET /accounts/api/profile/ HTTP/1.1" 200 688
+INFO 2025-10-24 11:39:10,241 views 10056 5164 verify_token_auth called for path: /accounts/admin/users/1/edit/
+INFO 2025-10-24 11:39:10,241 views 10056 5164 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:39:10,241 views 10056 5164 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:39:10,244 views 10056 5164 Valid custom token found for user: admin (role: customer)
+INFO 2025-10-24 11:39:10,244 views 10056 5164 User authenticated via cookie token: admin (role: customer)
+INFO 2025-10-24 11:39:10,246 views 10056 5164 Admin admin tarafýndan kullanýcý güncellendi: admin
+INFO 2025-10-24 11:39:10,247 basehttp 10056 5164 "POST /accounts/admin/users/1/edit/ HTTP/1.1" 302 0
+INFO 2025-10-24 11:39:10,279 views 10056 5164 verify_token_auth called for path: /accounts/admin/users/
+INFO 2025-10-24 11:39:10,279 views 10056 5164 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:39:10,279 views 10056 5164 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:39:10,282 views 10056 5164 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:39:10,283 views 10056 5164 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:39:10,283 views 10056 5164 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:39:10,287 basehttp 10056 5164 "GET /accounts/admin/users/ HTTP/1.1" 200 30126
+INFO 2025-10-24 11:39:10,330 views 10056 5164 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:39:10,330 views 10056 5164 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:39:10,330 views 10056 5164 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:39:10,330 views 10056 5164 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:39:10,330 views 10056 5164 User authenticated via Django session: admin
+INFO 2025-10-24 11:39:10,341 basehttp 10056 5164 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:39:13,657 views 10056 5164 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:39:13,658 views 10056 5164 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:39:13,658 views 10056 5164 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:39:13,660 views 10056 5164 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:39:13,661 views 10056 5164 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:39:13,661 views 10056 5164 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:39:13,661 views 10056 5164 Admin panel access attempt from admin (Admin)
+INFO 2025-10-24 11:39:13,661 views 10056 5164 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:39:13,661 views 10056 5164 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:39:13,661 views 10056 5164 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:39:13,662 views 10056 5164 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:39:13,662 views 10056 5164 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:39:13,662 views 10056 5164 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:39:13,662 views 10056 5164 Token auth result: admin (Admin)
+INFO 2025-10-24 11:39:13,663 views 10056 5164 Admin panel access granted for admin
+INFO 2025-10-24 11:39:13,664 basehttp 10056 5164 "GET /accounts/admin-panel/ HTTP/1.1" 200 51305
+INFO 2025-10-24 11:39:13,703 views 10056 5164 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:39:13,704 views 10056 5164 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:39:13,704 views 10056 5164 Authorization header: None
+INFO 2025-10-24 11:39:13,704 views 10056 5164 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:39:13,704 views 10056 5164 User authenticated via Django session: admin
+INFO 2025-10-24 11:39:13,714 basehttp 10056 5164 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:39:13,746 views 10056 5164 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:39:13,746 views 10056 5164 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:39:13,746 views 10056 5164 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:39:13,746 views 10056 5164 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:39:13,746 views 10056 5164 User authenticated via Django session: admin
+INFO 2025-10-24 11:39:13,757 basehttp 10056 5164 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:39:25,599 basehttp 10056 5164 "GET /tickets/ HTTP/1.1" 200 27147
+INFO 2025-10-24 11:39:25,605 basehttp 10056 17432 "GET /static/tickets/js/ticket_list_modern.js HTTP/1.1" 200 9484
+INFO 2025-10-24 11:39:25,605 basehttp 10056 5164 "GET /static/tickets/css/ticket_list_modern.css HTTP/1.1" 200 12564
+INFO 2025-10-24 11:39:25,643 views 10056 17432 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:39:25,643 views 10056 17432 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:39:25,643 views 10056 17432 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:39:25,643 views 10056 17432 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:39:25,643 views 10056 17432 User authenticated via Django session: admin
+INFO 2025-10-24 11:39:25,654 basehttp 10056 17432 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:39:27,965 views 10056 17432 verify_token_auth called for path: /accounts/admin/reports/
+INFO 2025-10-24 11:39:27,966 views 10056 17432 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:39:27,966 views 10056 17432 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:39:27,968 views 10056 17432 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:39:27,968 views 10056 17432 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:39:27,968 views 10056 17432 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:39:27,970 basehttp 10056 17432 "GET /accounts/admin/reports/ HTTP/1.1" 200 26596
+INFO 2025-10-24 11:39:28,012 views 10056 17432 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:39:28,012 views 10056 17432 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:39:28,012 views 10056 17432 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:39:28,012 views 10056 17432 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:39:28,012 views 10056 17432 User authenticated via Django session: admin
+INFO 2025-10-24 11:39:28,023 basehttp 10056 17432 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:39:33,463 views 10056 17432 verify_token_auth called for path: /accounts/admin/settings/
+INFO 2025-10-24 11:39:33,463 views 10056 17432 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:39:33,463 views 10056 17432 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:39:33,466 views 10056 17432 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:39:33,466 views 10056 17432 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:39:33,466 views 10056 17432 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:39:33,467 basehttp 10056 17432 "GET /accounts/admin/settings/ HTTP/1.1" 200 28683
+INFO 2025-10-24 11:39:33,508 views 10056 17432 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:39:33,509 views 10056 17432 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:39:33,509 views 10056 17432 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:39:33,509 views 10056 17432 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:39:33,509 views 10056 17432 User authenticated via Django session: admin
+INFO 2025-10-24 11:39:33,519 basehttp 10056 17432 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:42:56,536 autoreload 23528 14772 Watching for file changes with StatReloader
+INFO 2025-10-24 11:42:59,088 middleware 23528 21964 User admin authenticated via cookie
+INFO 2025-10-24 11:42:59,090 views 23528 21964 verify_token_auth called for path: /
+INFO 2025-10-24 11:42:59,090 views 23528 21964 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:42:59,090 views 23528 21964 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:42:59,092 views 23528 21964 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:42:59,092 views 23528 21964 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:42:59,092 views 23528 21964 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:42:59,095 basehttp 23528 21964 "GET / HTTP/1.1" 302 0
+INFO 2025-10-24 11:42:59,128 views 23528 21964 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:42:59,128 views 23528 21964 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:42:59,128 views 23528 21964 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:42:59,131 views 23528 21964 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:42:59,131 views 23528 21964 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:42:59,131 views 23528 21964 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:42:59,131 views 23528 21964 Admin panel access attempt from admin (Admin)
+INFO 2025-10-24 11:42:59,131 views 23528 21964 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:42:59,132 views 23528 21964 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:42:59,132 views 23528 21964 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:42:59,133 views 23528 21964 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:42:59,133 views 23528 21964 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:42:59,133 views 23528 21964 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:42:59,133 views 23528 21964 Token auth result: admin (Admin)
+INFO 2025-10-24 11:42:59,133 views 23528 21964 Admin panel access granted for admin
+INFO 2025-10-24 11:42:59,138 basehttp 23528 21964 "GET /accounts/admin-panel/ HTTP/1.1" 200 51305
+INFO 2025-10-24 11:42:59,339 views 23528 21964 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:42:59,339 views 23528 21964 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:42:59,340 views 23528 21964 Authorization header: None
+INFO 2025-10-24 11:42:59,340 views 23528 21964 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:42:59,340 views 23528 21964 User authenticated via Django session: admin
+INFO 2025-10-24 11:42:59,357 basehttp 23528 21964 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:42:59,387 views 23528 21964 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:42:59,387 views 23528 21964 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:42:59,388 views 23528 21964 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:42:59,388 views 23528 21964 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:42:59,388 views 23528 21964 User authenticated via Django session: admin
+INFO 2025-10-24 11:42:59,399 basehttp 23528 21964 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:43:02,275 views 23528 21964 verify_token_auth called for path: /accounts/admin/settings/
+INFO 2025-10-24 11:43:02,276 views 23528 21964 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:43:02,276 views 23528 21964 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:43:02,278 views 23528 21964 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:43:02,278 views 23528 21964 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:43:02,278 views 23528 21964 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:43:02,305 basehttp 23528 21964 "GET /accounts/admin/settings/ HTTP/1.1" 200 31955
+INFO 2025-10-24 11:43:02,349 views 23528 21964 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:43:02,349 views 23528 21964 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:43:02,349 views 23528 21964 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:43:02,349 views 23528 21964 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid']
+INFO 2025-10-24 11:43:02,349 views 23528 21964 User authenticated via Django session: admin
+INFO 2025-10-24 11:43:02,360 basehttp 23528 21964 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:43:29,978 views 23528 21964 verify_token_auth called for path: /accounts/admin/settings/
+INFO 2025-10-24 11:43:29,978 views 23528 21964 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:43:29,978 views 23528 21964 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:43:29,981 views 23528 21964 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:43:29,981 views 23528 21964 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:43:29,981 views 23528 21964 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:43:29,984 basehttp 23528 21964 "POST /accounts/admin/settings/ HTTP/1.1" 302 0
+INFO 2025-10-24 11:43:30,018 views 23528 21964 verify_token_auth called for path: /accounts/admin/settings/
+INFO 2025-10-24 11:43:30,018 views 23528 21964 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:43:30,018 views 23528 21964 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:43:30,021 views 23528 21964 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:43:30,021 views 23528 21964 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:43:30,021 views 23528 21964 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:43:30,024 basehttp 23528 21964 "GET /accounts/admin/settings/ HTTP/1.1" 200 31947
+INFO 2025-10-24 11:43:30,066 views 23528 21964 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:43:30,066 views 23528 21964 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:43:30,066 views 23528 21964 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:43:30,066 views 23528 21964 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:43:30,066 views 23528 21964 User authenticated via Django session: admin
+INFO 2025-10-24 11:43:30,078 basehttp 23528 21964 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:43:48,163 views 23528 21964 verify_token_auth called for path: /
+INFO 2025-10-24 11:43:48,163 views 23528 21964 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:43:48,164 views 23528 21964 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:43:48,166 views 23528 21964 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:43:48,167 views 23528 21964 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:43:48,167 views 23528 21964 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:43:48,168 basehttp 23528 21964 "GET / HTTP/1.1" 302 0
+INFO 2025-10-24 11:43:48,200 views 23528 21964 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:43:48,201 views 23528 21964 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:43:48,201 views 23528 21964 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:43:48,204 views 23528 21964 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:43:48,204 views 23528 21964 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:43:48,204 views 23528 21964 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:43:48,204 views 23528 21964 Admin panel access attempt from admin (Admin)
+INFO 2025-10-24 11:43:48,204 views 23528 21964 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:43:48,204 views 23528 21964 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:43:48,204 views 23528 21964 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:43:48,206 views 23528 21964 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:43:48,206 views 23528 21964 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:43:48,206 views 23528 21964 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:43:48,206 views 23528 21964 Token auth result: admin (Admin)
+INFO 2025-10-24 11:43:48,206 views 23528 21964 Admin panel access granted for admin
+INFO 2025-10-24 11:43:48,209 basehttp 23528 21964 "GET /accounts/admin-panel/ HTTP/1.1" 200 51305
+INFO 2025-10-24 11:43:48,251 views 23528 21964 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:43:48,251 views 23528 21964 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:43:48,251 views 23528 21964 Authorization header: None
+INFO 2025-10-24 11:43:48,251 views 23528 21964 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:43:48,251 views 23528 21964 User authenticated via Django session: admin
+INFO 2025-10-24 11:43:48,262 basehttp 23528 21964 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:43:48,293 views 23528 21964 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:43:48,293 views 23528 21964 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:43:48,294 views 23528 21964 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:43:48,294 views 23528 21964 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:43:48,294 views 23528 21964 User authenticated via Django session: admin
+INFO 2025-10-24 11:43:48,304 basehttp 23528 21964 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:43:51,754 views 23528 21964 verify_token_auth called for path: /accounts/admin/settings/
+INFO 2025-10-24 11:43:51,754 views 23528 21964 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:43:51,755 views 23528 21964 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:43:51,757 views 23528 21964 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:43:51,757 views 23528 21964 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:43:51,757 views 23528 21964 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:43:51,760 basehttp 23528 21964 "GET /accounts/admin/settings/ HTTP/1.1" 200 31947
+INFO 2025-10-24 11:43:51,799 views 23528 21964 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:43:51,800 views 23528 21964 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:43:51,800 views 23528 21964 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:43:51,800 views 23528 21964 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:43:51,800 views 23528 21964 User authenticated via Django session: admin
+INFO 2025-10-24 11:43:51,811 basehttp 23528 21964 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:43:59,836 views 23528 21964 verify_token_auth called for path: /
+INFO 2025-10-24 11:43:59,836 views 23528 21964 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:43:59,836 views 23528 21964 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:43:59,839 views 23528 21964 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:43:59,839 views 23528 21964 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:43:59,839 views 23528 21964 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:43:59,840 basehttp 23528 21964 "GET / HTTP/1.1" 302 0
+INFO 2025-10-24 11:43:59,871 views 23528 21964 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:43:59,871 views 23528 21964 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:43:59,871 views 23528 21964 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:43:59,874 views 23528 21964 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:43:59,874 views 23528 21964 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:43:59,874 views 23528 21964 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:43:59,874 views 23528 21964 Admin panel access attempt from admin (Admin)
+INFO 2025-10-24 11:43:59,874 views 23528 21964 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:43:59,875 views 23528 21964 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:43:59,875 views 23528 21964 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:43:59,876 views 23528 21964 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:43:59,876 views 23528 21964 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:43:59,876 views 23528 21964 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:43:59,876 views 23528 21964 Token auth result: admin (Admin)
+INFO 2025-10-24 11:43:59,876 views 23528 21964 Admin panel access granted for admin
+INFO 2025-10-24 11:43:59,878 basehttp 23528 21964 "GET /accounts/admin-panel/ HTTP/1.1" 200 51305
+INFO 2025-10-24 11:43:59,920 views 23528 21964 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:43:59,920 views 23528 21964 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:43:59,920 views 23528 21964 Authorization header: None
+INFO 2025-10-24 11:43:59,921 views 23528 21964 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:43:59,921 views 23528 21964 User authenticated via Django session: admin
+INFO 2025-10-24 11:43:59,932 basehttp 23528 21964 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:43:59,964 views 23528 21964 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:43:59,965 views 23528 21964 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:43:59,965 views 23528 21964 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:43:59,965 views 23528 21964 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:43:59,965 views 23528 21964 User authenticated via Django session: admin
+INFO 2025-10-24 11:43:59,976 basehttp 23528 21964 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:44:01,014 views 23528 21964 verify_token_auth called for path: /accounts/admin/reports/
+INFO 2025-10-24 11:44:01,014 views 23528 21964 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:44:01,014 views 23528 21964 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:44:01,016 views 23528 21964 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:44:01,017 views 23528 21964 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:44:01,017 views 23528 21964 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:44:01,019 basehttp 23528 21964 "GET /accounts/admin/reports/ HTTP/1.1" 200 26596
+INFO 2025-10-24 11:44:01,160 views 23528 21964 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:44:01,160 views 23528 21964 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:44:01,160 views 23528 21964 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:44:01,160 views 23528 21964 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:44:01,160 views 23528 21964 User authenticated via Django session: admin
+INFO 2025-10-24 11:44:01,171 basehttp 23528 21964 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:47:00,721 autoreload 10532 20920 Watching for file changes with StatReloader
+INFO 2025-10-24 11:47:07,133 views 10532 24080 verify_token_auth called for path: /accounts/admin/reports/
+INFO 2025-10-24 11:47:07,133 views 10532 24080 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:47:07,133 views 10532 24080 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:47:07,136 views 10532 24080 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:47:07,136 views 10532 24080 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:47:07,136 views 10532 24080 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:47:07,180 basehttp 10532 24080 "GET /accounts/admin/reports/ HTTP/1.1" 200 29317
+INFO 2025-10-24 11:47:07,225 views 10532 24080 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:47:07,225 views 10532 24080 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:47:07,225 views 10532 24080 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:47:07,225 views 10532 24080 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:47:07,226 views 10532 24080 User authenticated via Django session: admin
+INFO 2025-10-24 11:47:07,238 basehttp 10532 24080 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:47:10,402 views 10532 24080 verify_token_auth called for path: /accounts/admin/settings/
+INFO 2025-10-24 11:47:10,402 views 10532 24080 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:47:10,402 views 10532 24080 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:47:10,405 views 10532 24080 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:47:10,405 views 10532 24080 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:47:10,405 views 10532 24080 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:47:10,409 basehttp 10532 24080 "GET /accounts/admin/settings/ HTTP/1.1" 200 31947
+INFO 2025-10-24 11:47:10,562 views 10532 24080 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:47:10,562 views 10532 24080 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:47:10,562 views 10532 24080 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:47:10,562 views 10532 24080 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:47:10,562 views 10532 24080 User authenticated via Django session: admin
+INFO 2025-10-24 11:47:10,574 basehttp 10532 24080 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:47:12,710 views 10532 24080 verify_token_auth called for path: /
+INFO 2025-10-24 11:47:12,710 views 10532 24080 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:47:12,710 views 10532 24080 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:47:12,713 views 10532 24080 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:47:12,713 views 10532 24080 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:47:12,713 views 10532 24080 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:47:12,714 basehttp 10532 24080 "GET / HTTP/1.1" 302 0
+INFO 2025-10-24 11:47:12,747 views 10532 24080 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:47:12,747 views 10532 24080 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:47:12,748 views 10532 24080 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:47:12,750 views 10532 24080 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:47:12,750 views 10532 24080 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:47:12,751 views 10532 24080 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:47:12,751 views 10532 24080 Admin panel access attempt from admin (Admin)
+INFO 2025-10-24 11:47:12,751 views 10532 24080 verify_token_auth called for path: /accounts/admin-panel/
+INFO 2025-10-24 11:47:12,751 views 10532 24080 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:47:12,751 views 10532 24080 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:47:12,752 views 10532 24080 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:47:12,752 views 10532 24080 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:47:12,752 views 10532 24080 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:47:12,752 views 10532 24080 Token auth result: admin (Admin)
+INFO 2025-10-24 11:47:12,753 views 10532 24080 Admin panel access granted for admin
+INFO 2025-10-24 11:47:12,755 basehttp 10532 24080 "GET /accounts/admin-panel/ HTTP/1.1" 200 51305
+INFO 2025-10-24 11:47:12,898 views 10532 24080 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:47:12,899 views 10532 24080 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:47:12,899 views 10532 24080 Authorization header: None
+INFO 2025-10-24 11:47:12,899 views 10532 24080 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:47:12,899 views 10532 24080 User authenticated via Django session: admin
+INFO 2025-10-24 11:47:12,910 basehttp 10532 24080 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:47:12,941 views 10532 24080 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:47:12,941 views 10532 24080 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:47:12,942 views 10532 24080 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:47:12,942 views 10532 24080 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:47:12,942 views 10532 24080 User authenticated via Django session: admin
+INFO 2025-10-24 11:47:12,954 basehttp 10532 24080 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:47:13,718 views 10532 24080 verify_token_auth called for path: /accounts/admin/reports/
+INFO 2025-10-24 11:47:13,718 views 10532 24080 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:47:13,718 views 10532 24080 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:47:13,721 views 10532 24080 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:47:13,721 views 10532 24080 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:47:13,721 views 10532 24080 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:47:13,729 basehttp 10532 24080 "GET /accounts/admin/reports/ HTTP/1.1" 200 29317
+INFO 2025-10-24 11:47:13,772 views 10532 24080 api_user_profile called from IP: 127.0.0.1
+INFO 2025-10-24 11:47:13,772 views 10532 24080 Request user: admin (Admin), authenticated: True
+INFO 2025-10-24 11:47:13,772 views 10532 24080 Authorization header: Token PPgkKzI1FU0Omu69SZpiB0gzLiRwLPQF-F8rgt7WxZnC-G8pJcobSiBAK49wrmLxzU1I30ZuHk7kO81ibvZU0Q
+INFO 2025-10-24 11:47:13,772 views 10532 24080 Cookies: ['auth_token', 'user_id', 'user_role', 'csrftoken', 'sessionid', 'messages']
+INFO 2025-10-24 11:47:13,772 views 10532 24080 User authenticated via Django session: admin
+INFO 2025-10-24 11:47:13,784 basehttp 10532 24080 "GET /accounts/api/profile/ HTTP/1.1" 200 751
+INFO 2025-10-24 11:47:25,100 views 10532 24080 verify_token_auth called for path: /accounts/admin/reports/export/
+INFO 2025-10-24 11:47:25,100 views 10532 24080 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:47:25,100 views 10532 24080 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:47:25,102 views 10532 24080 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:47:25,103 views 10532 24080 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:47:25,103 views 10532 24080 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:47:25,106 basehttp 10532 24080 "GET /accounts/admin/reports/export/?type=users&format=csv HTTP/1.1" 200 139
+INFO 2025-10-24 11:47:39,445 views 10532 24080 verify_token_auth called for path: /accounts/admin/reports/export/
+INFO 2025-10-24 11:47:39,446 views 10532 24080 Found auth_token in cookies: 1ibvZU0Q...
+INFO 2025-10-24 11:47:39,446 views 10532 24080 Looking up token: 1ibvZU0Q...
+INFO 2025-10-24 11:47:39,448 views 10532 24080 Valid custom token found for user: admin (role: admin)
+INFO 2025-10-24 11:47:39,448 views 10532 24080 User authenticated via cookie token: admin (role: admin)
+WARNING 2025-10-24 11:47:39,449 views 10532 24080 User role mismatch in cookies: token user admin vs cookie customer
+INFO 2025-10-24 11:47:39,452 basehttp 10532 24080 "GET /accounts/admin/reports/export/?type=tickets&format=csv HTTP/1.1" 200 77
+INFO 2025-10-24 11:47:48,038 views 10532 20280 verify_token_auth called for path: /accounts/admin/reports/
+INFO 2025-10-24 11:47:48,038 views 10532 20280 No auth_token found in cookies
+INFO 2025-10-24 11:47:48,038 views 10532 20280 No valid authentication found
+INFO 2025-10-24 11:47:48,038 basehttp 10532 20280 "GET /accounts/admin/reports/?id=3774767b-4e96-4818-9c26-57e209141599&vscodeBrowserReqId=1761295668034 HTTP/1.1" 302 0
+INFO 2025-10-24 11:47:48,041 basehttp 10532 20280 "GET /accounts/login/?next=admin-reports HTTP/1.1" 200 29096

@@ -65,7 +65,7 @@ def sanitize_input(input_string, max_length=255):
     if not input_string:
         return ""
     
-    # HTML karakterlerini escape et
+    # HTML karakterlerini escape et (sadece genel input'lar için)
     import html
     cleaned = html.escape(str(input_string))
     
@@ -75,6 +75,22 @@ def sanitize_input(input_string, max_length=255):
     
     # Boşlukları temizle
     cleaned = cleaned.strip()
+    
+    return cleaned
+
+def sanitize_username(username, max_length=150):
+    """
+    Username'leri temizle - HTML escape yapmadan
+    """
+    if not username:
+        return ""
+    
+    # Sadece string'e çevir ve boşlukları temizle
+    cleaned = str(username).strip()
+    
+    # Uzunluğu sınırla
+    if len(cleaned) > max_length:
+        cleaned = cleaned[:max_length]
     
     return cleaned
 

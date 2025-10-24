@@ -57,6 +57,7 @@ urlpatterns = [
     # Sistem ayarları
     path('admin/settings/', views.admin_settings_view, name='admin_settings'),
     path('admin/reports/', views.admin_reports_view, name='admin_reports'),
+    path('admin/reports/export/', views.export_report, name='export_report'),
     
     # ================================
     # Customer Management Pages
