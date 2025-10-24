@@ -35,6 +35,16 @@ class Command(BaseCommand):
             action='store_true',
             help='Clean up tokens and sessions',
         )
+        parser.add_argument(
+            '--start-server',
+            action='store_true',
+            help='Start Gunicorn production server',
+        )
+        parser.add_argument(
+            '--server-status',
+            action='store_true',
+            help='Check server status',
+        )
 
     def handle(self, *args, **options):
         self.stdout.write(self.style.SUCCESS('🚀 HelpDesk Alpha Production Manager'))
@@ -48,6 +58,10 @@ class Command(BaseCommand):
             self.create_admin()
         elif options['cleanup']:
             self.cleanup_system()
+        elif options['start_server']:
+            self.start_production_server()
+        elif options['server_status']:
+            self.check_server_status()
         else:
             self.show_help()
 
@@ -153,12 +167,86 @@ class Command(BaseCommand):
         
         self.stdout.write(self.style.SUCCESS('✅ System cleanup completed!'))
 
+    def start_production_server(self):
+        """Windows için Waitress production server başlat"""
+        self.stdout.write('🚀 Starting Waitress Production Server (Windows)...')
+        
+        import subprocess
+        import os
+        
+        # Waitress kurulu mu kontrol et
+        try:
+            import waitress
+        except ImportError:
+            self.stdout.write(self.style.ERROR('❌ Waitress not installed. Run: pip install waitress'))
+            return
+        
+        # Logs klasörü oluştur
+        logs_dir = settings.BASE_DIR / 'logs'
+        if not logs_dir.exists():
+            logs_dir.mkdir()
+            
+        self.stdout.write('📊 Server Info:')
+        self.stdout.write(f'   Host: 0.0.0.0:8000')
+        self.stdout.write(f'   Threads: 6 (Windows optimized)')
+        self.stdout.write(f'   Server: Waitress (Windows compatible)')
+        self.stdout.write('🔑 Admin: admin / alpha123!')
+        self.stdout.write('')
+        self.stdout.write('🛑 Stop server: Ctrl+C')
+        self.stdout.write('')
+        
+        # Waitress başlat
+        try:
+            os.chdir(settings.BASE_DIR)
+            subprocess.run(['python', 'production_server.py'])
+        except KeyboardInterrupt:
+            self.stdout.write(self.style.SUCCESS('\n🛑 Production server stopped.'))
+        except Exception as e:
+            self.stdout.write(self.style.ERROR(f'❌ Server error: {e}'))
+
+    def check_server_status(self):
+        """Server durumunu kontrol et"""
+        self.stdout.write('🔍 Checking server status...')
+        
+        import socket
+        import requests
+        from urllib.parse import urljoin
+        
+        # Port kontrolü
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        result = sock.connect_ex(('localhost', 8000))
+        sock.close()
+        
+        if result == 0:
+            self.stdout.write(self.style.SUCCESS('✅ Port 8000 is open'))
+            
+            # HTTP isteği test et
+            try:
+                response = requests.get('http://localhost:8000/', timeout=5)
+                self.stdout.write(f'✅ HTTP Response: {response.status_code}')
+                if response.status_code == 200:
+                    self.stdout.write(self.style.SUCCESS('🌐 Server is running successfully!'))
+                    self.stdout.write('📍 Access: http://localhost:8000')
+                else:
+                    self.stdout.write(self.style.WARNING(f'⚠️  Server responding but status: {response.status_code}'))
+            except requests.exceptions.RequestException as e:
+                self.stdout.write(self.style.ERROR(f'❌ HTTP request failed: {e}'))
+        else:
+            self.stdout.write(self.style.ERROR('❌ Port 8000 is closed - server not running'))
+            self.stdout.write('💡 Start server with: python manage.py alpha_production --start-server')
+
+        self.stdout.write(self.style.SUCCESS('✅ System cleanup completed!'))
+
     def show_help(self):
         """Yardım göster"""
         self.stdout.write('Available commands:')
-        self.stdout.write('  --setup      : Run alpha production setup')
-        self.stdout.write('  --status     : Show system status')
+        self.stdout.write('  --setup        : Run alpha production setup')
+        self.stdout.write('  --status       : Show system status')
         self.stdout.write('  --create-admin : Create admin user')
-        self.stdout.write('  --cleanup    : Clean up system')
+        self.stdout.write('  --cleanup      : Clean up system')
+        self.stdout.write('  --start-server : Start Gunicorn production server')
+        self.stdout.write('  --server-status: Check if server is running')
         self.stdout.write('')
-        self.stdout.write('Example: python manage.py alpha_production --setup')
+        self.stdout.write('Examples:')
+        self.stdout.write('  python manage.py alpha_production --setup')
+        self.stdout.write('  python manage.py alpha_production --start-server')

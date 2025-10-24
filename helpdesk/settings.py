@@ -44,7 +44,7 @@ SESSION_COOKIE_SECURE = False  # Alpha production'da localhost için kapalı
 CSRF_COOKIE_SECURE = False  # Alpha production'da localhost için kapalı
 
 # ============================================================
-# UYGULAMALAR
+# UYGULAMALAR - ALPHA PRODUCTION
 # ============================================================
 
 INSTALLED_APPS = [
@@ -55,15 +55,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Üçüncü parti
-
+    # Üçüncü parti - Production optimized
     'rest_framework',
     'rest_framework.authtoken',
     'widget_tweaks',
     'crispy_forms',
 
     # Yerel uygulamalar
-    
     'tickets',
     'accounts',
 ]
@@ -72,13 +70,13 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # ============================================================
-# MIDDLEWARE
+# MIDDLEWARE - ALPHA PRODUCTION
 # ============================================================
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Static files - production
     'accounts.security.SecurityMiddleware',  # Custom security middleware
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -89,11 +87,16 @@ MIDDLEWARE = [
 ]
 
 # ============================================================
-# URL / WSGI
+# URL / WSGI - ALPHA PRODUCTION
 # ============================================================
 
 ROOT_URLCONF = 'helpdesk.urls'
 WSGI_APPLICATION = 'helpdesk.wsgi.application'
+
+# Gunicorn production server settings
+ALLOWED_HOSTS.extend(['0.0.0.0'])  # Gunicorn için
+USE_TZ = True
+TIME_ZONE = 'Europe/Istanbul'
 
 # ============================================================
 # VERİTABANI VE CACHE
