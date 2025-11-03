@@ -1,0 +1,487 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}{{ panel_title }} - HelpDesk{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
+    <li class="breadcrumb-item"><a href="/accounts/admin-panel/">Admin Panel</a></li>
+    <li class="breadcrumb-item active">Cache Yönetimi</li>
+</ol>
+{% endblock %}
+
+{% block page_title %}
+<i class="fas fa-memory text-info"></i> Cache Yönetimi
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Cache Durumu ve İşlemler -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-memory text-info me-2"></i>
+                        Cache Durumu ve İşlemler
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Cache İstatistikleri -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body text-center">
+                                    <h4 class="mb-1">2.5 GB</h4>
+                                    <small>Toplam Cache</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body text-center">
+                                    <h4 class="mb-1">1,543</h4>
+                                    <small>Cache Anahtarları</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body text-center">
+                                    <h4 class="mb-1">98.5%</h4>
+                                    <small>Hit Oranı</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white">
+                                <div class="card-body text-center">
+                                    <h4 class="mb-1">24h</h4>
+                                    <small>Ortalama TTL</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cache İşlemleri -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Hızlı İşlemler</h6>
+                            <form method="post" class="mb-3">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="clear_all">
+                                <button type="submit" class="btn btn-danger btn-sm me-2" 
+                                        onclick="return confirm('Tüm cache temizlensin mi?')">
+                                    <i class="fas fa-trash"></i> Tüm Cache Temizle
+                                </button>
+                            </form>
+                            
+                            <form method="post" class="mb-3">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="clear_expired">
+                                <button type="submit" class="btn btn-warning btn-sm me-2">
+                                    <i class="fas fa-clock"></i> Süresi Dolmuş Cache Temizle
+                                </button>
+                            </form>
+                            
+                            <form method="post" class="mb-3">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="flush_db">
+                                <button type="submit" class="btn btn-info btn-sm me-2"
+                                        onclick="return confirm('Database cache temizlensin mi?')">
+                                    <i class="fas fa-database"></i> DB Cache Temizle
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h6>Özel Cache İşlemleri</h6>
+                            <form method="post" class="mb-3">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="clear_pattern">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="pattern" 
+                                           placeholder="Cache pattern (örn: views.*, sessions.*)">
+                                    <button type="submit" class="btn btn-outline-primary">
+                                        <i class="fas fa-search"></i> Pattern Temizle
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <form method="post" class="mb-3">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="clear_key">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="cache_key" 
+                                           placeholder="Belirli cache anahtarı">
+                                    <button type="submit" class="btn btn-outline-danger">
+                                        <i class="fas fa-key"></i> Anahtar Temizle
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Cache Anahtarları Listesi -->
+            <div class="card mt-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">
+                        <i class="fas fa-list text-primary me-2"></i>
+                        Cache Anahtarları
+                    </h6>
+                    <button class="btn btn-sm btn-outline-primary" onclick="refreshCacheList()">
+                        <i class="fas fa-refresh"></i> Yenile
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="cache_search" 
+                               placeholder="Cache anahtarı ara...">
+                    </div>
+                    
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        <table class="table table-striped table-sm">
+                            <thead class="sticky-top bg-light">
+                                <tr>
+                                    <th>Anahtar</th>
+                                    <th>Boyut</th>
+                                    <th>TTL</th>
+                                    <th>Son Erişim</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cache_list">
+                                <tr>
+                                    <td><code>views.decorators.cache.cache_page.12345</code></td>
+                                    <td>2.5 KB</td>
+                                    <td>23h 45m</td>
+                                    <td>2 dakika önce</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-danger" 
+                                                onclick="deleteCache('views.decorators.cache.cache_page.12345')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-info" 
+                                                onclick="viewCache('views.decorators.cache.cache_page.12345')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>sessions.cached_db.123abc</code></td>
+                                    <td>1.2 KB</td>
+                                    <td>2h 15m</td>
+                                    <td>15 dakika önce</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-danger" 
+                                                onclick="deleteCache('sessions.cached_db.123abc')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-info" 
+                                                onclick="viewCache('sessions.cached_db.123abc')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>template.cache.ticket_list</code></td>
+                                    <td>5.8 KB</td>
+                                    <td>1h 30m</td>
+                                    <td>5 dakika önce</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-danger" 
+                                                onclick="deleteCache('template.cache.ticket_list')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-info" 
+                                                onclick="viewCache('template.cache.ticket_list')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cache Ayarları ve Performans -->
+        <div class="col-lg-4">
+            <!-- Cache Ayarları -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-cog text-secondary me-2"></i>
+                        Cache Ayarları
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="update_settings">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Varsayılan TTL (saniye)</label>
+                            <input type="number" class="form-control" name="default_ttl" value="3600">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Maksimum Cache Boyutu (MB)</label>
+                            <input type="number" class="form-control" name="max_size" value="1024">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="enable_cache" name="enable_cache" checked>
+                                <label class="form-check-label" for="enable_cache">
+                                    Cache Aktif
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="enable_compression" name="enable_compression" checked>
+                                <label class="form-check-label" for="enable_compression">
+                                    Sıkıştırma Aktif
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="fas fa-save"></i> Ayarları Kaydet
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Cache Performansı -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-line text-success me-2"></i>
+                        Cache Performansı
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="border-end">
+                                <h5 class="text-success">12,543</h5>
+                                <small class="text-muted">Hits</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <h5 class="text-danger">187</h5>
+                            <small class="text-muted">Misses</small>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="performance-metric">
+                        <div class="d-flex justify-content-between">
+                            <span>Ortalama Yanıt Süresi</span>
+                            <span class="text-success">2.3ms</span>
+                        </div>
+                        <div class="progress mt-1" style="height: 5px;">
+                            <div class="progress-bar bg-success" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="performance-metric mt-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Bellek Kullanımı</span>
+                            <span class="text-warning">65%</span>
+                        </div>
+                        <div class="progress mt-1" style="height: 5px;">
+                            <div class="progress-bar bg-warning" style="width: 65%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="performance-metric mt-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Cache Efficiency</span>
+                            <span class="text-info">98.5%</span>
+                        </div>
+                        <div class="progress mt-1" style="height: 5px;">
+                            <div class="progress-bar bg-info" style="width: 98%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Cache Bilgilendirme -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-info-circle text-info me-2"></i>
+                        Cache Bilgileri
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <small>
+                            <strong>Cache Türleri:</strong><br>
+                            • <strong>views.*</strong> - Sayfa cache'leri<br>
+                            • <strong>sessions.*</strong> - Oturum cache'leri<br>
+                            • <strong>template.*</strong> - Template cache'leri<br>
+                            • <strong>db.*</strong> - Veritabanı cache'leri
+                        </small>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <small>
+                            <strong>Önemli:</strong> Tüm cache temizleme işlemi sistem performansını geçici olarak etkileyebilir.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cache Görüntüleme Modal -->
+<div class="modal fade" id="cacheViewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cache İçeriği</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Anahtar:</label>
+                    <code id="cache_key_display"></code>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">İçerik:</label>
+                    <pre id="cache_content_display" class="bg-light p-3" style="max-height: 300px; overflow-y: auto;"></pre>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.performance-metric {
+    margin-bottom: 1rem;
+}
+.sticky-top {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+</style>
+
+<script>
+// Cache arama fonksiyonu
+document.getElementById('cache_search').addEventListener('input', function() {
+    const filter = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#cache_list tr');
+    
+    rows.forEach(row => {
+        const key = row.cells[0].textContent.toLowerCase();
+        row.style.display = key.includes(filter) ? '' : 'none';
+    });
+});
+
+// Cache silme fonksiyonu
+function deleteCache(key) {
+    if (confirm(`'${key}' anahtarı silinsin mi?`)) {
+        fetch(window.location.href, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: `action=delete_key&cache_key=${encodeURIComponent(key)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('Cache anahtarı silindi', 'success');
+                refreshCacheList();
+            } else {
+                showNotification('Hata: ' + data.error, 'error');
+            }
+        })
+        .catch(error => {
+            showNotification('Bir hata oluştu', 'error');
+        });
+    }
+}
+
+// Cache görüntüleme fonksiyonu
+function viewCache(key) {
+    fetch(`/api/cache/view/?key=${encodeURIComponent(key)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('cache_key_display').textContent = key;
+                document.getElementById('cache_content_display').textContent = JSON.stringify(data.content, null, 2);
+                new bootstrap.Modal(document.getElementById('cacheViewModal')).show();
+            } else {
+                showNotification('Cache içeriği alınamadı', 'error');
+            }
+        })
+        .catch(error => {
+            showNotification('Bir hata oluştu', 'error');
+        });
+}
+
+// Cache listesi yenileme
+function refreshCacheList() {
+    showNotification('Cache listesi yenileniyor...', 'info');
+    // AJAX ile cache listesini yenile
+    location.reload();
+}
+
+// Bildirim gösterme fonksiyonu
+function showNotification(message, type) {
+    const alertClass = type === 'success' ? 'alert-success' : 
+                      type === 'error' ? 'alert-danger' : 'alert-info';
+    
+    const notification = `
+        <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 9999;">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', notification);
+    
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            if (alert.textContent.includes(message.substring(0, 20))) {
+                alert.remove();
+            }
+        });
+    }, 5000);
+}
+
+// Sayfa yüklendiğinde cache istatistiklerini güncelle
+document.addEventListener('DOMContentLoaded', function() {
+    // Cache istatistiklerini periyodik olarak güncelle
+    setInterval(function() {
+        fetch('/api/cache/stats/')
+            .then(response => response.json())
+            .then(data => {
+                // İstatistikleri güncelle
+                console.log('Cache stats updated:', data);
+            })
+            .catch(error => {
+                console.error('Cache stats update failed:', error);
+            });
+    }, 30000); // 30 saniyede bir güncelle
+});
+</script>
+{% endblock %}

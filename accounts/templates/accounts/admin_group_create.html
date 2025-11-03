@@ -1,7 +1,6 @@
 {% extends 'tickets/base.html' %}
 
-{% block title %}{{ page_title }}{% endblock %}
-{% block page_title %}{{ page_title }}{% endblock %}
+{% block title %}Yeni Grup Oluştur - HelpDesk{% endblock %}
 
 {% block breadcrumb %}
 <nav aria-label="breadcrumb" class="mb-4">
@@ -28,79 +27,47 @@
 
 {% block content %}
 <div class="container-fluid">
-  <!-- Page Header -->
   <div class="row mb-4">
-    <div class="col-12">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <h1 class="h3 mb-0">
-            <i class="bi bi-collection text-info me-2"></i>Yeni Grup Oluştur
-          </h1>
-          <p class="text-muted mb-0">Sisteme yeni kullanıcı grubu ekleyin</p>
-        </div>
-        <div>
-          <a href="/accounts/admin/groups/" class="btn btn-secondary">
-            <i class="bi bi-arrow-left me-2"></i>Geri Dön
-          </a>
-        </div>
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <div>
+        <h1 class="h3 mb-0"><i class="bi bi-collection text-info me-2"></i>Yeni Grup Oluştur</h1>
+        <p class="text-muted mb-0">Sisteme yeni kullanıcı grubu ekleyin</p>
+      </div>
+      <div>
+        <a href="/accounts/admin/groups/" class="btn btn-secondary"><i class="bi bi-arrow-left me-2"></i>Geri Dön</a>
       </div>
     </div>
   </div>
 
-  <!-- Error Messages -->
   {% if error %}
     <div class="row mb-4">
       <div class="col-12">
-        <div class="alert alert-danger" role="alert">
-          <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
-        </div>
+        <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>{{ error }}</div>
       </div>
     </div>
   {% endif %}
 
-  <!-- Group Creation Form -->
   <div class="row">
     <div class="col-lg-8">
       <div class="card border-0 shadow-sm">
-        <div class="card-header bg-transparent border-0 py-3">
-          <h5 class="mb-0">
-            <i class="bi bi-collection me-2"></i>Grup Bilgileri
-          </h5>
+        <div class="card-header bg-transparent py-3">
+          <h5 class="mb-0"><i class="bi bi-collection me-2"></i>Grup Bilgileri</h5>
         </div>
         <div class="card-body">
           <form method="post" id="groupCreateForm" novalidate>
             {% csrf_token %}
-            
-            <!-- Group Name -->
             <div class="mb-4">
-              <label for="name" class="form-label">
-                <i class="bi bi-collection me-1"></i>Grup Adı *
-              </label>
-              <input type="text" 
-                     class="form-control" 
-                     id="name" 
-                     name="name" 
-                     required
-                     placeholder="Grup adını girin"
-                     maxlength="150">
-              <div class="invalid-feedback">
-                Grup adı gereklidir.
-              </div>
+              <label for="name" class="form-label"><i class="bi bi-collection me-1"></i>Grup Adı *</label>
+              <input type="text" class="form-control" id="name" name="name" required placeholder="Grup adını girin" maxlength="150">
+              <div class="invalid-feedback">Grup adı gereklidir.</div>
               <small class="text-muted">Grup adı benzersiz olmalıdır. Örnek: "IT Departmanı", "Muhasebe", "Satış Ekibi"</small>
             </div>
 
-            <!-- Form Actions -->
             <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+              <small class="text-muted">* işaretli alanlar zorunludur</small>
               <div>
-                <small class="text-muted">* işaretli alanlar zorunludur</small>
-              </div>
-              <div>
-                <button type="submit" class="btn btn-primary">
-                  <i class="bi bi-plus-circle me-2"></i>Grup Oluştur
-                </button>
-                <a href="/accounts/admin/groups/" class="btn btn-secondary ms-2">
-                  <i class="bi bi-x-circle me-2"></i>İptal
-                </a>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Grup Oluştur</button>
+                <a href="/accounts/admin/groups/" class="btn btn-secondary ms-2"><i class="bi bi-x-circle me-2"></i>İptal</a>
               </div>
             </div>
           </form>
@@ -108,18 +75,13 @@
       </div>
     </div>
     
-    <!-- Info Panel -->
     <div class="col-lg-4">
       <div class="card border-0 shadow-sm">
-        <div class="card-header bg-transparent border-0 py-3">
-          <h6 class="mb-0">
-            <i class="bi bi-info-circle me-2"></i>Grup Sistemi
-          </h6>
+        <div class="card-header bg-transparent py-3">
+          <h6 class="mb-0"><i class="bi bi-info-circle me-2"></i>Grup Sistemi</h6>
         </div>
         <div class="card-body">
-          <p class="small text-muted mb-3">
-            <strong>Gruplar nasıl çalışır?</strong>
-          </p>
+          <p class="small text-muted mb-3"><strong>Gruplar nasıl çalışır?</strong></p>
           <ul class="small text-muted mb-0">
             <li>Kullanıcılar bir veya birden fazla gruba atanabilir</li>
             <li>Normal kullanıcılar sadece kendi gruplarındaki talepleri görür</li>
@@ -128,13 +90,10 @@
           </ul>
         </div>
       </div>
-      
-      <!-- Examples -->
+
       <div class="card border-0 shadow-sm mt-3">
-        <div class="card-header bg-transparent border-0 py-3">
-          <h6 class="mb-0">
-            <i class="bi bi-lightbulb me-2"></i>Örnek Grup Adları
-          </h6>
+        <div class="card-header bg-transparent py-3">
+          <h6 class="mb-0"><i class="bi bi-lightbulb me-2"></i>Örnek Grup Adları</h6>
         </div>
         <div class="card-body">
           <div class="d-flex flex-wrap gap-2">
@@ -148,23 +107,15 @@
         </div>
       </div>
 
-      <!-- Preview -->
       <div class="card border-0 shadow-sm mt-3">
-        <div class="card-header bg-transparent border-0 py-3">
-          <h6 class="mb-0">
-            <i class="bi bi-eye me-2"></i>Önizleme
-          </h6>
+        <div class="card-header bg-transparent py-3">
+          <h6 class="mb-0"><i class="bi bi-eye me-2"></i>Önizleme</h6>
         </div>
-        <div class="card-body">
-          <div class="d-flex align-items-center">
-            <div class="avatar-circle me-3">
-              <i class="bi bi-collection text-info"></i>
-            </div>
-            <div>
-              <strong id="previewName">Grup Adı</strong>
-              <br>
-              <small class="text-muted">0 kullanıcı</small>
-            </div>
+        <div class="card-body d-flex align-items-center">
+          <div class="avatar-circle me-3"><i class="bi bi-collection text-info"></i></div>
+          <div>
+            <strong id="previewName">Grup Adı</strong><br>
+            <small class="text-muted">0 kullanıcı</small>
           </div>
         </div>
       </div>
@@ -173,43 +124,13 @@
 </div>
 
 <style>
-.form-label {
-  font-weight: 500;
-  color: var(--text-color);
-}
-
-.form-control:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
-}
-
-.invalid-feedback {
-  display: block;
-}
-
-.is-invalid {
-  border-color: var(--danger-color);
-}
-
-.avatar-circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: var(--surface-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-}
-
-.badge {
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.badge:hover {
-  transform: scale(1.05);
-}
+.form-label { font-weight: 500; color: var(--text-color); }
+.form-control:focus { border-color: var(--primary-color); box-shadow: 0 0 0 0.2rem rgba(52,152,219,0.25); }
+.invalid-feedback { display: block; }
+.is-invalid { border-color: var(--danger-color); }
+.avatar-circle { width: 40px; height: 40px; border-radius: 50%; background-color: var(--surface-color); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+.badge { cursor: pointer; transition: all 0.2s ease; }
+.badge:hover { transform: scale(1.05); }
 </style>
 
 <script>
@@ -217,14 +138,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('groupCreateForm');
     const nameInput = document.getElementById('name');
     const previewName = document.getElementById('previewName');
-    
-    // Real-time preview
+
     nameInput.addEventListener('input', function() {
-        const value = this.value.trim();
-        previewName.textContent = value || 'Grup Adı';
+        previewName.textContent = this.value.trim() || 'Grup Adı';
+        if(this.classList.contains('is-invalid')) {
+            const val = this.value.trim();
+            if(val && val.length>=2 && /^[a-zA-ZığüşöçİĞÜŞÖÇ0-9\s\-_]+$/.test(val)) this.classList.remove('is-invalid');
+        }
     });
-    
-    // Example badge clicks
+
     document.querySelectorAll('.badge').forEach(badge => {
         badge.addEventListener('click', function() {
             nameInput.value = this.textContent;
@@ -232,57 +154,24 @@ document.addEventListener('DOMContentLoaded', function() {
             nameInput.focus();
         });
     });
-    
-    // Form validation
+
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-        
         let isValid = true;
-        
-        // Clear previous validation
-        form.querySelectorAll('.is-invalid').forEach(field => {
-            field.classList.remove('is-invalid');
-        });
-        
-        // Validate group name
-        if (!nameInput.value.trim()) {
-            nameInput.classList.add('is-invalid');
-            nameInput.nextElementSibling.textContent = 'Grup adı gereklidir.';
-            isValid = false;
-        } else if (nameInput.value.trim().length < 2) {
-            nameInput.classList.add('is-invalid');
-            nameInput.nextElementSibling.textContent = 'Grup adı en az 2 karakter olmalıdır.';
-            isValid = false;
-        } else if (!nameInput.value.match(/^[a-zA-ZığüşöçİĞÜŞÖÇ0-9\s\-_]+$/)) {
-            nameInput.classList.add('is-invalid');
-            nameInput.nextElementSibling.textContent = 'Grup adı sadece harf, rakam, boşluk, - ve _ içerebilir.';
-            isValid = false;
-        }
-        
-        if (isValid) {
-            // Show loading state
+        nameInput.classList.remove('is-invalid');
+
+        const val = nameInput.value.trim();
+        if(!val) { nameInput.classList.add('is-invalid'); isValid=false; }
+        else if(val.length<2) { nameInput.classList.add('is-invalid'); isValid=false; }
+        else if(!/^[a-zA-ZığüşöçİĞÜŞÖÇ0-9\s\-_]+$/.test(val)) { nameInput.classList.add('is-invalid'); isValid=false; }
+
+        if(isValid) {
             const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Oluşturuluyor...';
             submitBtn.disabled = true;
-            
-            // Submit form
             form.submit();
-        } else {
-            nameInput.focus();
-        }
-    });
-    
-    // Real-time validation
-    nameInput.addEventListener('input', function() {
-        if (this.classList.contains('is-invalid')) {
-            const value = this.value.trim();
-            if (value && value.length >= 2 && value.match(/^[a-zA-ZığüşöçİĞÜŞÖÇ0-9\s\-_]+$/)) {
-                this.classList.remove('is-invalid');
-            }
-        }
+        } else nameInput.focus();
     });
 });
 </script>
-
 {% endblock %}

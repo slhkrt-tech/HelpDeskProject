@@ -1,0 +1,325 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}{{ panel_title }} - HelpDesk{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
+    <li class="breadcrumb-item"><a href="/accounts/admin-panel/">Admin Panel</a></li>
+    <li class="breadcrumb-item active">Bildirim Yönetimi</li>
+</ol>
+{% endblock %}
+
+{% block page_title %}
+<i class="fas fa-bell text-warning"></i> Bildirim Yönetimi
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bell text-warning me-2"></i>
+                        Yeni Bildirim Gönder
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label class="form-label">Alıcılar *</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="recipient_type" id="all_users" value="all" checked>
+                                        <label class="form-check-label" for="all_users">
+                                            <i class="fas fa-users me-2"></i>Tüm Kullanıcılar
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="recipient_type" id="role_based" value="role">
+                                        <label class="form-check-label" for="role_based">
+                                            <i class="fas fa-user-tag me-2"></i>Role Göre
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="recipient_type" id="specific_users" value="specific">
+                                        <label class="form-check-label" for="specific_users">
+                                            <i class="fas fa-user-check me-2"></i>Belirli Kullanıcılar
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div id="role_selection" style="display: none;">
+                                        <label class="form-label">Role Seçin</label>
+                                        <select class="form-select" name="selected_role">
+                                            <option value="admin">Admin</option>
+                                            <option value="support">Support</option>
+                                            <option value="customer">Customer</option>
+                                        </select>
+                                    </div>
+                                    <div id="user_selection" style="display: none;">
+                                        <label class="form-label">Kullanıcı Seçin</label>
+                                        <select class="form-select" name="selected_users" multiple>
+                                            <!-- Kullanıcılar buraya dinamik olarak eklenecek -->
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="title" class="form-label">Bildirim Başlığı *</label>
+                            <input type="text" class="form-control" id="title" name="title" required
+                                   placeholder="Bildirim başlığını yazın...">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="message" class="form-label">Mesaj *</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" required
+                                      placeholder="Bildirim mesajını yazın..."></textarea>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">Bildirim Türü</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="notification_type" id="info" value="info" checked>
+                                        <label class="form-check-label" for="info">
+                                            <i class="fas fa-info-circle text-info me-2"></i>Bilgi
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="notification_type" id="warning" value="warning">
+                                        <label class="form-check-label" for="warning">
+                                            <i class="fas fa-exclamation-triangle text-warning me-2"></i>Uyarı
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="notification_type" id="success" value="success">
+                                        <label class="form-check-label" for="success">
+                                            <i class="fas fa-check-circle text-success me-2"></i>Başarı
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="notification_type" id="error" value="error">
+                                        <label class="form-check-label" for="error">
+                                            <i class="fas fa-times-circle text-danger me-2"></i>Hata
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">Gönderim Seçenekleri</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="send_email" name="send_email">
+                                <label class="form-check-label" for="send_email">
+                                    <i class="fas fa-envelope me-2"></i>E-posta olarak da gönder
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="send_immediately" name="send_immediately" checked>
+                                <label class="form-check-label" for="send_immediately">
+                                    <i class="fas fa-rocket me-2"></i>Hemen gönder
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-paper-plane"></i> Bildirim Gönder
+                            </button>
+                            <a href="/accounts/admin-panel/" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Geri Dön
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Bildirim Önizleme -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-eye text-primary me-2"></i>
+                        Önizleme
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div id="notification_preview" class="alert alert-info">
+                        <div class="fw-bold" id="preview_title">Bildirim Başlığı</div>
+                        <div id="preview_message">Bildirim mesajı burada görünecek...</div>
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <i class="fas fa-user me-1"></i>Admin • 
+                                <i class="fas fa-clock me-1"></i>Şimdi
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gönderim İstatistikleri -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-bar text-success me-2"></i>
+                        Gönderim İstatistikleri
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <div class="stat-item mb-3">
+                            <div class="stat-number text-primary">127</div>
+                            <div class="stat-label">Toplam Gönderim</div>
+                        </div>
+                        <div class="stat-item mb-3">
+                            <div class="stat-number text-success">98%</div>
+                            <div class="stat-label">Başarı Oranı</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number text-warning">3</div>
+                            <div class="stat-label">Bu Hafta</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Son Bildirimler -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-history text-info me-2"></i>
+                        Son Bildirimler
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item border-0 px-0">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="mb-1">Sistem Bakımı</h6>
+                                    <p class="mb-1 small text-muted">Sistem bakım duyurusu...</p>
+                                    <small class="text-muted">2 gün önce</small>
+                                </div>
+                                <span class="badge bg-warning">127 kullanıcı</span>
+                            </div>
+                        </div>
+                        <div class="list-group-item border-0 px-0">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="mb-1">Güncelleme</h6>
+                                    <p class="mb-1 small text-muted">Yeni özellikler eklendi...</p>
+                                    <small class="text-muted">1 hafta önce</small>
+                                </div>
+                                <span class="badge bg-info">45 kullanıcı</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.stat-item {
+    padding: 0.5rem 0;
+}
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+}
+.stat-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+</style>
+
+<script>
+// Recipient type değiştiğinde
+document.querySelectorAll('input[name="recipient_type"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.getElementById('role_selection').style.display = this.value === 'role' ? 'block' : 'none';
+        document.getElementById('user_selection').style.display = this.value === 'specific' ? 'block' : 'none';
+    });
+});
+
+// Bildirim türü değiştiğinde önizlemeyi güncelle
+document.querySelectorAll('input[name="notification_type"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const preview = document.getElementById('notification_preview');
+        preview.className = `alert alert-${this.value}`;
+    });
+});
+
+// Başlık ve mesaj değiştiğinde önizlemeyi güncelle
+document.getElementById('title').addEventListener('input', function() {
+    document.getElementById('preview_title').textContent = this.value || 'Bildirim Başlığı';
+});
+
+document.getElementById('message').addEventListener('input', function() {
+    document.getElementById('preview_message').textContent = this.value || 'Bildirim mesajı burada görünecek...';
+});
+
+// Form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const title = document.getElementById('title').value.trim();
+    const message = document.getElementById('message').value.trim();
+    
+    if (!title) {
+        e.preventDefault();
+        showNotification('Bildirim başlığı gereklidir!', 'error');
+        return;
+    }
+    
+    if (!message) {
+        e.preventDefault();
+        showNotification('Bildirim mesajı gereklidir!', 'error');
+        return;
+    }
+    
+    if (confirm('Bildirimi göndermek istediğinizden emin misiniz?')) {
+        showNotification('Bildirim gönderiliyor...', 'info');
+    } else {
+        e.preventDefault();
+    }
+});
+
+function showNotification(message, type) {
+    const alertClass = type === 'success' ? 'alert-success' : 
+                      type === 'error' ? 'alert-danger' : 'alert-info';
+    
+    const notification = `
+        <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 9999;">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', notification);
+    
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            if (alert.textContent.includes(message.substring(0, 20))) {
+                alert.remove();
+            }
+        });
+    }, 5000);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,295 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}{{ panel_title }} - HelpDesk{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
+    <li class="breadcrumb-item"><a href="/tickets/">Ticket'lar</a></li>
+    <li class="breadcrumb-item active">Ticket Yönetimi</li>
+</ol>
+{% endblock %}
+
+{% block page_title %}
+<i class="fas fa-ticket-alt text-primary"></i> Ticket Yönetimi
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- İstatistik Kartları -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ ticket_stats.total_tickets }}</h4>
+                            <p class="mb-0">Toplam Ticket</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-ticket-alt fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ ticket_stats.open_tickets }}</h4>
+                            <p class="mb-0">Açık Ticket'lar</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-folder-open fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ ticket_stats.in_progress_tickets }}</h4>
+                            <p class="mb-0">İşlemde</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-spinner fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ ticket_stats.closed_tickets }}</h4>
+                            <p class="mb-0">Kapalı</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Son Ticket'lar -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list text-primary me-2"></i>
+                        Son Ticket'lar
+                    </h5>
+                    <a href="/tickets/" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-eye"></i> Tümünü Gör
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if recent_tickets %}
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Başlık</th>
+                                        <th>Oluşturan</th>
+                                        <th>Durum</th>
+                                        <th>Öncelik</th>
+                                        <th>Tarih</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ticket in recent_tickets %}
+                                    <tr>
+                                        <td>
+                                            <a href="/tickets/{{ ticket.id }}/" class="text-decoration-none">
+                                                #{{ ticket.ticket_number|default:ticket.id }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="/tickets/{{ ticket.id }}/" class="text-decoration-none">
+                                                {{ ticket.title|truncatechars:40 }}
+                                            </a>
+                                        </td>
+                                        <td>{{ ticket.user.get_full_name|default:ticket.user.username }}</td>
+                                        <td>
+                                            {% if ticket.status == 'open' %}
+                                                <span class="badge bg-success">Açık</span>
+                                            {% elif ticket.status == 'in_progress' %}
+                                                <span class="badge bg-warning">İşlemde</span>
+                                            {% elif ticket.status == 'closed' %}
+                                                <span class="badge bg-secondary">Kapalı</span>
+                                            {% else %}
+                                                <span class="badge bg-info">{{ ticket.get_status_display }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if ticket.priority == 'high' %}
+                                                <span class="badge bg-danger">Yüksek</span>
+                                            {% elif ticket.priority == 'medium' %}
+                                                <span class="badge bg-warning">Orta</span>
+                                            {% else %}
+                                                <span class="badge bg-info">Düşük</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ ticket.created_at|date:"d.m.Y H:i" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-ticket-alt fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">Henüz ticket bulunamadı</h5>
+                            <p class="text-muted">Yeni ticket'lar oluşturuldukça burada görünecek.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Grafikler ve İstatistikler -->
+        <div class="col-md-4">
+            <!-- Öncelik Dağılımı -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-pie text-warning me-2"></i>
+                        Öncelik Dağılımı
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% for priority in ticket_stats.tickets_by_priority %}
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>
+                            {% if priority.priority == 'high' %}
+                                <i class="fas fa-circle text-danger me-1"></i>Yüksek
+                            {% elif priority.priority == 'medium' %}
+                                <i class="fas fa-circle text-warning me-1"></i>Orta
+                            {% else %}
+                                <i class="fas fa-circle text-info me-1"></i>Düşük
+                            {% endif %}
+                        </span>
+                        <span class="badge bg-secondary">{{ priority.count }}</span>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted text-center">Veri bulunamadı</p>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Kategori Dağılımı -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-tags text-success me-2"></i>
+                        Kategori Dağılımı
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% for category in ticket_stats.tickets_by_category %}
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>
+                            <i class="fas fa-tag text-primary me-1"></i>
+                            {{ category.category__name|default:"Kategori Yok" }}
+                        </span>
+                        <span class="badge bg-secondary">{{ category.count }}</span>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted text-center">Veri bulunamadı</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Hızlı İşlemler -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt text-warning me-2"></i>
+                        Hızlı İşlemler
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="/tickets/create/" class="btn btn-outline-primary w-100 mb-2">
+                                <i class="fas fa-plus me-2"></i>
+                                Yeni Ticket
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/tickets/categories/" class="btn btn-outline-success w-100 mb-2">
+                                <i class="fas fa-tags me-2"></i>
+                                Kategoriler
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-outline-info w-100 mb-2" onclick="exportTickets()">
+                                <i class="fas fa-download me-2"></i>
+                                Dışa Aktar
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-outline-warning w-100 mb-2" onclick="generateReport()">
+                                <i class="fas fa-chart-bar me-2"></i>
+                                Rapor Oluştur
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function exportTickets() {
+    showNotification('Ticket dışa aktarma özelliği yakında eklenecek!', 'info');
+}
+
+function generateReport() {
+    showNotification('Rapor oluşturma özelliği yakında eklenecek!', 'info');
+}
+
+function showNotification(message, type) {
+    const alertClass = type === 'success' ? 'alert-success' : 
+                      type === 'error' ? 'alert-danger' : 'alert-info';
+    
+    const notification = `
+        <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 9999;">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', notification);
+    
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            if (alert.textContent.includes(message.substring(0, 20))) {
+                alert.remove();
+            }
+        });
+    }, 5000);
+}
+</script>
+{% endblock %}

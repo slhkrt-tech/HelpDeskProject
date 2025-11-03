@@ -1,664 +1,700 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" data-theme="light">
 <head>
-  {% load static %}
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Yardım Masası{% endblock %}</title>
   
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
-  <link rel="shortcut icon" href="{% static 'favicon.svg' %}">
-
-  <!-- Google Fonts - Mulish -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-
   <!-- Bootstrap CSS -->
-   
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   
   <!-- Bootstrap Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-
-  <!-- Tema CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+  
+  <!-- Modern FontAwesome Icons with fallback -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" 
+        integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  
+  <!-- Secondary FontAwesome fallback -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.0/css/all.css" crossorigin="anonymous">
+  
+  <!-- Tabler Icons (Modern alternative) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@2.44.0/tabler-icons.min.css">
+  
+  <!-- Local fallback for icons -->
+  <style>
+    /* Fallback CSS icons if FontAwesome fails to load */
+    .fas, .far, .fab, .fal, .fad {
+      font-family: 'Font Awesome 6 Free', 'Font Awesome 6 Pro', Arial, sans-serif;
+    }
+    
+    /* Modern minimal icon fallbacks */
+    .fa-home:before, .fas.fa-home:before { content: "⌂"; font-family: Arial; }
+    .fa-ticket-alt:before, .fas.fa-ticket-alt:before { content: "◈"; font-family: Arial; }
+    .fa-user:before, .fas.fa-user:before { content: "●"; font-family: Arial; }
+    .fa-user-alt:before, .fas.fa-user-alt:before { content: "●"; font-family: Arial; }
+    .fa-users:before, .fas.fa-users:before { content: "●●"; font-family: Arial; }
+    .fa-sign-in-alt:before, .fas.fa-sign-in-alt:before { content: "→"; font-family: Arial; }
+    .fa-sign-out-alt:before, .fas.fa-sign-out-alt:before { content: "←"; font-family: Arial; }
+    .fa-user-plus:before, .fas.fa-user-plus:before { content: "●+"; font-family: Arial; }
+    .fa-cog:before, .fas.fa-cog:before { content: "⚪"; font-family: Arial; }
+    .fa-cogs:before, .fas.fa-cogs:before { content: "⚪⚪"; font-family: Arial; }
+    .fa-tachometer-alt:before, .fas.fa-tachometer-alt:before { content: "◐"; font-family: Arial; }
+    .fa-plus-circle:before, .fas.fa-plus-circle:before { content: "⊕"; font-family: Arial; }
+    .fa-plus:before, .fas.fa-plus:before { content: "+"; font-family: Arial; }
+    .fa-edit:before, .fas.fa-edit:before { content: "◐"; font-family: Arial; }
+    .fa-trash:before, .fas.fa-trash:before { content: "◻"; font-family: Arial; }
+    .fa-trash-alt:before, .fas.fa-trash-alt:before { content: "◻"; font-family: Arial; }
+    .fa-eye:before, .fas.fa-eye:before { content: "◉"; font-family: Arial; }
+    .fa-lock:before, .fas.fa-lock:before { content: "▣"; font-family: Arial; }
+    .fa-crown:before, .fas.fa-crown:before { content: "♔"; font-family: Arial; }
+    .fa-paper-plane:before, .fas.fa-paper-plane:before { content: "▷"; font-family: Arial; }
+    .fa-reply:before, .fas.fa-reply:before { content: "↰"; font-family: Arial; }
+    .fa-search:before, .fas.fa-search:before { content: "◯"; font-family: Arial; }
+    .fa-filter:before, .fas.fa-filter:before { content: "▽"; font-family: Arial; }
+    .fa-calendar:before, .fas.fa-calendar:before { content: "▦"; font-family: Arial; }
+    .fa-headset:before, .fas.fa-headset:before { content: "◎"; font-family: Arial; }
+    .fa-layer-group:before, .fas.fa-layer-group:before { content: "⧉"; font-family: Arial; }
+    .fa-shield-alt:before, .fas.fa-shield-alt:before { content: "◆"; font-family: Arial; }
+    .fa-chart-bar:before, .fas.fa-chart-bar:before { content: "▥"; font-family: Arial; }
+    .fa-chart-pie:before, .fas.fa-chart-pie:before { content: "◕"; font-family: Arial; }
+    .fa-tags:before, .fas.fa-tags:before { content: "◈◈"; font-family: Arial; }
+    .fa-tag:before, .fas.fa-tag:before { content: "◈"; font-family: Arial; }
+    .fa-bars:before, .fas.fa-bars:before { content: "≡"; font-family: Arial; }
+    .fa-moon:before, .fas.fa-moon:before { content: "◑"; font-family: Arial; }
+    .fa-sun:before, .fas.fa-sun:before { content: "◯"; font-family: Arial; }
+    .fa-download:before, .fas.fa-download:before { content: "↓"; font-family: Arial; }
+    .fa-upload:before, .fas.fa-upload:before { content: "↑"; font-family: Arial; }
+    .fa-wrench:before, .fas.fa-wrench:before { content: "⚪"; font-family: Arial; }
+    .fa-database:before, .fas.fa-database:before { content: "⬢"; font-family: Arial; }
+    .fa-server:before, .fas.fa-server:before { content: "▦"; font-family: Arial; }
+    .fa-memory:before, .fas.fa-memory:before { content: "▣"; font-family: Arial; }
+    .fa-file-alt:before, .fas.fa-file-alt:before { content: "▤"; font-family: Arial; }
+    .fa-file-code:before, .fas.fa-file-code:before { content: "▨"; font-family: Arial; }
+    .fa-file-archive:before, .fas.fa-file-archive:before { content: "▦"; font-family: Arial; }
+    .fa-heartbeat:before, .fas.fa-heartbeat:before { content: "▴"; font-family: Arial; }
+    .fa-circle:before, .fas.fa-circle:before { content: "●"; font-family: Arial; }
+    .fa-check-circle:before, .fas.fa-check-circle:before { content: "◉"; font-family: Arial; }
+    .fa-folder-open:before, .fas.fa-folder-open:before { content: "▧"; font-family: Arial; }
+    .fa-spinner:before, .fas.fa-spinner:before { content: "◐"; font-family: Arial; }
+    .fa-tools:before, .fas.fa-tools:before { content: "⚪"; font-family: Arial; }
+    .fa-hard-hat:before, .fas.fa-hard-hat:before { content: "▲"; font-family: Arial; }
+    .fa-broom:before, .fas.fa-broom:before { content: "◥"; font-family: Arial; }
+    .fa-stethoscope:before, .fas.fa-stethoscope:before { content: "◎"; font-family: Arial; }
+    .fa-sync-alt:before, .fas.fa-sync-alt:before { content: "↻"; font-family: Arial; }
+    .fa-fire:before, .fas.fa-fire:before { content: "▲"; font-family: Arial; }
+    .fa-bolt:before, .fas.fa-bolt:before { content: "⚡"; font-family: Arial; }
+    .fa-history:before, .fas.fa-history:before { content: "◔"; font-family: Arial; }
+    .fa-list:before, .fas.fa-list:before { content: "☰"; font-family: Arial; }
+    .fa-info-circle:before, .fas.fa-info-circle:before { content: "ⓘ"; font-family: Arial; }
+    .fa-exclamation-triangle:before, .fas.fa-exclamation-triangle:before { content: "⚠"; font-family: Arial; }
+    .fa-save:before, .fas.fa-save:before { content: "▣"; font-family: Arial; }
+    .fa-undo:before, .fas.fa-undo:before { content: "↶"; font-family: Arial; }
+    .fa-sync:before, .fas.fa-sync:before { content: "↻"; font-family: Arial; }
+    .fa-chart-line:before, .fas.fa-chart-line:before { content: "◢"; font-family: Arial; }
+    .fa-calendar-alt:before, .fas.fa-calendar-alt:before { content: "▦"; font-family: Arial; }
+    .fa-clock:before, .fas.fa-clock:before { content: "◔"; font-family: Arial; }
+    .fa-check:before, .fas.fa-check:before { content: "✓"; font-family: Arial; }
+    .fa-times:before, .fas.fa-times:before { content: "✕"; font-family: Arial; }
+    .fa-ban:before, .fas.fa-ban:before { content: "⊗"; font-family: Arial; }
+    .fa-arrow-left:before, .fas.fa-arrow-left:before { content: "←"; font-family: Arial; }
+    .fa-arrow-right:before, .fas.fa-arrow-right:before { content: "→"; font-family: Arial; }
+    .fa-bell:before, .fas.fa-bell:before { content: "◎"; font-family: Arial; }
+    .fa-envelope:before, .fas.fa-envelope:before { content: "▣"; font-family: Arial; }
+    .fa-star:before, .fas.fa-star:before { content: "★"; font-family: Arial; }
+    .fa-folder:before, .fas.fa-folder:before { content: "▤"; font-family: Arial; }
+    .fa-key:before, .fas.fa-key:before { content: "⚿"; font-family: Arial; }
+    .fa-refresh:before, .fas.fa-refresh:before { content: "↻"; font-family: Arial; }
+    .fa-rocket:before, .fas.fa-rocket:before { content: "▲"; font-family: Arial; }
+    .fa-times-circle:before, .fas.fa-times-circle:before { content: "⊗"; font-family: Arial; }
+    .fa-file-csv:before, .fas.fa-file-csv:before { content: "▤"; font-family: Arial; }
+    .fa-file-excel:before, .fas.fa-file-excel:before { content: "▤"; font-family: Arial; }
+    .fa-info-circle:before, .fas.fa-info-circle:before { content: "ℹ️"; font-family: Arial; }
+    .fa-question-circle:before, .fas.fa-question-circle:before { content: "❓"; font-family: Arial; }
+    .fa-bell:before, .fas.fa-bell:before { content: "🔔"; font-family: Arial; }
+    .fa-envelope:before, .fas.fa-envelope:before { content: "📧"; font-family: Arial; }
+    .fa-phone:before, .fas.fa-phone:before { content: "📞"; font-family: Arial; }
+    .fa-sun:before, .fas.fa-sun:before { content: "☀️"; font-family: Arial; }
+    .fa-moon:before, .fas.fa-moon:before { content: "🌙"; font-family: Arial; }
+    .fa-bars:before, .fas.fa-bars:before { content: "☰"; font-family: Arial; }
+  </style>
+  
+  {% load static %}
   <link rel="stylesheet" href="{% static 'css/theme.css' %}">
   
-  <!-- Sidebar CSS -->
-  <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
-  
-  <!-- Extra CSS Block -->
-  {% block extra_css %}{% endblock %}">
-</head>
-
-<body data-theme="dark">
-
-<!-- Sidebar -->
-<nav id="sidebar" class="sidebar">
-  <div class="sidebar-header">
-    <div class="d-flex align-items-center justify-content-between">
-      <h4 class="mb-0">
-        <i class="bi bi-headset me-2"></i>
-        <span class="sidebar-text">Yardım Masası</span>
-      </h4>
-      <button id="sidebar-toggle" class="btn btn-link sidebar-toggle">
-        <i class="bi bi-list"></i>
-      </button>
-    </div>
-  </div>
-
-  <div class="sidebar-content">
-    <!-- Ana Menü -->
-    <ul class="sidebar-nav">
-      <li class="nav-item">
-        <a href="{% url 'home' %}" class="nav-link" data-page="home" data-title="Ana Sayfa">
-          <i class="bi bi-house-door"></i>
-          <span class="sidebar-text">Ana Sayfa</span>
-        </a>
-      </li>
-    </ul>
-
-    <!-- Admin Menü (Sadece admin kullanıcılar için) -->
-    <div id="adminMenu" style="display: none;">
-      <div class="sidebar-section-title mt-3 mb-2 px-3">
-        <small class="text-muted sidebar-text">YÖNETİM</small>
-      </div>
-      <ul class="sidebar-nav">
-        <li class="nav-item">
-          <a href="/accounts/admin-panel/" class="nav-link" data-page="admin" data-title="Admin Paneli">
-            <i class="bi bi-gear"></i>
-            <span class="sidebar-text">Admin Paneli</span>
-          </a>
-        </li>
-        
-        <li class="nav-item">
-          <a href="/accounts/admin/users/" class="nav-link" data-page="users" data-title="Kullanıcılar">
-            <i class="bi bi-people"></i>
-            <span class="sidebar-text">Kullanıcılar</span>
-          </a>
-        </li>
-        
-        <li class="nav-item">
-          <a href="/accounts/admin/reports/" class="nav-link" data-page="reports" data-title="Raporlar">
-            <i class="bi bi-graph-up"></i>
-            <span class="sidebar-text">Raporlar</span>
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a href="/accounts/admin/settings/" class="nav-link" data-page="settings" data-title="Sistem Ayarları">
-            <i class="bi bi-sliders"></i>
-            <span class="sidebar-text">Sistem Ayarları</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Support Menü (Support kullanıcılar için) -->
-    <div id="supportMenu" style="display: none;">
-      <div class="sidebar-section-title mt-3 mb-2 px-3">
-        <small class="text-muted sidebar-text">DESTEK</small>
-      </div>
-      <ul class="sidebar-nav">
-        <li class="nav-item">
-          <a href="/accounts/support-panel/" class="nav-link" data-page="support" data-title="Destek Paneli">
-            <i class="bi bi-headset"></i>
-            <span class="sidebar-text">Destek Paneli</span>
-          </a>
-        </li>
-        
-        <li class="nav-item">
-          <a href="#" class="nav-link" data-page="tickets-all" data-title="Tüm Talepler">
-            <i class="bi bi-list-ul"></i>
-            <span class="sidebar-text">Tüm Talepler</span>
-          </a>
-        </li>
-        
-        <li class="nav-item">
-          <a href="#" class="nav-link" data-page="tickets-assigned" data-title="Atanan Talepler">
-            <i class="bi bi-person-check"></i>
-            <span class="sidebar-text">Atanan Talepler</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Tickets Menü (Giriş yapmış kullanıcılar için) -->
-    <div id="ticketsMenu" style="display: none;">
-      <div class="sidebar-section-title mt-3 mb-2 px-3">
-        <small class="text-muted sidebar-text">TALEPLER</small>
-      </div>
-      <ul class="sidebar-nav">
-        <li class="nav-item">
-          <a href="/tickets/" class="nav-link" data-page="tickets" data-title="Taleplerim">
-            <i class="bi bi-list"></i>
-            <span class="sidebar-text">Taleplerim</span>
-          </a>
-        </li>
-        
-        <li class="nav-item">
-          <a href="/tickets/create/" class="nav-link" data-page="create" data-title="Yeni Talep">
-            <i class="bi bi-plus-circle"></i>
-            <span class="sidebar-text">Yeni Talep</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Kullanıcı Menüsü -->
-    <div class="sidebar-user mt-auto">
-      <div id="userSection" style="display: none;">
-        <div class="user-info p-3">
-          <div class="d-flex align-items-center">
-            <div class="user-avatar me-2">
-              <i class="bi bi-person-circle"></i>
-            </div>
-            <div class="user-details">
-              <span class="username sidebar-text" id="sidebarUsername"></span>
-              <small class="text-muted d-block sidebar-text">Kullanıcı</small>
-            </div>
-          </div>
-        </div>
-        
-        <ul class="sidebar-nav border-top pt-2">
-          <li class="nav-item">
-            <a href="#" class="nav-link" onclick="logout()" data-title="Çıkış">
-              <i class="bi bi-box-arrow-right text-danger"></i>
-              <span class="sidebar-text">Çıkış</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div id="guestSection">
-        <ul class="sidebar-nav">
-          <li class="nav-item">
-            <a href="{% url 'login' %}" class="nav-link" data-title="Giriş">
-              <i class="bi bi-box-arrow-in-right"></i>
-              <span class="sidebar-text">Giriş</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'signup' %}" class="nav-link" data-title="Kayıt">
-              <i class="bi bi-person-plus"></i>
-              <span class="sidebar-text">Kayıt</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Tema Toggle -->
-    <div class="sidebar-footer p-3 border-top">
-      <button id="toggle-theme" class="btn btn-outline-primary btn-sm w-100">
-        <i class="bi bi-moon-stars me-2"></i>
-        <span class="sidebar-text">Tema Değiştir</span>
-      </button>
-    </div>
-  </div>
-</nav>
-
-<!-- Sidebar Overlay (Mobile) -->
-<div id="sidebar-overlay" class="sidebar-overlay"></div>
-
-<!-- Main Content -->
-<main id="main-content" class="main-content">
-  <!-- Top Bar (Mobile) -->
-  <div class="top-bar d-lg-none">
-    <div class="d-flex align-items-center justify-content-between p-3">
-      <button id="mobile-sidebar-toggle" class="btn btn-link">
-        <i class="bi bi-list"></i>
-      </button>
-      <h5 class="mb-0">{% block page_title %}Yardım Masası{% endblock %}</h5>
-      <div></div>
-    </div>
-  </div>
-
-  <!-- Page Content -->
-  <div class="content-wrapper">
-    <!-- Breadcrumb -->
-    {% block breadcrumb %}
-    <nav aria-label="breadcrumb" class="mb-4">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <a href="{% url 'home' %}" style="color: var(--accent-color);">
-            <i class="bi bi-house-door me-1"></i>Ana Sayfa
-          </a>
-        </li>
-        {% block breadcrumb_items %}{% endblock %}
-      </ol>
-    </nav>
-    {% endblock %}
-    
-    {% block content %}{% endblock %}
-  </div>
-</main>
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Sidebar & Theme JS -->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  // Sidebar Elements
-  const sidebar = document.getElementById('sidebar');
-  const sidebarToggle = document.getElementById('sidebar-toggle');
-  const mobileSidebarToggle = document.getElementById('mobile-sidebar-toggle');
-  const sidebarOverlay = document.getElementById('sidebar-overlay');
-  const mainContent = document.getElementById('main-content');
-  
-  // Theme Elements
-  const themeToggle = document.getElementById('toggle-theme');
-  const body = document.body;
-
-  // Initialize Theme
-  const savedTheme = localStorage.getItem('theme') || 'dark';
-  body.setAttribute('data-theme', savedTheme);
-  updateThemeIcon();
-
-  // Initialize Sidebar State
-  const sidebarState = localStorage.getItem('sidebarCollapsed') === 'true';
-  if (sidebarState) {
-    sidebar.classList.add('collapsed');
-    mainContent.classList.add('sidebar-collapsed');
-  }
-
-  // Sidebar Toggle (Desktop)
-  sidebarToggle?.addEventListener('click', () => {
-    toggleSidebar();
-  });
-
-  // Mobile Sidebar Toggle
-  mobileSidebarToggle?.addEventListener('click', () => {
-    sidebar.classList.add('mobile-open');
-    sidebarOverlay.classList.add('active');
-  });
-
-  // Sidebar Overlay Click (Mobile)
-  sidebarOverlay?.addEventListener('click', () => {
-    sidebar.classList.remove('mobile-open');
-    sidebarOverlay.classList.remove('active');
-  });
-
-  // Theme Toggle
-  themeToggle?.addEventListener('click', () => {
-    const current = body.getAttribute('data-theme');
-    const next = current === 'dark' ? 'light' : 'dark';
-    body.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-    updateThemeIcon();
-  });
-
-  // Functions
-  function toggleSidebar() {
-    const isCollapsed = sidebar.classList.contains('collapsed');
-    
-    if (isCollapsed) {
-      sidebar.classList.remove('collapsed');
-      mainContent.classList.remove('sidebar-collapsed');
-      localStorage.setItem('sidebarCollapsed', 'false');
-    } else {
-      sidebar.classList.add('collapsed');
-      mainContent.classList.add('sidebar-collapsed');
-      localStorage.setItem('sidebarCollapsed', 'true');
+  <!-- Sidebar ve layout için ekstra CSS -->
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-  }
-
-  function updateThemeIcon() {
-    const theme = body.getAttribute('data-theme');
-    const icon = themeToggle.querySelector('i');
-    if (theme === 'dark') {
-      icon.className = 'bi bi-sun me-2';
-    } else {
-      icon.className = 'bi bi-moon-stars me-2';
-    }
-  }
-
-  // Active Page Detection
-  setActivePage();
-  
-  // Authentication State Check
-  checkAuthState();
-});
-
-// Active Page Setting
-function setActivePage() {
-  const currentPath = window.location.pathname;
-  const navLinks = document.querySelectorAll('.sidebar-nav .nav-link[data-page]');
-  
-  navLinks.forEach(link => {
-    const page = link.getAttribute('data-page');
-    link.classList.remove('active');
     
-    if (
-      (page === 'home' && currentPath === '/') ||
-      (page === 'tickets' && currentPath.startsWith('/tickets/') && !currentPath.includes('/create/')) ||
-      (page === 'create' && currentPath.includes('/create/')) ||
-      (page === 'admin' && currentPath.includes('/admin-panel/')) ||
-      (page === 'support' && currentPath.includes('/support-panel/')) ||
-      (page === 'users' && currentPath.includes('/users/')) ||
-      (page === 'reports' && currentPath.includes('/reports/')) ||
-      (page === 'settings' && currentPath.includes('/settings/')) ||
-      (page === 'tickets-all' && currentPath.includes('/tickets-all/')) ||
-      (page === 'tickets-assigned' && currentPath.includes('/tickets-assigned/'))
-    ) {
-      link.classList.add('active');
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 280px;
+      height: 100vh;
+      background: #2c3e50;
+      color: white;
+      transition: left 0.3s ease;
+      z-index: 1000;
+      overflow-y: auto;
     }
-  });
-}
-
-// Authentication Utilities
-async function checkAuthState() {
-  // Auth kontrolü gerektirmeyen sayfalar için kontrolü atla
-  const currentPath = window.location.pathname;
-  if (currentPath.includes('/login/') || 
-      currentPath.includes('/signup/') || 
-      currentPath.includes('/auth/password_reset/') ||
-      currentPath.includes('/auth/reset/')) {
-    showUnauthenticatedState();
-    return;
-  }
-  
-  // Yeni login olduysa kısa süre bekle
-  const justLoggedIn = sessionStorage.getItem('justLoggedIn');
-  if (justLoggedIn) {
-
-    sessionStorage.removeItem('justLoggedIn');
-    // Token set edilmesi için kısa süre bekle
-    setTimeout(() => {
-      checkAuthState();
-    }, 500);
-    return;
-  }
-  
-  const token = localStorage.getItem('authToken');
-  const userData = localStorage.getItem('userData');
-  
-  if (token && userData) {
-    try {
-      const user = JSON.parse(userData);
-      
-      // Token'ı server-side'da da doğrula
-      const isValidToken = await validateTokenWithServer(token);
-      
-      if (isValidToken) {
-        showAuthenticatedState(user);
-      } else {
-        // Token geçersiz, temizle ve login'e yönlendir
-
-        clearAuthData();
-        window.location.href = '/accounts/login/';
+    
+    .sidebar.show {
+      left: 0;
+    }
+    
+    .sidebar-header {
+      padding: 20px;
+      background: #34495e;
+      border-bottom: 1px solid #4a5f7a;
+    }
+    
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+    
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    
+    .logo i {
+      margin-right: 10px;
+      color: #3498db;
+    }
+    
+    .nav-section {
+      padding: 20px 0;
+    }
+    
+    .nav-section-title {
+      padding: 0 20px 10px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      color: #bdc3c7;
+      font-weight: 600;
+    }
+    
+    .nav-link {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: #ecf0f1;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-link:hover, .nav-link.active {
+      background: #3498db;
+      color: white;
+      text-decoration: none;
+    }
+    
+    .nav-link i {
+      margin-right: 12px;
+      width: 20px;
+      text-align: center;
+    }
+    
+    .main-content {
+      margin-left: 0;
+      transition: margin-left 0.3s ease;
+      min-height: 100vh;
+    }
+    
+    .main-content.sidebar-open {
+      margin-left: 280px;
+    }
+    
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      display: none;
+    }
+    
+    .sidebar-overlay.show {
+      display: block;
+    }
+    
+    .navbar {
+      background: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 1rem;
+    }
+    
+    @media (min-width: 768px) {
+      .sidebar {
+        left: 0;
       }
-    } catch (e) {
-
-      clearAuthData();
-      showUnauthenticatedState();
+      .main-content {
+        margin-left: 280px;
+      }
+      .sidebar-overlay {
+        display: none !important;
+      }
     }
-  } else {
-    // Token yoksa login sayfasına yönlendir (login/signup/password reset sayfaları hariç)
-    if (!currentPath.includes('/login/') && 
-        !currentPath.includes('/signup/') && 
-        !currentPath.includes('/auth/password_reset/') &&
-        !currentPath.includes('/auth/reset/')) {
-
-      window.location.href = '/accounts/login/';
-    } else {
-      showUnauthenticatedState();
+    
+    /* Admin Panel Specific Styles */
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-  }
-}
+    
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    
+    .stat-card.bg-primary { border-left: 4px solid #007bff; }
+    .stat-card.bg-success { border-left: 4px solid #28a745; }
+    .stat-card.bg-warning { border-left: 4px solid #ffc107; }
+    .stat-card.bg-info { border-left: 4px solid #17a2b8; }
+    
+    .stat-card-body {
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      font-size: 1.5rem;
+    }
+    
+    .stat-card.bg-primary .stat-icon { background: rgba(0,123,255,0.1); color: #007bff; }
+    .stat-card.bg-success .stat-icon { background: rgba(40,167,69,0.1); color: #28a745; }
+    .stat-card.bg-warning .stat-icon { background: rgba(255,193,7,0.1); color: #ffc107; }
+    .stat-card.bg-info .stat-icon { background: rgba(23,162,184,0.1); color: #17a2b8; }
+    
+    .stat-content h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0;
+      color: #2c3e50;
+    }
+    
+    .stat-content p {
+      margin: 0;
+      color: #6c757d;
+      font-weight: 500;
+    }
+    
+    .stat-footer {
+      background: #f8f9fa;
+      padding: 0.75rem 1.5rem;
+      border-top: 1px solid #e9ecef;
+    }
+    
+    .stat-breakdown {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .stat-item {
+      font-size: 0.8rem;
+      color: #6c757d;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .management-card, .quick-actions-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .management-card .card-header, .quick-actions-card .card-header {
+      background: #f8f9fa;
+      border-bottom: 1px solid #e9ecef;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .card-title {
+      margin: 0;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    
+    .card-actions .btn {
+      border-radius: 6px;
+    }
+    
+    .user-info, .ticket-info {
+      line-height: 1.3;
+    }
+    
+    .user-info strong, .ticket-info strong {
+      color: #2c3e50;
+    }
+    
+    .page-title {
+      color: #2c3e50;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .page-subtitle {
+      color: #6c757d;
+      margin: 0;
+    }
+    
+    .breadcrumb {
+      background: transparent;
+      padding: 0;
+      margin-bottom: 1rem;
+    }
+    
+    .breadcrumb-item a {
+      color: #6c757d;
+      text-decoration: none;
+    }
+    
+    .breadcrumb-item a:hover {
+      color: #007bff;
+    }
+    
+    .badge.bg-admin { background-color: #dc3545 !important; }
+    .badge.bg-support { background-color: #ffc107 !important; color: #000; }
+    .badge.bg-customer { background-color: #007bff !important; }
+    
+    .table-hover tbody tr:hover {
+      background-color: rgba(0,0,0,0.025);
+    }
+    
+    /* Django Messages Styles */
+    .messages-container {
+      margin-bottom: 1rem;
+    }
+    
+    .messages-container .alert {
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 0.5rem;
+    }
+    
+    .alert-success {
+      background-color: #d1edda !important;
+      color: #155724 !important;
+      border-left: 4px solid #28a745 !important;
+    }
+    
+    .alert-danger, .alert-error {
+      background-color: #f8d7da !important;
+      color: #721c24 !important;
+      border-left: 4px solid #dc3545 !important;
+    }
+    
+    .alert-warning {
+      background-color: #fff3cd !important;
+      color: #856404 !important;
+      border-left: 4px solid #ffc107 !important;
+    }
+    
+    .alert-info {
+      background-color: #d1ecf1 !important;
+      color: #0c5460 !important;
+      border-left: 4px solid #17a2b8 !important;
+    }
+  </style>
+  
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <button class="sidebar-toggle" id="sidebar-toggle">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="logo">
+        <i class="bi bi-headset"></i>
+        <span>HelpDesk</span>
+      </div>
+    </div>
 
-// Token'ı server-side'da doğrula
-async function validateTokenWithServer(token) {
-  try {
-    const response = await fetch('/accounts/api/profile/', {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Token ' + token,
-        'Content-Type': 'application/json',
+    <nav class="sidebar-nav">
+      <!-- Ana Menü -->
+      <div class="nav-section">
+        <div class="nav-section-title">Ana Menü</div>
+        <a href="/" class="nav-link">
+          <i class="bi bi-house"></i>
+          <span>Ana Sayfa</span>
+        </a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'ticket_list' %}" class="nav-link">
+          <i class="bi bi-ticket-perforated"></i>
+          <span>Talepler</span>
+        </a>
+        <a href="{% url 'ticket_create' %}" class="nav-link">
+          <i class="bi bi-plus-circle"></i>
+          <span>Yeni Talep</span>
+        </a>
+        {% endif %}
+      </div>
+
+      {% if user.is_authenticated %}
+      <!-- Kişisel -->
+      <div class="nav-section">
+        <div class="nav-section-title">Kişisel</div>
+        <a href="{% url 'customer_panel' %}" class="nav-link">
+          <i class="bi bi-person"></i>
+          <span>Profil</span>
+        </a>
+        <a href="{% url 'customer_profile_edit' %}" class="nav-link">
+          <i class="bi bi-gear"></i>
+          <span>Ayarlar</span>
+        </a>
+      </div>
+      {% endif %}
+
+      {% if user.is_authenticated and user.role == 'admin' or user.is_superuser %}
+      <!-- Yönetim -->
+      <div class="nav-section">
+        <div class="nav-section-title">Yönetim</div>
+        <a href="{% url 'admin_panel' %}" class="nav-link">
+          <i class="bi bi-speedometer2"></i>
+          <span>Admin Panel</span>
+        </a>
+        <a href="{% url 'admin_users' %}" class="nav-link">
+          <i class="bi bi-people"></i>
+          <span>Kullanıcılar</span>
+        </a>
+        <a href="{% url 'admin_groups' %}" class="nav-link">
+          <i class="bi bi-layers"></i>
+          <span>Gruplar</span>
+        </a>
+        <a href="{% url 'admin_permissions' %}" class="nav-link">
+          <i class="bi bi-shield-check"></i>
+          <span>İzinler</span>
+        </a>
+        <a href="{% url 'admin_reports' %}" class="nav-link">
+          <i class="bi bi-bar-chart"></i>
+          <span>Raporlar</span>
+        </a>
+        <a href="{% url 'admin_settings' %}" class="nav-link">
+          <i class="bi bi-gear-fill"></i>
+          <span>Sistem Ayarları</span>
+        </a>
+      </div>
+      
+      <!-- Ticket Yönetimi -->
+      <div class="nav-section">
+        <div class="nav-section-title">Ticket Yönetimi</div>
+        <a href="/tickets/admin/" class="nav-link">
+          <i class="bi bi-ticket-detailed"></i>
+          <span>Ticket Admin</span>
+        </a>
+        <a href="/tickets/categories/" class="nav-link">
+          <i class="bi bi-tags"></i>
+          <span>Kategoriler</span>
+        </a>
+      </div>
+      {% endif %}
+      
+      {% if user.is_authenticated and user.role == 'support' %}
+      <!-- Support Yönetimi -->
+      <div class="nav-section">
+        <div class="nav-section-title">Support</div>
+        <a href="{% url 'support_panel' %}" class="nav-link">
+          <i class="bi bi-headset"></i>
+          <span>Support Panel</span>
+        </a>
+        <a href="/tickets/admin/" class="nav-link">
+          <i class="bi bi-ticket-detailed"></i>
+          <span>Ticket Yönetimi</span>
+        </a>
+      </div>
+      {% endif %}
+
+      <!-- Alt Menü -->
+      <div class="nav-section">
+        <div class="nav-section-title">Hesap</div>
+        {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}" class="nav-link">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Çıkış</span>
+        </a>
+        {% else %}
+        <a href="{% url 'login' %}" class="nav-link">
+          <i class="bi bi-box-arrow-in-right"></i>
+          <span>Giriş</span>
+        </a>
+        <a href="{% url 'signup' %}" class="nav-link">
+          <i class="bi bi-person-plus"></i>
+          <span>Kayıt</span>
+        </a>
+        {% endif %}
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content" id="main-content">
+    <!-- Top Navbar -->
+    <nav class="navbar">
+      <div class="d-flex align-items-center">
+        <button class="btn btn-outline-secondary d-md-none me-3" id="mobile-sidebar-toggle">
+          <i class="bi bi-list"></i>
+        </button>
+        <h1 class="h4 mb-0">{% block page_title %}HelpDesk{% endblock %}</h1>
+      </div>
+      
+      <div class="d-flex align-items-center">
+        {% if user.is_authenticated %}
+        <span class="me-3">Merhaba, {{ user.username }}</span>
+        <button id="theme-toggle" class="btn btn-outline-secondary">
+          <i class="bi bi-moon"></i>
+        </button>
+        {% endif %}
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container-fluid p-4">
+      <!-- Django Messages -->
+      {% if messages %}
+        <div class="messages-container">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {% if message.tags == 'success' %}
+                <i class="bi bi-check-circle-fill me-2"></i>
+              {% elif message.tags == 'error' or message.tags == 'danger' %}
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              {% elif message.tags == 'warning' %}
+                <i class="bi bi-exclamation-circle-fill me-2"></i>
+              {% elif message.tags == 'info' %}
+                <i class="bi bi-info-circle-fill me-2"></i>
+              {% endif %}
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      
+      {% block content %}
+      {% endblock %}
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+    const mainContent = document.getElementById('main-content');
+    
+    // Desktop sidebar toggle
+    document.getElementById('sidebar-toggle').addEventListener('click', function() {
+      if (window.innerWidth >= 768) {
+        sidebar.classList.toggle('show');
+        mainContent.classList.toggle('sidebar-open');
+      } else {
+        sidebar.classList.toggle('show');
+        sidebarOverlay.classList.toggle('show');
       }
     });
     
-    if (response.ok) {
-      const data = await response.json();
-      // User data'yı güncelle (token yenilendiyse)
-      localStorage.setItem('userData', JSON.stringify(data.user));
-      return true;
-    } else {
-
-      return false;
+    // Mobile sidebar toggle
+    const mobileSidebarToggle = document.getElementById('mobile-sidebar-toggle');
+    if (mobileSidebarToggle) {
+      mobileSidebarToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('show');
+        sidebarOverlay.classList.toggle('show');
+      });
     }
-  } catch (error) {
-
-    return false;
-  }
-}
-
-// Auth data'yı temizle
-function clearAuthData() {
-  localStorage.removeItem('authToken');
-  localStorage.removeItem('userData');
-  sessionStorage.clear();
-}
-
-// Sekme değiştiğinde kontrol et
-document.addEventListener('visibilitychange', function() {
-  if (!document.hidden) {
-    // Sekme aktif olduğunda auth durumunu kontrol et
-    const currentPath = window.location.pathname;
-    if (!currentPath.includes('/login/') && 
-        !currentPath.includes('/signup/') && 
-        !currentPath.includes('/auth/password_reset/') &&
-        !currentPath.includes('/auth/reset/')) {
-      const token = localStorage.getItem('authToken');
-      if (!token) {
-        // Token yoksa login sayfasına yönlendir
-        window.location.href = '/accounts/login/';
-      }
-    }
-  }
-});
-
-// Sayfa focus olduğunda kontrol et
-window.addEventListener('focus', function() {
-  const currentPath = window.location.pathname;
-  if (!currentPath.includes('/login/') && 
-      !currentPath.includes('/signup/') && 
-      !currentPath.includes('/auth/password_reset/') &&
-      !currentPath.includes('/auth/reset/')) {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      // Token yoksa login sayfasına yönlendir
-      window.location.href = '/accounts/login/';
-    }
-  }
-});
-
-function showAuthenticatedState(user) {
-  document.getElementById('userSection').style.display = 'block';
-  document.getElementById('guestSection').style.display = 'none';
-  
-  // XSS koruması için username'i escape et
-  const safeUsername = escapeHtml(user.username);
-  document.getElementById('sidebarUsername').textContent = safeUsername;
-  
-  // Menüleri role'a göre göster/gizle
-  const adminMenu = document.getElementById('adminMenu');
-  const supportMenu = document.getElementById('supportMenu');
-  const ticketsMenu = document.getElementById('ticketsMenu');
-  
-  // Hepsini gizle
-  adminMenu.style.display = 'none';
-  supportMenu.style.display = 'none';
-  
-  // Role'a göre menü göster
-  if (user.is_superuser || user.role === 'admin') {
-    // Admin: Hem admin hem tickets menüsü
-    adminMenu.style.display = 'block';
-    ticketsMenu.style.display = 'block';
-  } else if (user.role === 'support') {
-    // Support: Hem support hem tickets menüsü
-    supportMenu.style.display = 'block';
-    ticketsMenu.style.display = 'block';
-  } else {
-    // Customer: Sadece tickets menüsü
-    ticketsMenu.style.display = 'block';
-  }
-}
-
-// XSS koruması için HTML escape fonksiyonu
-function escapeHtml(text) {
-  const map = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;'
-  };
-  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-}
-
-function showUnauthenticatedState() {
-  document.getElementById('userSection').style.display = 'none';
-  document.getElementById('guestSection').style.display = 'block';
-  
-  // Tüm menüleri gizle (giriş yapılmamış durumda)
-  document.getElementById('adminMenu').style.display = 'none';
-  document.getElementById('supportMenu').style.display = 'none';
-  document.getElementById('ticketsMenu').style.display = 'none';
-}
-
-async function logout() {
-  const token = localStorage.getItem('authToken');
-  
-  try {
-    if (token) {
-      // CSRF token'ını al
-      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
-                       getCookie('csrftoken');
-      
-      const response = await fetch('/accounts/api/logout/', {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Token ' + token,
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken,
+    
+    // Close sidebar when clicking overlay
+    sidebarOverlay.addEventListener('click', function() {
+      sidebar.classList.remove('show');
+      sidebarOverlay.classList.remove('show');
+    });
+    
+    // Theme toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', function() {
+        const html = document.documentElement;
+        const currentTheme = html.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        // Update icon
+        const icon = this.querySelector('i');
+        if (newTheme === 'dark') {
+          icon.className = 'bi bi-moon-fill';
+        } else {
+          icon.className = 'bi bi-sun-fill';
         }
       });
-      
-      if (response.ok) {
-
-      } else {
-
-      }
     }
-  } catch (error) {
-
-  }
-  
-  // Her durumda tüm auth data'yı temizle
-  clearAuthData();
-  
-  // Tüm authentication cookie'lerini temizle
-  clearAllAuthCookies();
-  
-  // Login sayfasına yönlendir
-  window.location.href = '/accounts/login/';
-}
-
-// Güvenli çıkış fonksiyonu - Tüm token'ları sunucudan siler
-async function safeLogout() {
-  const token = localStorage.getItem('authToken');
-  
-  try {
-    if (token) {
-      // CSRF token'ını al
-      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
-                       getCookie('csrftoken');
-      
-      const response = await fetch('/accounts/api/safe-logout/', {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Token ' + token,
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken,
-        }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-
-      } else {
-
-      }
+    
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    const themeIcon = document.querySelector('#theme-toggle i');
+    if (themeIcon) {
+      themeIcon.className = savedTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
     }
-  } catch (error) {
-
-  }
-  
-  // Her durumda tüm auth data'yı temizle
-  clearAuthData();
-  
-  // Tüm authentication cookie'lerini temizle
-  clearAllAuthCookies();
-  
-  // Login sayfasına yönlendir
-  window.location.href = '/accounts/login/';
-}
-
-// Auth data'yı temizle
-function clearAuthData() {
-  localStorage.removeItem('authToken');
-  localStorage.removeItem('userData');
-  sessionStorage.clear();
-}
-
-// Tüm auth cookie'lerini temizle
-function clearAllAuthCookies() {
-  const cookiesToClear = [
-    'auth_token',
-    'user_id', 
-    'user_role',
-    'sessionid',
-    'csrftoken'
-  ];
-  
-  cookiesToClear.forEach(cookieName => {
-    // Farklı path'ler için temizle
-    document.cookie = `${cookieName}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${window.location.hostname}`;
-    document.cookie = `${cookieName}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-    document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+    
+    // Check if FontAwesome icons are loaded
+    setTimeout(function() {
+      const testIcon = document.createElement('i');
+      testIcon.className = 'fas fa-home';
+      testIcon.style.visibility = 'hidden';
+      document.body.appendChild(testIcon);
+      
+      const computedStyle = window.getComputedStyle(testIcon, ':before');
+      const content = computedStyle.getPropertyValue('content');
+      
+      if (!content || content === 'none' || content === '""') {
+        console.warn('FontAwesome icons may not be loading. Adding fallback styles.');
+        // If FontAwesome isn't loading, we already have fallback emoji icons in CSS
+      }
+      
+      document.body.removeChild(testIcon);
+    }, 1000);
   });
-}
-
-// CSRF Cookie yardımcı fonksiyonu
-function getCookie(name) {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === (name + '=')) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
-}
-
-// Token'ı otomatik olarak API isteklerine ekle
-function makeAuthenticatedRequest(url, options = {}) {
-  const token = localStorage.getItem('authToken');
+  </script>
   
-  if (token) {
-    options.headers = options.headers || {};
-    options.headers['Authorization'] = 'Token ' + token;
-  }
-  
-  return fetch(url, options);
-}
-</script>
-
+  {% block extra_js %}{% endblock %}
 </body>
 </html>

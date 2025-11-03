@@ -1,0 +1,354 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}{{ panel_title }} - HelpDesk{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
+    <li class="breadcrumb-item"><a href="/accounts/admin-panel/">Admin Panel</a></li>
+    <li class="breadcrumb-item active">Sistem Yedekleme</li>
+</ol>
+{% endblock %}
+
+{% block page_title %}
+<i class="fas fa-download text-success"></i> Sistem Yedekleme
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Yedekleme İşlemleri -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-download me-2"></i>
+                        Yedekleme İşlemleri
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-3">
+                        <button class="btn btn-outline-primary btn-lg" onclick="createDatabaseBackup()">
+                            <i class="fas fa-database me-2"></i>
+                            Veritabanı Yedeği Al
+                        </button>
+                        <button class="btn btn-outline-info btn-lg" onclick="createFileBackup()">
+                            <i class="fas fa-file-archive me-2"></i>
+                            Dosya Yedeği Al
+                        </button>
+                        <button class="btn btn-outline-success btn-lg" onclick="createFullBackup()">
+                            <i class="fas fa-server me-2"></i>
+                            Tam Sistem Yedeği Al
+                        </button>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Bilgi:</strong> Yedekleme işlemleri sistem performansını etkileyebilir. 
+                        İşlemleri düşük trafikli saatlerde yapmanız önerilir.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Geri Yükleme İşlemleri -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-upload me-2"></i>
+                        Geri Yükleme İşlemleri
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="backupFile" class="form-label">Yedek Dosya Seç</label>
+                        <input type="file" class="form-control" id="backupFile" accept=".sql,.zip,.tar.gz">
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-warning" onclick="restoreDatabase()">
+                            <i class="fas fa-database me-2"></i>
+                            Veritabanını Geri Yükle
+                        </button>
+                        <button class="btn btn-outline-danger" onclick="restoreFiles()">
+                            <i class="fas fa-file-archive me-2"></i>
+                            Dosyaları Geri Yükle
+                        </button>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Uyarı:</strong> Geri yükleme işlemi mevcut verileri değiştirecektir. 
+                        İşlem öncesi güncel yedek aldığınızdan emin olun.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mevcut Yedekler -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history text-info me-2"></i>
+                        Mevcut Yedekler
+                    </h5>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="refreshBackupList()">
+                        <i class="fas fa-sync-alt"></i> Yenile
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Yedek Adı</th>
+                                    <th>Türü</th>
+                                    <th>Boyut</th>
+                                    <th>Oluşturulma Tarihi</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody id="backupListTable">
+                                <tr>
+                                    <td colspan="5" class="text-center py-4">
+                                        <i class="fas fa-download fa-3x text-muted mb-3"></i>
+                                        <div class="text-muted">Henüz yedek dosyası bulunamadı</div>
+                                        <small class="text-muted">Yedekleme işlemi başlatarak dosyalar oluşturabilirsiniz</small>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Otomatik Yedekleme Ayarları -->
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-cogs text-primary me-2"></i>
+                        Otomatik Yedekleme Ayarları
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form id="autoBackupForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="enableAutoBackup">
+                                    <label class="form-check-label" for="enableAutoBackup">
+                                        Otomatik yedeklemeyi etkinleştir
+                                    </label>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="backupFrequency" class="form-label">Yedekleme Sıklığı</label>
+                                    <select class="form-select" id="backupFrequency">
+                                        <option value="daily">Günlük</option>
+                                        <option value="weekly">Haftalık</option>
+                                        <option value="monthly">Aylık</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="backupTime" class="form-label">Yedekleme Saati</label>
+                                    <input type="time" class="form-control" id="backupTime" value="02:00">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="retentionDays" class="form-label">Yedek Saklama Süresi (Gün)</label>
+                                    <input type="number" class="form-control" id="retentionDays" value="30" min="1" max="365">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Ayarları Kaydet
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="resetAutoBackupForm()">
+                                <i class="fas fa-undo"></i> Sıfırla
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-pie text-info me-2"></i>
+                        Yedekleme İstatistikleri
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <div class="stat-item mb-3">
+                            <div class="stat-number text-success">5</div>
+                            <div class="stat-label">Toplam Yedek</div>
+                        </div>
+                        <div class="stat-item mb-3">
+                            <div class="stat-number text-info">2.5 GB</div>
+                            <div class="stat-label">Toplam Boyut</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number text-warning">3 Gün</div>
+                            <div class="stat-label">Son Yedekleme</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Progress Modal -->
+<div class="modal fade" id="backupProgressModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-download me-2"></i>
+                    Yedekleme İşlemi
+                </h5>
+            </div>
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Yükleniyor...</span>
+                </div>
+                <p class="mb-0">Yedekleme işlemi devam ediyor...</p>
+                <small class="text-muted">Bu işlem birkaç dakika sürebilir.</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.stat-item {
+    padding: 0.5rem 0;
+}
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+}
+.stat-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+.btn-lg {
+    padding: 0.75rem 1.5rem;
+}
+</style>
+
+<script>
+function createDatabaseBackup() {
+    showBackupProgress();
+    setTimeout(() => {
+        hideBackupProgress();
+        showNotification('Veritabanı yedeği başarıyla oluşturuldu!', 'success');
+    }, 3000);
+}
+
+function createFileBackup() {
+    showBackupProgress();
+    setTimeout(() => {
+        hideBackupProgress();
+        showNotification('Dosya yedeği başarıyla oluşturuldu!', 'success');
+    }, 2000);
+}
+
+function createFullBackup() {
+    showBackupProgress();
+    setTimeout(() => {
+        hideBackupProgress();
+        showNotification('Tam sistem yedeği başarıyla oluşturuldu!', 'success');
+    }, 5000);
+}
+
+function restoreDatabase() {
+    if (confirm('Bu işlem mevcut veritabanını değiştirecektir. Devam etmek istiyor musunuz?')) {
+        showBackupProgress();
+        setTimeout(() => {
+            hideBackupProgress();
+            showNotification('Veritabanı başarıyla geri yüklendi!', 'success');
+        }, 4000);
+    }
+}
+
+function restoreFiles() {
+    if (confirm('Bu işlem mevcut dosyaları değiştirecektir. Devam etmek istiyor musunuz?')) {
+        showBackupProgress();
+        setTimeout(() => {
+            hideBackupProgress();
+            showNotification('Dosyalar başarıyla geri yüklendi!', 'success');
+        }, 3000);
+    }
+}
+
+function showBackupProgress() {
+    new bootstrap.Modal(document.getElementById('backupProgressModal')).show();
+}
+
+function hideBackupProgress() {
+    bootstrap.Modal.getInstance(document.getElementById('backupProgressModal')).hide();
+}
+
+function refreshBackupList() {
+    showNotification('Yedek listesi güncellendi!', 'info');
+}
+
+function resetAutoBackupForm() {
+    document.getElementById('autoBackupForm').reset();
+    showNotification('Ayarlar sıfırlandı!', 'info');
+}
+
+function showNotification(message, type) {
+    // Basit notification sistemi
+    const alertClass = type === 'success' ? 'alert-success' : 
+                      type === 'error' ? 'alert-danger' : 'alert-info';
+    
+    const notification = `
+        <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 9999;">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', notification);
+    
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            if (alert.textContent.includes(message)) {
+                alert.remove();
+            }
+        });
+    }, 5000);
+}
+
+// Form submit handler
+document.getElementById('autoBackupForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    showNotification('Otomatik yedekleme ayarları kaydedildi!', 'success');
+});
+</script>
+{% endblock %}

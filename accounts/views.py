@@ -1,1615 +1,805 @@
 # accounts/views.py
 """
-HelpDesk Kullanıcı Yönetimi - Ana View'lar
+HelpDesk Kullanıcı Yönetimi - Düzenlenmiş ve Yorumlu
 ========================================
-
-Token-based authentication, role-based access control, user management
-Kullanıcı rolleri: admin, support, customer
+Session tabanlı kimlik doğrulama, modern UI/UX, role bazlı erişim
 """
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, logout, authenticate, get_user_model
-from django.contrib.auth.models import Group
-from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
-from django.http import HttpResponseForbidden, JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from django.db import transaction
+from django.db.models import Count, Q
+from datetime import timedelta
+
 import logging
-
-# Django REST Framework
-from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-
-# Local imports
-from .serializers import LoginSerializer, UserSerializer
-from .models import CustomAuthToken, CustomUser
-from .security import (
-    rate_limit_login, sanitize_input, sanitize_username, validate_password_strength, 
-    admin_required, get_client_ip
-)
-
-# ================================================================================
-# Global Configuration
-# ================================================================================
-
-class CsrfExemptSessionAuthentication(SessionAuthentication):
-    """API endpoint'ler için CSRF kontrolünü devre dışı bırakan authentication sınıfı"""
-    def enforce_csrf(self, request):
-        return
-
-# Global değişkenler
-User = get_user_model()
 logger = logging.getLogger(__name__)
 
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 
-# ================================================================================
+from .serializers import LoginSerializer, UserSerializer
+from .models import CustomAuthToken, CustomUser
+
+# Tickets modelini import et
+try:
+    from tickets.models import Ticket
+except ImportError:
+    Ticket = None
+
+# =========================
 # Yardımcı Fonksiyonlar
-# ================================================================================
-
-def _redirect_user_by_role(user, preferred_redirect=None):
-    """
-    Kullanıcıyı rolüne göre yönlendir
-    
-    Args:
-        user: CustomUser objesi
-        preferred_redirect: Tercih edilen yönlendirme
-        
-    Returns:
-        HttpResponseRedirect: Yönlendirme objesi
-    """
-    # Tercih edilen yönlendirme varsa ve yetki kontrolü
-    if preferred_redirect == 'admin-panel' and (user.is_superuser or user.role == 'admin'):
-        return redirect('/accounts/admin-panel/')
-    elif preferred_redirect == 'support-panel' and user.role in ['admin', 'support']:
-        return redirect('/accounts/support-panel/')
-    elif preferred_redirect == 'customer-panel':
-        return redirect('/accounts/customer-panel/')
-    
-    # Varsayılan rol bazlı yönlendirme
-    if user.is_superuser or user.role == 'admin':
-        return redirect('/accounts/admin-panel/')
-    elif user.role == 'support':
-        return redirect('/accounts/support-panel/')
-    else:
-        return redirect('/accounts/customer-panel/')
-
-
-def home_view(request):
-    """
-    Ana sayfa - token kontrolü yapıp kullanıcıyı rolüne göre yönlendirir
-    
-    Args:
-        request: HTTP request objesi
-        
-    Returns:
-        HttpResponse: Yönlendirme veya login sayfası
-    """
-    # Token tabanlı kimlik doğrulama kontrolü
-    user = verify_token_auth(request)
-    
-    if user:
-        # Kullanıcı giriş yapmış, redirect parametresine göre yönlendir
-        redirect_to = request.GET.get('redirect')
-        return _redirect_user_by_role(user, redirect_to)
-    
-    # Kullanıcı giriş yapmamış - login sayfasına yönlendir
-    redirect_to = request.GET.get('redirect')
-    if redirect_to:
-        return redirect(f'/accounts/login/?next={redirect_to}')
-    
-    # Normal ana sayfa
-    return render(request, 'tickets/home.html')
-
-
-@api_view(['POST'])
-@permission_classes([AllowAny])
-@rate_limit_login(max_attempts=5, window_minutes=15)
-def api_login(request):
-    """
-    Gelişmiş token-based login endpoint - rate limited ve güvenli
-    
-    Args:
-        request: HTTP request objesi
-        
-    Returns:
-        Response: Login sonucu ve token bilgisi
-    """
-    # Input sanitization
-    username = sanitize_input(request.data.get('username', ''), max_length=150)
-    password = request.data.get('password', '')
-    
-    # Temel validasyon
-    if not username or not password:
-        return Response({
-            'error': 'Username and password are required.'
-        }, status=status.HTTP_400_BAD_REQUEST)
-    
-    # Kullanıcı doğrulama
-    serializer = LoginSerializer(data={'username': username, 'password': password})
-    if serializer.is_valid():
-        user = serializer.validated_data['user']
-        
-        # Eski session temizleme
-        if request.user.is_authenticated and request.user != user:
-            logout(request)
-        
-        # Token yönetimi - eski token'ları temizle
-        CustomAuthToken.objects.filter(user=user).delete()
-        
-        # Yeni custom token oluştur
-        custom_token = CustomAuthToken.objects.create(
-            user=user,
-            username=user.username
-        )
-        custom_token.set_password_hash(password)
-        custom_token.save()
-        
-        # Backward compatibility için normal token
-        normal_token, created = Token.objects.get_or_create(user=user)
-        
-        # Response hazırlama
-        user_serializer = UserSerializer(user)
-        
-        # Kullanıcı rolüne göre yönlendirme URL'i
-        if user.is_superuser or user.role == 'admin':
-            redirect_url = '/accounts/admin-panel/'
-        elif user.role == 'support':
-            redirect_url = '/accounts/support-panel/'
-        else:
-            redirect_url = '/accounts/customer-panel/'
-        
-        response = Response({
-            'token': custom_token.key,
-            'backup_token': normal_token.key,
-            'user': user_serializer.data,
-            'redirect_url': redirect_url,
-            'token_expires': custom_token.expires_at.isoformat(),
-            'message': 'Başarıyla giriş yapıldı.'
-        })
-        
-        # Önce eski cookie'leri temizle (farklı kullanıcı girişi için)
-        response.delete_cookie('auth_token')
-        response.delete_cookie('user_id')
-        response.delete_cookie('user_role')
-        response.delete_cookie('sessionid')  # Django session cookie'sini de temizle
-        
-        # Token'ı çerezlere kaydet (browser için)
-        response.set_cookie(
-            'auth_token',
-            custom_token.key,
-            max_age=7*24*60*60,  # 7 gün
-            httponly=True,  # XSS koruması
-            secure=False,  # Development için False, production'da True olmalı
-            samesite='Lax'  # CSRF koruması
-        )
-        
-        # Kullanıcı ID'sini de çerezlere kaydet
-        response.set_cookie(
-            'user_id',
-            str(user.id),
-            max_age=7*24*60*60,
-            httponly=False,  # JavaScript'ten erişebilir
-            secure=False,
-            samesite='Lax'
-        )
-        
-        # Kullanıcı rolünü de çerezlere kaydet
-        response.set_cookie(
-            'user_role',
-            user.role,
-            max_age=7*24*60*60,
-            httponly=False,
-            secure=False,
-            samesite='Lax'
-        )
-        
-        return response
-    
-    # Log failed login attempt
-    return Response({
-        'error': 'Invalid username or password.'
-    }, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['POST'])
-@api_view(['POST'])
-@authentication_classes([CsrfExemptSessionAuthentication, TokenAuthentication])
-@permission_classes([AllowAny])
-def api_logout(request):
-    """
-    Gelişmiş token-based logout endpoint
-    """
-    try:
-        # Session'ı temizle
-        if request.user.is_authenticated:
-            from django.contrib.auth import logout
-            logout(request)
-        
-        # Custom token'ı sil
-        user = verify_token_auth(request)
-        if user and hasattr(user, 'custom_auth_token'):
-            user.custom_auth_token.delete()
-        
-        # Normal token'ı da sil (backward compatibility)
-        if user and hasattr(user, 'auth_token'):
-            user.auth_token.delete()
-            
-        response = Response({
-            'message': 'Başarıyla çıkış yapıldı.'
-        })
-        
-        # Çerezleri temizle
-        response.delete_cookie('auth_token')
-        response.delete_cookie('user_id')
-        response.delete_cookie('user_role')
-        response.delete_cookie('sessionid')  # Django session cookie'sini de temizle
-        
-        return response
-    except Exception as e:
-        response = Response({
-            'error': f'Çıkış yapılırken hata oluştu: {str(e)}'
-        }, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Hata durumunda da çerezleri temizle
-        response.delete_cookie('auth_token')
-        response.delete_cookie('user_id')
-        response.delete_cookie('user_role')
-        response.delete_cookie('sessionid')
-        
-        return response
-
-@api_view(['POST'])
-@authentication_classes([CsrfExemptSessionAuthentication, TokenAuthentication])
-@permission_classes([AllowAny])
-def api_safe_logout(request):
-    """
-    Güvenli çıkış - Tüm kullanıcı verilerini temizler ve login sayfasına yönlendirir
-    Signup sonrası role karışıklığını önlemek için kullanılır
-    """
-    try:
-        # Mevcut kullanıcı bilgilerini al
-        user = verify_token_auth(request)
-        
-        # Session'ı tamamen temizle
-        if request.user.is_authenticated:
-            from django.contrib.auth import logout
-            logout(request)
-        
-        # Kullanıcının tüm token'larını sil
-        if user:
-            # Custom token'ları sil
-            CustomAuthToken.objects.filter(user=user).delete()
-            
-            # Normal token'ları da sil
-            Token.objects.filter(user=user).delete()
-        
-        response = Response({
-            'message': 'Güvenli çıkış yapıldı. Lütfen tekrar giriş yapın.',
-            'redirect_url': '/accounts/login/',
-            'action': 'safe_logout_complete'
-        })
-        
-        # Tüm authentication çerezlerini temizle
-        response.delete_cookie('auth_token')
-        response.delete_cookie('user_id')
-        response.delete_cookie('user_role') 
-        response.delete_cookie('sessionid')
-        response.delete_cookie('csrftoken')
-        
-        return response
-        
-    except Exception as e:
-        logger.error(f"Safe logout error: {str(e)}")
-        response = Response({
-            'message': 'Güvenli çıkış tamamlandı.',
-            'redirect_url': '/accounts/login/',
-            'action': 'safe_logout_complete'
-        })
-        
-        # Hata durumunda da tüm çerezleri temizle
-        response.delete_cookie('auth_token')
-        response.delete_cookie('user_id')
-        response.delete_cookie('user_role')
-        response.delete_cookie('sessionid')
-        response.delete_cookie('csrftoken')
-        
-        return response
-
-@api_view(['GET'])
-@authentication_classes([CsrfExemptSessionAuthentication, TokenAuthentication])
-@permission_classes([AllowAny])
-def api_debug_tokens(request):
-    """
-    Debug endpoint - Mevcut kullanıcının token durumunu gösterir
-    """
-    try:
-        # Cookie'den token al
-        cookie_token = request.COOKIES.get('auth_token')
-        
-        # Header'dan token al
-        auth_header = request.META.get('HTTP_AUTHORIZATION', '')
-        header_token = None
-        if auth_header.startswith('Token '):
-            header_token = auth_header.split(' ')[1]
-            
-        # LocalStorage'dan gelen token (frontend'den gönderilir)
-        localStorage_token = request.GET.get('localStorage_token')
-        
-        debug_info = {
-            'cookie_token': cookie_token[-8:] + '...' if cookie_token else None,
-            'header_token': header_token[-8:] + '...' if header_token else None,
-            'localStorage_token': localStorage_token[-8:] + '...' if localStorage_token else None,
-            'authenticated_user': None,
-            'token_validation': {}
-        }
-        
-        # Token'ları validate et
-        tokens_to_check = [
-            ('cookie', cookie_token),
-            ('header', header_token),
-            ('localStorage', localStorage_token)
-        ]
-        
-        for token_type, token_value in tokens_to_check:
-            if token_value:
-                user = get_user_by_token(token_value)
-                debug_info['token_validation'][token_type] = {
-                    'valid': bool(user),
-                    'user': user.username if user else None,
-                    'user_role': user.role if user else None
-                }
-                if user and not debug_info['authenticated_user']:
-                    debug_info['authenticated_user'] = {
-                        'username': user.username,
-                        'role': user.role,
-                        'is_staff': user.is_staff,
-                        'token_source': token_type
-                    }
-        
-        return Response(debug_info)
-        
-    except Exception as e:
-        logger.error(f"Debug tokens error: {str(e)}")
-        return Response({
-            'error': str(e)
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-@api_view(['GET'])
-@authentication_classes([CsrfExemptSessionAuthentication, TokenAuthentication])
-@permission_classes([AllowAny])  # Kendi auth kontrolümüzü yapıyoruz
-def api_user_profile(request):
-    """
-    Mevcut kullanıcının profil bilgilerini ve hesap istatistiklerini getir - Hybrid authentication (Session + Token)
-    """
-    # Önce session-based authentication kontrol et
-    if request.user.is_authenticated:
-        user = request.user
-    else:
-        # Token tabanlı kimlik doğrulama
-        user = verify_token_auth(request)
-    
-    if not user:
-        return Response({
-            'error': 'Authentication required'
-        }, status=status.HTTP_401_UNAUTHORIZED)
-    
-    # Import ticket models for statistics
-    from tickets.models import Talep, Comment
-    from django.db.models import Count, Q
-    from datetime import datetime, timedelta
-    
-    serializer = UserSerializer(user)
-    
-    # Token bilgilerini de ekle
-    token_info = {}
-    try:
-        if hasattr(user, 'custom_auth_token'):
-            custom_token = user.custom_auth_token
-            token_info = {
-                'token_created': custom_token.created.isoformat(),
-                'token_expires': custom_token.expires_at.isoformat(),
-                'last_used': custom_token.last_used.isoformat() if custom_token.last_used else None,
-                'is_expired': custom_token.is_expired()
-            }
-    except:
-        pass
-    
-    # Hesap istatistikleri hesapla
-    statistics = {}
-    
-    try:
-        # Genel istatistikler
-        if user.role == 'admin':
-            # Admin için tüm sistem istatistikleri
-            statistics = {
-                'total_tickets': Talep.objects.count(),
-                'open_tickets': Talep.objects.filter(status='open').count(),
-                'in_progress_tickets': Talep.objects.filter(status='in_progress').count(),
-                'resolved_tickets': Talep.objects.filter(status='resolved').count(),
-                'closed_tickets': Talep.objects.filter(status='closed').count(),
-                'total_users': CustomUser.objects.count(),
-                'admin_users': CustomUser.objects.filter(role='admin').count(),
-                'support_users': CustomUser.objects.filter(role='support').count(),
-                'customer_users': CustomUser.objects.filter(role='customer').count(),
-                'tickets_this_week': Talep.objects.filter(
-                    created_at__gte=datetime.now() - timedelta(days=7)
-                ).count(),
-                'tickets_this_month': Talep.objects.filter(
-                    created_at__gte=datetime.now() - timedelta(days=30)
-                ).count(),
-                'my_assigned_tickets': Talep.objects.filter(assigned_to=user).count(),
-                'my_comments': Comment.objects.filter(user=user).count(),
-            }
-        elif user.role == 'support':
-            # Support için kendi ve genel istatistikler
-            statistics = {
-                'total_tickets': Talep.objects.count(),
-                'open_tickets': Talep.objects.filter(status='open').count(),
-                'in_progress_tickets': Talep.objects.filter(status='in_progress').count(),
-                'resolved_tickets': Talep.objects.filter(status='resolved').count(),
-                'closed_tickets': Talep.objects.filter(status='closed').count(),
-                'my_assigned_tickets': Talep.objects.filter(assigned_to=user).count(),
-                'my_resolved_tickets': Talep.objects.filter(
-                    assigned_to=user, status='resolved'
-                ).count(),
-                'my_comments': Comment.objects.filter(user=user).count(),
-                'tickets_this_week': Talep.objects.filter(
-                    created_at__gte=datetime.now() - timedelta(days=7)
-                ).count(),
-                'tickets_this_month': Talep.objects.filter(
-                    created_at__gte=datetime.now() - timedelta(days=30)
-                ).count(),
-            }
-        else:
-            # Customer için kendi istatistikleri
-            user_group = user.groups.first()
-            group_tickets = Talep.objects.filter(
-                user__groups=user_group
-            ) if user_group else Talep.objects.filter(user=user)
-            
-            statistics = {
-                'my_tickets': Talep.objects.filter(user=user).count(),
-                'my_open_tickets': Talep.objects.filter(user=user, status='open').count(),
-                'my_in_progress_tickets': Talep.objects.filter(user=user, status='in_progress').count(),
-                'my_resolved_tickets': Talep.objects.filter(user=user, status='resolved').count(),
-                'my_closed_tickets': Talep.objects.filter(user=user, status='closed').count(),
-                'my_comments': Comment.objects.filter(user=user).count(),
-                'group_tickets': group_tickets.count(),
-                'tickets_this_week': Talep.objects.filter(
-                    user=user, created_at__gte=datetime.now() - timedelta(days=7)
-                ).count(),
-                'tickets_this_month': Talep.objects.filter(
-                    user=user, created_at__gte=datetime.now() - timedelta(days=30)
-                ).count(),
-            }
-        
-        # Son aktivite bilgileri
-        latest_ticket = Talep.objects.filter(user=user).order_by('-created_at').first()
-        latest_comment = Comment.objects.filter(user=user).order_by('-created_at').first()
-        
-        activity_info = {
-            'latest_ticket': {
-                'id': latest_ticket.id,
-                'title': latest_ticket.title,
-                'created_at': latest_ticket.created_at.isoformat(),
-                'status': latest_ticket.get_status_display()
-            } if latest_ticket else None,
-            'latest_comment': {
-                'ticket_id': latest_comment.talep.id,
-                'ticket_title': latest_comment.talep.title,
-                'created_at': latest_comment.created_at.isoformat(),
-                'message': latest_comment.message[:100] + '...' if len(latest_comment.message) > 100 else latest_comment.message
-            } if latest_comment else None,
-            'account_created': user.date_joined.isoformat(),
-            'last_login': user.last_login.isoformat() if user.last_login else None,
-        }
-        
-    except Exception as e:
-        logger.error(f"Error calculating user statistics: {e}")
-        statistics = {}
-        activity_info = {}
-    
-    return Response({
-        'user': serializer.data,
-        'token_info': token_info,
-        'statistics': statistics,
-        'activity': activity_info
-    })
-
-@csrf_exempt
-@api_view(['POST'])  # Tekrar sadece POST
-@permission_classes([AllowAny])
-@authentication_classes([CsrfExemptSessionAuthentication, TokenAuthentication])
-@rate_limit_login(max_attempts=3, window_minutes=30)  # Signup için daha kısıtlayıcı
-def api_signup(request):
-    """
-    Token-based signup endpoint - Enhanced security
-    """
-    try:
-        # Input sanitization - username için özel sanitization
-        username = sanitize_username(request.data.get('username', ''), max_length=150)
-        email = sanitize_input(request.data.get('email', ''), max_length=254)
-        password1 = request.data.get('password1', '')
-        password2 = request.data.get('password2', '')
-        
-        # Validations
-        if not all([username, email, password1, password2]):
-            return Response({
-                'error': 'Tüm alanlar doldurulmalıdır.'
-            }, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Username length validation
-        if len(username) < 3:
-            return Response({
-                'error': 'Kullanıcı adı en az 3 karakter olmalıdır.'
-            }, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Username character validation - Regex kullanarak daha güvenilir kontrol
-        import re
-        username_pattern = re.compile(r'^[a-zA-Z0-9_-]+$')
-        if not username_pattern.match(username):
-            return Response({
-                'error': 'Kullanıcı adı sadece harf, rakam, alt çizgi (_) ve tire (-) içerebilir.'
-            }, status=status.HTTP_400_BAD_REQUEST)
-        
-        if password1 != password2:
-            return Response({
-                'error': 'Parolalar eşleşmiyor.'
-            }, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Password strength validation
-        password_errors = validate_password_strength(password1)
-        if password_errors:
-            return Response({
-                'error': 'Parola yeterince güçlü değil: ' + ', '.join(password_errors)
-            }, status=status.HTTP_400_BAD_REQUEST)
-        
-        if User.objects.filter(username=username).exists():
-            return Response({
-                'error': 'Bu kullanıcı adı zaten kullanılıyor.'
-            }, status=status.HTTP_400_BAD_REQUEST)
-        
-        if User.objects.filter(email=email).exists():
-            return Response({
-                'error': 'Bu e-posta adresi zaten kullanılıyor.'
-            }, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Kullanıcı oluştur
-        user = User.objects.create_user(
-            username=username,
-            email=email,
-            password=password1
-        )
-        
-        # Yeni kullanıcıları customer role'ü ile kaydet ve güvenlik ayarları
-        user.role = 'customer'
-        user.is_staff = False  # Güvenlik: Yeni kullanıcılar staff değil
-        user.is_superuser = False  # Güvenlik: Yeni kullanıcılar superuser değil
-        user.save()
-        
-        # ÖNEMLI: Signup öncesi tüm session/token temizliği
-        # Eğer tarayıcıda başka bir kullanıcının token'ı varsa temizle
-        existing_token = request.COOKIES.get('auth_token')
-        if existing_token:
-            # Eski token'ı geçersiz kıl
-            try:
-                old_custom_token = CustomAuthToken.objects.get(key=existing_token)
-                old_user = old_custom_token.user
-                # O kullanıcının tüm token'larını sil
-                CustomAuthToken.objects.filter(user=old_user).delete()
-                Token.objects.filter(user=old_user).delete()
-            except CustomAuthToken.DoesNotExist:
-                pass
-        
-        # Yeni kullanıcı için temiz token oluştur
-        # Önce varsa eski token'ları temizle (güvenlik için)
-        CustomAuthToken.objects.filter(user=user).delete()
-        Token.objects.filter(user=user).delete()
-        
-        # Custom token oluştur
-        custom_token = CustomAuthToken.objects.create(
-            user=user,
-            username=user.username
-        )
-        custom_token.set_password_hash(password1)
-        custom_token.save()
-        
-        # Normal token da oluştur (backward compatibility)
-        normal_token = Token.objects.create(user=user)
-        
-        # Kullanıcı bilgilerini serialize et
-        user_serializer = UserSerializer(user)
-        
-        # Yeni kullanıcıları customer role'ü ile kaydet ve customer paneline yönlendir
-        user.role = 'customer'
-        user.save()
-        
-        redirect_url = '/accounts/customer-panel/'
-        
-        response = Response({
-            'token': custom_token.key,
-            'backup_token': normal_token.key,
-            'user': user_serializer.data,
-            'redirect_url': redirect_url,
-            'token_expires': custom_token.expires_at.isoformat(),
-            'message': 'Hesap başarıyla oluşturuldu ve giriş yapıldı.'
-        }, status=status.HTTP_201_CREATED)
-        
-        # ÖNCE: Tüm eski authentication cookie'lerini temizle
-        response.delete_cookie('auth_token')
-        response.delete_cookie('user_id')
-        response.delete_cookie('user_role')
-        response.delete_cookie('sessionid')  # Django session cookie
-        response.delete_cookie('csrftoken')  # CSRF token
-        
-        # YENİ: Token'ı çerezlere kaydet (browser için)
-        response.set_cookie(
-            'auth_token',
-            custom_token.key,
-            max_age=7*24*60*60,  # 7 gün
-            httponly=True,  # XSS koruması
-            secure=False,  # Development için False, production'da True olmalı
-            samesite='Lax'  # CSRF koruması
-        )
-        
-        # Kullanıcı ID'sini de çerezlere kaydet
-        response.set_cookie(
-            'user_id',
-            str(user.id),
-            max_age=7*24*60*60,
-            httponly=False,  # JavaScript'ten erişebilir
-            secure=False,
-            samesite='Lax'
-        )
-        
-        # Kullanıcı rolünü de çerezlere kaydet
-        response.set_cookie(
-            'user_role',
-            user.role,
-            max_age=7*24*60*60,
-            httponly=False,
-            secure=False,
-            samesite='Lax'
-        )
-        
-        return response
-        
-    except Exception as e:
-        logger.error(f"Signup error from IP {get_client_ip(request)}: {str(e)}")
-        return Response({
-            'error': 'Bir hata oluştu: ' + str(e)
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-def signup_view(request):
-    """
-    Template-based signup view
-    """
-    return render(request, 'registration/signup_new.html')
-
-# TOKEN TABANLI ÖZELLEŞTIRILMIŞ ADMIN PANELLERİ
-
-def verify_token_auth(request):
-    """
-    Gelişmiş token tabanlı kimlik doğrulama kontrolü
-    - Token authentication'a öncelik verir
-    - Session authentication fallback olarak kullanılır
-    - Token yenileme özelliği
-    - Çerez tabanlı token yönetimi
-    """
-    user = None
-    
-    # 1. Authorization header'dan token kontrolü (EN ÖNCELİKLİ)
-    auth_header = request.META.get('HTTP_AUTHORIZATION')
-    if auth_header and auth_header.startswith('Token '):
-        token_key = auth_header.split(' ')[1]
-        user = get_user_by_token(token_key)
-        if user:
-            return user
-    
-    # 2. Cookie'den token kontrolü (İKİNCİ ÖNCELİK)
-    token_key = request.COOKIES.get('auth_token')
-    if token_key:
-        user = get_user_by_token(token_key)
-        if user:
-            # Çerezlerdeki kullanıcı bilgilerini doğrula
-            cookie_user_id = request.COOKIES.get('user_id')
-            cookie_user_role = request.COOKIES.get('user_role')
-            
-            if cookie_user_id and str(user.id) != cookie_user_id:
-                logger.warning(f"User ID mismatch in cookies: token user {user.id} vs cookie {cookie_user_id}")
-            
-            if cookie_user_role and user.role != cookie_user_role:
-                logger.warning(f"User role mismatch in cookies: token user {user.role} vs cookie {cookie_user_role}")
-                
-            return user
-        else:
-            logger.warning(f"Cookie token {token_key[-8:]}... is invalid or expired")
-    
-    # 3. POST/GET parametrelerinden token kontrolü
-    token_key = request.POST.get('token') or request.GET.get('token')
-    if token_key:
-        user = get_user_by_token(token_key)
-        if user:
-            return user
-    
-    # 4. Django session authentication (FALLBACK)
-    if request.user.is_authenticated:
-        return request.user
-    
-    return None
+# =========================
 
 def get_user_by_token(token_key):
-    """
-    Token key ile kullanıcı bulma ve token güncelleme
-    """
-    if not token_key:
-        return None
-        
-    # Custom token kontrolü
+    """Token ile kullanıcı getir, süresi dolmuşsa sil"""
     try:
-        custom_token = CustomAuthToken.objects.get(key=token_key)
-        if not custom_token.is_expired():
-            custom_token.use_token()  # Son kullanım zamanını güncelle
-            return custom_token.user
-        else:
-            # Token süresi dolmuş, otomatik yenile
-            custom_token.refresh_token()
-            custom_token.use_token()
-            return custom_token.user
-    except CustomAuthToken.DoesNotExist:
-        pass
-        
-    # Fallback: Normal DRF token kontrolü
-    try:
-        normal_token = Token.objects.get(key=token_key)
-        return normal_token.user
-    except Token.DoesNotExist:
-        pass
-    
-    return None
-
-def get_user_token_info(user):
-    """
-    Kullanıcının token bilgilerini getir
-    """
-    try:
-        custom_token = CustomAuthToken.objects.get(user=user)
-        return {
-            'token_key': custom_token.key[-8:],  # Son 8 karakter
-            'created': custom_token.created,
-            'expires_at': custom_token.expires_at,
-            'last_used': custom_token.last_used,
-            'is_expired': custom_token.is_expired(),
-            'days_until_expiry': (custom_token.expires_at - timezone.now()).days if custom_token.expires_at > timezone.now() else 0
-        }
+        token = CustomAuthToken.objects.select_related('user').get(key=token_key)
+        if token.is_expired():
+            token.delete()
+            return None
+        return token.user
     except CustomAuthToken.DoesNotExist:
         return None
 
-@admin_required
-def admin_panel_view(request):
-    """
-    Admin Panel - Sadece admin ve superuser'lar erişebilir
-    Gelişmiş yetki kontrolü ve token yönetimi
-    """
-    
-    # Token tabanlı kimlik doğrulama
-    user = verify_token_auth(request)
-    
-    if not user:
-        # Ana sayfaya yönlendir (home_view token kontrolü yapacak)
-        return redirect('/?redirect=admin-panel')
-    
-    # Admin yetki kontrolü - Katı güvenlik
-    if not (user.is_superuser or (user.role == 'admin' and user.is_staff)):
-        # Yetkisiz erişim - kullanıcı rolüne göre doğru panele yönlendir
-        # Tüm non-admin kullanıcılar customer panel'e gitsin
+# =========================
+# Ana Sayfa & Panel View'ları
+# =========================
+
+def home_view(request):
+    """Ana sayfa, role göre yönlendirme"""
+    if request.user.is_authenticated:
+        role = getattr(request.user, 'role', 'customer').lower()
+        if role == 'admin':
+            return redirect('/accounts/admin-panel/')
+        elif role == 'support':
+            return redirect('/accounts/support-panel/')
         return redirect('/accounts/customer-panel/')
+
+    return render(request, 'tickets/home.html', {'page_title': 'HelpDesk Sistemi', 'is_home': True})
+
+def custom_login_view(request):
+    """Login sayfası"""
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+
+        if username and password:
+            user = authenticate(request, username=username, password=password)
+            if user and user.is_active:
+                login(request, user)
+                token, created = CustomAuthToken.objects.get_or_create(user=user)
+                if not created:
+                    token.created = timezone.now()
+                    token.save()
+
+                redirect_map = {'admin': '/accounts/admin-panel/',
+                                'support': '/accounts/support-panel/',
+                                'customer': '/accounts/customer-panel/'}
+                return redirect(redirect_map.get(user.role, '/accounts/customer-panel/'))
+            messages.error(request, 'Kullanıcı adı veya şifre hatalı / Hesap aktif değil.')
+        else:
+            messages.error(request, 'Kullanıcı adı ve şifre gerekli.')
+
+    return render(request, 'accounts/login.html')
+
+@login_required
+def admin_panel_view(request):
+    """Admin paneli"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
+
+    # Kullanıcı istatistikleri
+    total_users = CustomUser.objects.count()
+    admin_users = CustomUser.objects.filter(role='admin').count()
+    support_users = CustomUser.objects.filter(role='support').count()
+    customer_users = CustomUser.objects.filter(role='customer').count()
     
-    # Admin panel context'i hazırla
+    # Talep istatistikleri
+    try:
+        from tickets.models import Talep
+        total_tickets = Talep.objects.count()
+        open_tickets = Talep.objects.filter(status='open').count()
+        in_progress_tickets = Talep.objects.filter(status='in_progress').count()
+        resolved_tickets = Talep.objects.filter(status='resolved').count()
+        
+        # Son talepler
+        recent_tickets = Talep.objects.order_by('-created_at')[:5]
+        
+        # Bu hafta/ay talepler
+        from django.utils import timezone
+        from datetime import timedelta
+        
+        week_ago = timezone.now() - timedelta(days=7)
+        month_ago = timezone.now() - timedelta(days=30)
+        
+        tickets_this_week = Talep.objects.filter(created_at__gte=week_ago).count()
+        tickets_this_month = Talep.objects.filter(created_at__gte=month_ago).count()
+        
+    except ImportError:
+        # Tickets app yoksa default değerler
+        total_tickets = 0
+        open_tickets = 0
+        in_progress_tickets = 0
+        resolved_tickets = 0
+        recent_tickets = []
+        tickets_this_week = 0
+        tickets_this_month = 0
+
+    # Token istatistikleri
+    from django.utils import timezone
+    active_tokens = CustomAuthToken.objects.filter(created__gte=timezone.now() - timedelta(days=30)).count()
+    expired_tokens = CustomAuthToken.objects.filter(created__lt=timezone.now() - timedelta(days=30)).count()
+    
+    # Grup sayısı
+    from django.contrib.auth.models import Group
+    total_groups = Group.objects.count()
+    
+    # Son kullanıcılar
+    recent_users = CustomUser.objects.order_by('-date_joined')[:5]
+
     context = {
-        'panel_title': 'Admin Paneli',
-        'user_role': 'Admin',
-        'current_user': user,
-        'panel_type': 'admin',
-        'has_admin_access': True
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'panel_title': 'Yönetim Paneli',
+        'page_title': 'Admin Panel',
+        
+        # Kullanıcı istatistikleri
+        'total_users': total_users,
+        'admin_users': admin_users,
+        'support_users': support_users,
+        'customer_users': customer_users,
+        'recent_users': recent_users,
+        
+        # Talep istatistikleri
+        'total_tickets': total_tickets,
+        'open_tickets': open_tickets,
+        'in_progress_tickets': in_progress_tickets,
+        'resolved_tickets': resolved_tickets,
+        'recent_tickets': recent_tickets,
+        'tickets_this_week': tickets_this_week,
+        'tickets_this_month': tickets_this_month,
+        
+        # Token ve grup istatistikleri
+        'active_tokens': active_tokens,
+        'expired_tokens': expired_tokens,
+        'total_groups': total_groups,
     }
-    
     return render(request, 'accounts/admin_panel.html', context)
 
+@login_required
 def support_panel_view(request):
-    """
-    Support Panel - Support ve üst yetkiler erişebilir
-    Gelişmiş yetki kontrolü ve token yönetimi
-    """
-    # Token tabanlı kimlik doğrulama
-    user = verify_token_auth(request)
-    
-    if not user:
-        # Direkt login sayfasına yönlendir
+    """Support panel"""
+    if getattr(request.user, 'role', '').lower() not in ['admin', 'support']:
         return redirect('/accounts/login/')
-    
-    # Support yetki kontrolü - Katı güvenlik
-    if not (user.is_superuser or (user.role in ['admin', 'support'] and user.is_staff)):
-        # Yetkisiz erişim - customer paneline yönlendir
-        return redirect('/accounts/customer-panel/')
-    
     context = {
-        'panel_title': 'Destek Paneli',
-        'user_role': 'Support',
-        'current_user': user,
-        'panel_type': 'support',
-        'has_support_access': True
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'panel_title': 'Support Panel',
+        'page_title': 'Support Panel'
     }
-    
     return render(request, 'accounts/support_panel.html', context)
 
+@login_required
 def customer_panel_view(request):
-    """
-    Customer Panel - Tüm kullanıcılar erişebilir
-    Gelişmiş token kontrolü ve kullanıcı deneyimi
-    """
-    from tickets.models import Talep, Category
-    from django.db.models import Q
-    
-    # Token tabanlı kimlik doğrulama
-    user = verify_token_auth(request)
-    
-    if not user:
-        # Direkt login sayfasına yönlendir (home_view bypass)
+    """Customer panel"""
+    context = {
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'panel_title': 'Müşteri Panel',
+        'page_title': 'Müşteri Panel'
+    }
+    return render(request, 'accounts/customer_panel_modern.html', context)
+
+# =========================
+# Admin Kullanıcı Yönetimi
+# =========================
+
+@login_required
+def admin_users_view(request):
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
+    users = CustomUser.objects.all().order_by('-date_joined')
+    return render(request, 'accounts/admin_users.html', {
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'users': users,
+        'panel_title': 'Kullanıcı Yönetimi',
+        'page_title': 'Kullanıcı Yönetimi'
+    })
+
+@login_required
+def admin_user_create_view(request):
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
+
+    if request.method == 'POST':
+        data = {k: request.POST.get(k) for k in ['username', 'email', 'password', 'role']}
+        data['is_active'] = request.POST.get('is_active') == 'on'
+        try:
+            CustomUser.objects.create_user(**data)
+            messages.success(request, f'Kullanıcı "{data["username"]}" oluşturuldu.')
+            return redirect('admin_users')
+        except Exception as e:
+            messages.error(request, f'Hata: {e}')
+
+    return render(request, 'accounts/admin_user_create.html', {
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'panel_title': 'Yeni Kullanıcı',
+        'page_title': 'Yeni Kullanıcı'
+    })
+
+# =========================
+# Customer Profil
+# =========================
+
+@login_required
+def customer_profile_view(request):
+    return render(request, 'accounts/customer_profile.html', {
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'page_title': 'Profil'
+    })
+
+@login_required
+def customer_profile_edit_view(request):
+    if request.method == 'POST':
+        for field in ['email', 'first_name', 'last_name']:
+            setattr(request.user, field, request.POST.get(field, getattr(request.user, field)))
+        try:
+            request.user.save()
+            messages.success(request, 'Profil güncellendi.')
+        except Exception as e:
+            messages.error(request, f'Hata: {e}')
+        return redirect('customer_profile')
+    return render(request, 'accounts/customer_profile_edit.html', {
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'page_title': 'Profil Düzenle'
+    })
+
+@login_required
+def customer_change_password_view(request):
+    if request.method == 'POST':
+        old = request.POST.get('old_password')
+        new = request.POST.get('new_password')
+        confirm = request.POST.get('confirm_password')
+        if not request.user.check_password(old):
+            messages.error(request, 'Mevcut şifre hatalı.')
+        elif new != confirm:
+            messages.error(request, 'Yeni şifreler eşleşmiyor.')
+        elif len(new) < 6:
+            messages.error(request, 'Şifre en az 6 karakter.')
+        else:
+            request.user.set_password(new)
+            request.user.save()
+            messages.success(request, 'Şifre değiştirildi.')
+            return redirect('customer_profile')
+    return render(request, 'accounts/customer_change_password.html', {
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'page_title': 'Şifre Değiştir'
+    })
+
+# =========================
+# Logout & Signup
+# =========================
+
+def custom_logout_view(request):
+    if request.user.is_authenticated:
+        CustomAuthToken.objects.filter(user=request.user).delete()
+    logout(request)
+    messages.success(request, 'Başarıyla çıkış yapıldı.')
+    return redirect('/accounts/login/')
+
+def signup_view(request):
+    return render(request, 'registration/signup.html')
+
+# =========================
+# Admin User Management (CRUD)
+# =========================
+
+@login_required
+def admin_user_edit_view(request, user_id):
+    """Admin - Kullanıcı düzenleme"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
         return redirect('/accounts/login/')
     
-    # Güvenlik: Sadece customer/support/admin kullanıcılar customer panel'e erişebilir
-    # Ama öncelikle customer panel'i herkesin görebilmesi için bu kontrolü gevşetelim
-    
-    # Kullanıcının kendi talepleri
-    my_tickets = Talep.objects.filter(user=user).order_by('-created_at')
-    
-    # Kullanıcının gruplarının talepleri
-    group_tickets = []
-    if user.groups.exists():
-        user_groups = user.groups.all()
-        # Grup adına göre kategorileri bul
-        group_categories = Category.objects.filter(name__in=user_groups.values_list('name', flat=True))
-        # Bu kategorilerdeki tüm talepleri getir (kendi talepleri hariç)
-        group_tickets = Talep.objects.filter(
-            category__in=group_categories
-        ).exclude(user=user).order_by('-created_at')
-    
-    # İstatistikler
-    my_open_tickets = my_tickets.filter(status__in=['open', 'in_progress'])
-    my_closed_tickets = my_tickets.filter(status='closed')
-    
-    context = {
-        'panel_title': 'Müşteri Paneli',
-        'user_role': 'Customer',
-        'current_user': user,
-        'panel_type': 'customer',
-        'has_customer_access': True,
-        'my_tickets': my_tickets,
-        'group_tickets': group_tickets,
-        'my_open_tickets_count': my_open_tickets.count(),
-        'my_closed_tickets_count': my_closed_tickets.count(),
-        'total_tickets_count': my_tickets.count(),
-        'user_groups': user.groups.all() if user.groups.exists() else None
-    }
-    
-    return render(request, 'accounts/customer_panel.html', context)
-
-# ================================
-# ADMİN KULLANICI YÖNETİMİ VIEW'LARI
-# ================================
-
-def admin_users_view(request):
-    """
-    Admin Kullanıcı Listesi - Sadece admin erişebilir
-    """
-    # Token tabanlı kimlik doğrulama
-    user = verify_token_auth(request)
-    
-    if not user:
-        return redirect('/accounts/login/?next=admin-users')
-    
-    # Admin kontrolü
-    if not (user.is_superuser or user.role == 'admin'):
-        return HttpResponseForbidden("Bu sayfaya erişim yetkiniz yok.")
-    
-    # Tüm kullanıcıları getir
-    users = User.objects.all().order_by('-date_joined')
-    
-    context = {
-        'users': users,
-        'current_user': user,
-        'user_role': 'Admin',
-        'page_title': 'Kullanıcı Yönetimi'
-    }
-    
-    return render(request, 'accounts/admin_users.html', context)
-
-def admin_user_create_view(request):
-    """
-    Yeni Kullanıcı Oluşturma - Sadece admin erişebilir
-    """
-    # Token tabanlı kimlik doğrulama
-    user = verify_token_auth(request)
-    
-    if not user:
-        return redirect('/accounts/login/?next=admin-user-create')
-    
-    # Admin kontrolü
-    if not (user.is_superuser or user.role == 'admin'):
-        return HttpResponseForbidden("Bu sayfaya erişim yetkiniz yok.")
+    try:
+        user = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
+        messages.error(request, 'Kullanıcı bulunamadı.')
+        return redirect('admin_users')
     
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        role = request.POST.get('role', 'customer')
-        is_active = request.POST.get('is_active') == 'on'
-        first_name = request.POST.get('first_name', '')
-        last_name = request.POST.get('last_name', '')
+        # Form verilerini güncelle
+        user.username = request.POST.get('username', user.username)
+        user.email = request.POST.get('email', user.email)
+        user.first_name = request.POST.get('first_name', user.first_name)
+        user.last_name = request.POST.get('last_name', user.last_name)
+        
+        # Superuser'ların role'ünü değiştirmeyi engelle
+        if not user.is_superuser:
+            user.role = request.POST.get('role', user.role)
+        else:
+            user.role = 'admin'  # Superuser'lar her zaman admin olmalı
+        
+        user.is_active = request.POST.get('is_active') == 'on'
+        
+        # Şifre değişikliği
+        new_password = request.POST.get('password')
+        if new_password:
+            user.set_password(new_password)
         
         try:
-            # Yeni kullanıcı oluştur
-            new_user = User.objects.create(
-                username=username,
-                email=email,
-                password=make_password(password),
-                role=role,
-                is_active=is_active,
-                first_name=first_name,
-                last_name=last_name
-            )
-            
-            return redirect('/accounts/admin/users/')
-            
+            user.save()
+            messages.success(request, f'Kullanıcı "{user.username}" güncellendi.')
+            return redirect('admin_users')
         except Exception as e:
-            logger.error(f"Kullanıcı oluşturma hatası: {str(e)}")
-            context = {
-                'error': 'Kullanıcı oluşturulurken bir hata oluştu. Kullanıcı adı zaten mevcut olabilir.',
-                'current_user': user,
-                'user_role': 'Admin',
-                'page_title': 'Yeni Kullanıcı'
-            }
-            return render(request, 'accounts/admin_user_create.html', context)
+            messages.error(request, f'Hata: {e}')
     
     context = {
-        'current_user': user,
-        'user_role': 'Admin',
-        'page_title': 'Yeni Kullanıcı'
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'edit_user': user,
+        'panel_title': 'Kullanıcı Düzenle',
+        'page_title': f'Kullanıcı Düzenle - {user.username}'
     }
-    
-    return render(request, 'accounts/admin_user_create.html', context)
-
-def admin_user_edit_view(request, user_id):
-    """
-    Kullanıcı Düzenleme - Sadece admin erişebilir
-    """
-    # Token tabanlı kimlik doğrulama
-    user = verify_token_auth(request)
-    
-    if not user:
-        return redirect('/accounts/login/?next=admin-user-edit')
-    
-    # Admin kontrolü
-    if not (user.is_superuser or user.role == 'admin'):
-        return HttpResponseForbidden("Bu sayfaya erişim yetkiniz yok.")
-    
-    try:
-        target_user = User.objects.get(id=user_id)
-    except User.DoesNotExist:
-        return redirect('/accounts/admin/users/')
-    
-    if request.method == 'POST':
-        try:
-            # Form verilerini al
-            username = request.POST.get('username', '').strip()
-            email = request.POST.get('email', '').strip()
-            first_name = request.POST.get('first_name', '').strip()
-            last_name = request.POST.get('last_name', '').strip()
-            role = request.POST.get('role', target_user.role)
-            is_active = request.POST.get('is_active') == 'on'
-            new_password = request.POST.get('password', '').strip()
-            
-            # Validasyon
-            if not username:
-                messages.error(request, 'Kullanıcı adı boş olamaz.')
-                return render(request, 'accounts/admin_user_edit.html', {
-                    'target_user': target_user,
-                    'current_user': user,
-                    'user_role': 'Admin',
-                    'page_title': f'Kullanıcı Düzenle: {target_user.username}'
-                })
-            
-            if not email:
-                messages.error(request, 'E-posta adresi boş olamaz.')
-                return render(request, 'accounts/admin_user_edit.html', {
-                    'target_user': target_user,
-                    'current_user': user,
-                    'user_role': 'Admin',
-                    'page_title': f'Kullanıcı Düzenle: {target_user.username}'
-                })
-            
-            # Username unique kontrolü (kendisi hariç)
-            if User.objects.exclude(id=target_user.id).filter(username=username).exists():
-                messages.error(request, 'Bu kullanıcı adı zaten kullanılıyor.')
-                return render(request, 'accounts/admin_user_edit.html', {
-                    'target_user': target_user,
-                    'current_user': user,
-                    'user_role': 'Admin',
-                    'page_title': f'Kullanıcı Düzenle: {target_user.username}'
-                })
-            
-            # Email unique kontrolü (kendisi hariç)
-            if User.objects.exclude(id=target_user.id).filter(email=email).exists():
-                messages.error(request, 'Bu e-posta adresi zaten kullanılıyor.')
-                return render(request, 'accounts/admin_user_edit.html', {
-                    'target_user': target_user,
-                    'current_user': user,
-                    'user_role': 'Admin',
-                    'page_title': f'Kullanıcı Düzenle: {target_user.username}'
-                })
-            
-            # Verileri güncelle
-            target_user.username = username
-            target_user.email = email
-            target_user.first_name = first_name
-            target_user.last_name = last_name
-            target_user.role = role
-            target_user.is_active = is_active
-            
-            # Şifre değiştirilmişse güncelle
-            if new_password:
-                target_user.password = make_password(new_password)
-            
-            target_user.save()
-            
-            messages.success(request, f'{target_user.username} kullanıcısı başarıyla güncellendi.')
-            return redirect('/accounts/admin/users/')
-            
-        except Exception as e:
-            logger.error(f"Kullanıcı güncellenirken hata: {str(e)}")
-            messages.error(request, 'Kullanıcı güncellenirken bir hata oluştu.')
-            return render(request, 'accounts/admin_user_edit.html', {
-                'target_user': target_user,
-                'current_user': user,
-                'user_role': 'Admin',
-                'page_title': f'Kullanıcı Düzenle: {target_user.username}'
-            })
-    
-    context = {
-        'target_user': target_user,
-        'current_user': user,
-        'user_role': 'Admin',
-        'page_title': f'Kullanıcı Düzenle: {target_user.username}'
-    }
-    
     return render(request, 'accounts/admin_user_edit.html', context)
 
+@login_required
 def admin_user_delete_view(request, user_id):
-    """
-    Kullanıcı Silme - Sadece admin erişebilir
-    """
-    # Token tabanlı kimlik doğrulama
-    user = verify_token_auth(request)
-    
-    if not user:
-        return redirect('/accounts/login/?next=admin-user-delete')
-    
-    # Admin kontrolü
-    if not (user.is_superuser or user.role == 'admin'):
-        return HttpResponseForbidden("Bu sayfaya erişim yetkiniz yok.")
+    """Admin - Kullanıcı silme"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
     
     try:
-        target_user = User.objects.get(id=user_id)
-        
-        # Kendi hesabını silmeye izin verme
-        if target_user.id == user.id:
-            return HttpResponseForbidden("Kendi hesabınızı silemezsiniz.")
-        
-        if request.method == 'POST':
-            username = target_user.username
-            target_user.delete()
-            
-            return redirect('/accounts/admin/users/')
-            
-    except User.DoesNotExist:
-        return redirect('/accounts/admin/users/')
+        user = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
+        messages.error(request, 'Kullanıcı bulunamadı.')
+        return redirect('admin_users')
+    
+    # Super admin silinemez
+    if user.is_superuser:
+        messages.error(request, 'Super admin kullanıcı silinemez.')
+        return redirect('admin_users')
+    
+    # Kendini silememez
+    if user.id == request.user.id:
+        messages.error(request, 'Kendi hesabınızı silemezsiniz.')
+        return redirect('admin_users')
+    
+    if request.method == 'POST':
+        username = user.username
+        user.delete()
+        messages.success(request, f'Kullanıcı "{username}" silindi.')
+        return redirect('admin_users')
     
     context = {
-        'target_user': target_user,
-        'current_user': user,
-        'user_role': 'Admin',
-        'page_title': f'Kullanıcı Sil: {target_user.username}'
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'delete_user': user,
+        'panel_title': 'Kullanıcı Sil',
+        'page_title': f'Kullanıcı Sil - {user.username}'
     }
-    
     return render(request, 'accounts/admin_user_delete.html', context)
 
-# ================================
-# GRUP YÖNETİMİ VIEW'LARI
-# ================================
+# =========================
+# Yeni Admin İşlevleri
+# =========================
 
+@login_required
 def admin_groups_view(request):
-    """
-    Admin Grup Listesi - Sadece admin erişebilir
-    """
-    # Token tabanlı kimlik doğrulama
-    user = verify_token_auth(request)
+    """Grup yönetimi sayfası"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
     
-    if not user:
-        return redirect('/accounts/login/?next=admin-groups')
-    
-    # Admin kontrolü
-    if not (user.is_superuser or user.role == 'admin'):
-        return HttpResponseForbidden("Bu sayfaya erişim yetkiniz yok.")
-    
-    # Tüm grupları getir
+    from django.contrib.auth.models import Group
     groups = Group.objects.all().order_by('name')
     
     context = {
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
         'groups': groups,
-        'current_user': user,
-        'user_role': 'Admin',
+        'panel_title': 'Grup Yönetimi',
         'page_title': 'Grup Yönetimi'
     }
-    
     return render(request, 'accounts/admin_groups.html', context)
 
+@login_required
 def admin_group_create_view(request):
-    """
-    Yeni Grup Oluşturma - Sadece admin erişebilir
-    """
-    # Token tabanlı kimlik doğrulama
-    user = verify_token_auth(request)
-    
-    if not user:
-        return redirect('/accounts/login/?next=admin-group-create')
-    
-    # Admin kontrolü
-    if not (user.is_superuser or user.role == 'admin'):
-        return HttpResponseForbidden("Bu sayfaya erişim yetkiniz yok.")
+    """Yeni grup oluşturma sayfası"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
     
     if request.method == 'POST':
-        group_name = request.POST.get('name')
+        group_name = request.POST.get('name', '').strip()
+        permissions_ids = request.POST.getlist('permissions')
         
-        try:
-            # Yeni grup oluştur
-            new_group = Group.objects.create(name=group_name)
-            
-            return redirect('/accounts/admin/groups/')
-            
-        except Exception as e:
-            logger.error(f"Grup oluşturma hatası: {str(e)}")
-            context = {
-                'error': 'Grup oluşturulurken bir hata oluştu.',
-                'current_user': user,
-                'user_role': 'Admin',
-                'page_title': 'Yeni Grup'
-            }
-            return render(request, 'accounts/admin_group_create.html', context)
+        if group_name:
+            try:
+                # Yeni grup oluştur
+                group = Group.objects.create(name=group_name)
+                
+                # İzinleri ekle
+                if permissions_ids:
+                    permissions = Permission.objects.filter(id__in=permissions_ids)
+                    group.permissions.set(permissions)
+                
+                messages.success(request, f'"{group_name}" grubu başarıyla oluşturuldu!')
+                return redirect('admin_groups')
+            except Exception as e:
+                messages.error(request, f'Grup oluşturulurken hata: {str(e)}')
+        else:
+            messages.error(request, 'Grup adı gereklidir!')
+    
+    # Tüm izinleri getir
+    permissions = Permission.objects.select_related('content_type').order_by('content_type__app_label', 'codename')
     
     context = {
-        'current_user': user,
-        'user_role': 'Admin',
-        'page_title': 'Yeni Grup'
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'permissions': permissions,
+        'panel_title': 'Yeni Grup Oluştur',
+        'page_title': 'Yeni Grup Oluştur'
     }
-    
     return render(request, 'accounts/admin_group_create.html', context)
 
+@login_required
+def admin_group_edit_view(request, group_id):
+    """Grup düzenleme sayfası"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
+    
+    try:
+        group = Group.objects.get(id=group_id)
+    except Group.DoesNotExist:
+        messages.error(request, 'Grup bulunamadı!')
+        return redirect('admin_groups')
+    
+    if request.method == 'POST':
+        group_name = request.POST.get('name', '').strip()
+        permissions_ids = request.POST.getlist('permissions')
+        
+        if group_name:
+            try:
+                group.name = group_name
+                group.save()
+                
+                # İzinleri güncelle
+                if permissions_ids:
+                    permissions = Permission.objects.filter(id__in=permissions_ids)
+                    group.permissions.set(permissions)
+                else:
+                    group.permissions.clear()
+                
+                messages.success(request, f'"{group_name}" grubu başarıyla güncellendi!')
+                return redirect('admin_groups')
+            except Exception as e:
+                messages.error(request, f'Grup güncellenirken hata: {str(e)}')
+        else:
+            messages.error(request, 'Grup adı gereklidir!')
+    
+    # Tüm izinleri getir
+    permissions = Permission.objects.select_related('content_type').order_by('content_type__app_label', 'codename')
+    
+    context = {
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'group': group,
+        'permissions': permissions,
+        'panel_title': f'Grup Düzenle: {group.name}',
+        'page_title': f'Grup Düzenle: {group.name}'
+    }
+    return render(request, 'accounts/admin_group_edit.html', context)
+
+@login_required
 def admin_group_delete_view(request, group_id):
-    """
-    Grup Silme - Sadece admin erişebilir
-    """
-    # Token tabanlı kimlik doğrulama
-    user = verify_token_auth(request)
-    
-    if not user:
-        return JsonResponse({'error': 'Kimlik doğrulama gerekli'}, status=401)
-    
-    # Admin kontrolü
-    if not (user.is_superuser or user.role == 'admin'):
-        return JsonResponse({'error': 'Bu işlem için yetkiniz yok'}, status=403)
+    """Grup silme işlemi"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
     
     try:
         group = Group.objects.get(id=group_id)
         group_name = group.name
-        user_count = group.customuser_set.count()
-        
-        # Grup silme işlemi
         group.delete()
-        
-        return JsonResponse({
-            'success': True,
-            'message': f'"{group_name}" grubu başarıyla silindi.',
-            'deleted_group': {
-                'id': group_id,
-                'name': group_name,
-                'user_count': user_count
-            }
-        })
-        
+        messages.success(request, f'"{group_name}" grubu başarıyla silindi!')
     except Group.DoesNotExist:
-        return JsonResponse({'error': 'Grup bulunamadı'}, status=404)
-    
+        messages.error(request, 'Grup bulunamadı!')
     except Exception as e:
-        logger.error(f"Grup silme hatası: {str(e)}")
-        return JsonResponse({'error': f'Grup silinirken hata oluştu: {str(e)}'}, status=500)
-
-def admin_user_assign_groups_view(request, user_id):
-    """
-    Kullanıcıya Grup Atama - Sadece admin erişebilir
-    """
-    # Token tabanlı kimlik doğrulama
-    user = verify_token_auth(request)
+        messages.error(request, f'Grup silinirken hata: {str(e)}')
     
-    if not user:
-        return redirect('/accounts/login/?next=admin-user-assign-groups')
-    
-    # Admin kontrolü
-    if not (user.is_superuser or user.role == 'admin'):
-        return HttpResponseForbidden("Bu sayfaya erişim yetkiniz yok.")
-    
-    try:
-        target_user = User.objects.get(id=user_id)
-    except User.DoesNotExist:
-        return redirect('/accounts/admin/users/')
-    
-    # Tüm grupları getir
-    all_groups = Group.objects.all().order_by('name')
-    user_groups = target_user.groups.all()
-    
-    if request.method == 'POST':
-        selected_groups = request.POST.getlist('groups')
-        
-        # Kullanıcının gruplarını güncelle
-        target_user.groups.clear()
-        for group_id in selected_groups:
-            try:
-                group = Group.objects.get(id=group_id)
-                target_user.groups.add(group)
-            except Group.DoesNotExist:
-                continue
-        
-        return redirect('/accounts/admin/users/')
-    
-    context = {
-        'target_user': target_user,
-        'all_groups': all_groups,
-        'user_groups': user_groups,
-        'current_user': user,
-        'user_role': 'Admin',
-        'page_title': f'Grup Atama: {target_user.username}'
-    }
-    
-    return render(request, 'accounts/admin_user_assign_groups.html', context)
-
-
-# ================================
-# Additional Admin Management Views
-# ================================
-
-def admin_settings_view(request):
-    """
-    Sistem Ayarları - Sadece admin erişebilir
-    """
-    # Token tabanlı kimlik doğrulama
-    user = verify_token_auth(request)
-    
-    if not user:
-        return redirect('/accounts/login/?next=admin-settings')
-    
-    # Admin kontrolü
-    if not (user.is_superuser or user.role == 'admin'):
-        return HttpResponseForbidden("Bu sayfaya erişim yetkiniz yok.")
-    
-    from .models import SystemSettings
-    
-    # Mevcut ayarları al
-    settings = SystemSettings.get_settings()
-    
-    if request.method == 'POST':
-        # Form verilerini kaydet
-        settings.site_name = request.POST.get('site_name', settings.site_name)
-        settings.site_description = request.POST.get('site_description', settings.site_description)
-        settings.admin_email = request.POST.get('admin_email', settings.admin_email)
-        settings.timezone = request.POST.get('timezone', settings.timezone)
-        
-        # E-posta ayarları
-        settings.smtp_host = request.POST.get('smtp_host', settings.smtp_host)
-        settings.smtp_port = int(request.POST.get('smtp_port', settings.smtp_port))
-        settings.smtp_username = request.POST.get('smtp_username', settings.smtp_username)
-        smtp_password = request.POST.get('smtp_password', '')
-        if smtp_password:  # Sadece dolu ise güncelle
-            settings.smtp_password = smtp_password
-        settings.smtp_use_tls = 'smtp_use_tls' in request.POST
-        
-        # Güvenlik ayarları
-        settings.token_expiry_days = int(request.POST.get('token_expiry_days', settings.token_expiry_days))
-        settings.max_login_attempts = int(request.POST.get('max_login_attempts', settings.max_login_attempts))
-        settings.session_timeout_minutes = int(request.POST.get('session_timeout_minutes', settings.session_timeout_minutes))
-        settings.require_password_change = 'require_password_change' in request.POST
-        
-        # Güncelleyen kullanıcıyı kaydet
-        settings.updated_by = user
-        settings.save()
-        
-        messages.success(request, 'Sistem ayarları başarıyla kaydedildi.')
-        return redirect('admin_settings')
-    
-    context = {
-        'current_user': user,
-        'user_role': 'Admin',
-        'page_title': 'Sistem Ayarları',
-        'settings': settings,
-    }
-    
-    return render(request, 'accounts/admin_settings.html', context)
-
-def admin_reports_view(request):
-    """
-    Raporlar - Sadece admin erişebilir
-    """
-    # Token tabanlı kimlik doğrulama
-    user = verify_token_auth(request)
-    
-    if not user:
-        return redirect('/accounts/login/?next=admin-reports')
-    
-    # Admin kontrolü
-    if not (user.is_superuser or user.role == 'admin'):
-        return HttpResponseForbidden("Bu sayfaya erişim yetkiniz yok.")
-    
-    # İstatistikleri hesapla
-    from tickets.models import Talep
-    from django.db.models import Count
-    from datetime import datetime, timedelta
-    
-    # Genel istatistikler
-    total_tickets = Talep.objects.count()
-    open_tickets = Talep.objects.filter(status='open').count()
-    in_progress_tickets = Talep.objects.filter(status='in_progress').count()
-    closed_tickets = Talep.objects.filter(status='closed').count()
-    
-    # Son 30 gün
-    last_30_days = datetime.now() - timedelta(days=30)
-    recent_tickets = Talep.objects.filter(created_at__gte=last_30_days).count()
-    
-    # Durum dağılımı
-    status_distribution = Talep.objects.values('status').annotate(count=Count('status'))
-    
-    # Kullanıcı istatistikleri
-    total_users = User.objects.count()
-    admin_users = User.objects.filter(role='admin').count()
-    support_users = User.objects.filter(role='support').count()
-    customer_users = User.objects.filter(role='customer').count()
-    
-    # Son aktiviteler
-    recent_tickets_detailed = Talep.objects.select_related('user', 'assigned_to').order_by('-created_at')[:10]
-    
-    context = {
-        'current_user': user,
-        'user_role': 'Admin',
-        'page_title': 'Raporlar',
-        'stats': {
-            'total_tickets': total_tickets,
-            'open_tickets': open_tickets,
-            'in_progress_tickets': in_progress_tickets,
-            'closed_tickets': closed_tickets,
-            'recent_tickets': recent_tickets,
-            'total_users': total_users,
-            'admin_users': admin_users,
-            'support_users': support_users,
-            'customer_users': customer_users,
-        },
-        'status_distribution': status_distribution,
-        'recent_activities': recent_tickets_detailed,
-    }
-    
-    return render(request, 'accounts/admin_reports.html', context)
-
+    return redirect('admin_groups')
 
 @login_required
-def export_report(request):
-    """
-    Rapor export fonksiyonu - Excel ve CSV desteği
-    """
-    # Token tabanlı kimlik doğrulama
-    user = verify_token_auth(request)
+def admin_permissions_view(request):
+    """Yetki yönetimi sayfası"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
     
-    if not user:
-        return JsonResponse({'error': 'Authentication required'}, status=401)
+    from django.contrib.auth.models import Permission
+    permissions = Permission.objects.all().order_by('content_type__app_label', 'codename')
     
-    # Admin kontrolü
-    if not (user.is_superuser or user.role == 'admin'):
-        return JsonResponse({'error': 'Permission denied'}, status=403)
+    context = {
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'permissions': permissions,
+        'panel_title': 'Yetki Yönetimi',
+        'page_title': 'Yetki Yönetimi'
+    }
+    return render(request, 'accounts/admin_permissions.html', context)
+
+@login_required
+@login_required
+def admin_reports_view(request):
+    """Rapor sayfası"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
     
-    # Export formatını al
-    export_format = request.GET.get('format', 'csv')  # csv veya excel
-    report_type = request.GET.get('type', 'tickets')  # tickets veya users
-    
-    from tickets.models import Talep
-    from django.http import HttpResponse
-    import csv
-    from datetime import datetime
-    
-    # CSV Export
-    if export_format == 'csv':
-        response = HttpResponse(content_type='text/csv; charset=utf-8')
-        response['Content-Disposition'] = f'attachment; filename="helpdesk_report_{report_type}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv"'
+    # Ticket modeli varsa raporları oluştur
+    if Ticket:
+        from datetime import datetime
         
-        # UTF-8 BOM ekle (Excel'de Türkçe karakterler için)
-        response.write('\ufeff')
+        # Rapor verileri
+        now = datetime.now()
+        last_week = now - timedelta(days=7)
+        last_month = now - timedelta(days=30)
         
-        writer = csv.writer(response)
-        
-        if report_type == 'tickets':
-            # Ticket raporu
-            writer.writerow(['ID', 'Başlık', 'Kullanıcı', 'Durum', 'Öncelik', 'Kategori', 'Oluşturma Tarihi', 'Atanan'])
-            
-            tickets = Talep.objects.select_related('user', 'category', 'assigned_to').order_by('-created_at')
-            for ticket in tickets:
-                writer.writerow([
-                    ticket.id,
-                    ticket.title,
-                    ticket.user.username,
-                    ticket.get_status_display(),
-                    ticket.get_priority_display(),
-                    ticket.category.name if ticket.category else '',
-                    ticket.created_at.strftime('%d.%m.%Y %H:%M'),
-                    ticket.assigned_to.username if ticket.assigned_to else 'Atanmamış'
-                ])
-        
-        elif report_type == 'users':
-            # Kullanıcı raporu
-            writer.writerow(['ID', 'Kullanıcı Adı', 'E-posta', 'Rol', 'Aktif', 'Kayıt Tarihi', 'Son Giriş'])
-            
-            users = User.objects.order_by('-date_joined')
-            for user in users:
-                writer.writerow([
-                    user.id,
-                    user.username,
-                    user.email,
-                    user.get_role_display(),
-                    'Evet' if user.is_active else 'Hayır',
-                    user.date_joined.strftime('%d.%m.%Y %H:%M'),
-                    user.last_login.strftime('%d.%m.%Y %H:%M') if user.last_login else 'Hiç'
-                ])
-        
-        return response
-    
+        report_data = {
+            'total_users': CustomUser.objects.count(),
+            'total_tickets': Ticket.objects.count(),
+            'tickets_last_week': Ticket.objects.filter(created_at__gte=last_week).count(),
+            'tickets_last_month': Ticket.objects.filter(created_at__gte=last_month).count(),
+            'tickets_by_status': Ticket.objects.values('status').annotate(count=Count('id')),
+            'tickets_by_priority': Ticket.objects.values('priority').annotate(count=Count('id')),
+            'users_by_role': CustomUser.objects.values('role').annotate(count=Count('id')),
+        }
     else:
-        return JsonResponse({'error': 'Unsupported format'}, status=400)
-
-
-# ================================
-# Customer Management Views
-# ================================
-
-def customer_profile_view(request):
-    """
-    Müşteri Profil Görüntüleme
-    """
-    # Token tabanlı kimlik doğrulama
-    user = verify_token_auth(request)
-    
-    if not user:
-        return redirect('/accounts/login/?next=customer-profile')
+        # Ticket modeli yoksa temel raporlar
+        report_data = {
+            'total_users': CustomUser.objects.count(),
+            'total_tickets': 0,
+            'tickets_last_week': 0,
+            'tickets_last_month': 0,
+            'tickets_by_status': [],
+            'tickets_by_priority': [],
+            'users_by_role': CustomUser.objects.values('role').annotate(count=Count('id')),
+        }
     
     context = {
-        'current_user': user,
-        'user_role': user.get_role_display(),
-        'page_title': 'Profil Bilgileri'
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'report_data': report_data,
+        'panel_title': 'Sistem Raporları',
+        'page_title': 'Sistem Raporları'
     }
-    
-    return render(request, 'accounts/customer_profile.html', context)
+    return render(request, 'accounts/admin_reports.html', context)
 
-def customer_profile_edit_view(request):
-    """
-    Müşteri Profil Düzenleme
-    """
-    # Token tabanlı kimlik doğrulama
-    user = verify_token_auth(request)
-    
-    if not user:
-        return redirect('/accounts/login/?next=customer-profile-edit')
-    
-    if request.method == 'POST':
-        try:
-            user.first_name = request.POST.get('first_name', '')
-            user.last_name = request.POST.get('last_name', '')
-            user.email = request.POST.get('email', user.email)
-            user.save()
-            
-            return redirect('/accounts/customer/profile/')
-            
-        except Exception as e:
-            logger.error(f"Profil güncelleme hatası: {str(e)}")
-            context = {
-                'error': 'Profil güncellenirken bir hata oluştu.',
-                'current_user': user,
-                'user_role': user.get_role_display(),
-                'page_title': 'Profil Düzenle'
-            }
-            return render(request, 'accounts/customer_profile_edit.html', context)
+@login_required
+def admin_analytics_view(request):
+    """Analitik sayfası"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
     
     context = {
-        'current_user': user,
-        'user_role': user.get_role_display(),
-        'page_title': 'Profil Düzenle'
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'panel_title': 'Sistem Analitikleri',
+        'page_title': 'Sistem Analitikleri'
     }
-    
-    return render(request, 'accounts/customer_profile_edit.html', context)
+    return render(request, 'accounts/admin_analytics.html', context)
 
-def customer_change_password_view(request):
-    """
-    Müşteri Şifre Değiştirme
-    """
-    # Token tabanlı kimlik doğrulama
-    user = verify_token_auth(request)
-    
-    if not user:
-        return redirect('/accounts/login/?next=customer-change-password')
-    
-    if request.method == 'POST':
-        old_password = request.POST.get('old_password')
-        new_password = request.POST.get('new_password')
-        confirm_password = request.POST.get('confirm_password')
-        
-        # Şifre kontrolü
-        if not user.check_password(old_password):
-            context = {
-                'error': 'Mevcut şifreniz yanlış.',
-                'current_user': user,
-                'user_role': user.get_role_display(),
-                'page_title': 'Şifre Değiştir'
-            }
-            return render(request, 'accounts/customer_change_password.html', context)
-        
-        # Yeni şifre kontrolü
-        if new_password != confirm_password:
-            context = {
-                'error': 'Yeni şifreler eşleşmiyor.',
-                'current_user': user,
-                'user_role': user.get_role_display(),
-                'page_title': 'Şifre Değiştir'
-            }
-            return render(request, 'accounts/customer_change_password.html', context)
-        
-        # Şifre uzunluk kontrolü
-        if len(new_password) < 6:
-            context = {
-                'error': 'Yeni şifre en az 6 karakter olmalıdır.',
-                'current_user': user,
-                'user_role': user.get_role_display(),
-                'page_title': 'Şifre Değiştir'
-            }
-            return render(request, 'accounts/customer_change_password.html', context)
-        
-        try:
-            user.set_password(new_password)
-            user.save()
-            
-            return redirect('/accounts/customer/profile/')
-            
-        except Exception as e:
-            logger.error(f"Şifre değiştirme hatası: {str(e)}")
-            context = {
-                'error': 'Şifre değiştirilirken bir hata oluştu.',
-                'current_user': user,
-                'user_role': user.get_role_display(),
-                'page_title': 'Şifre Değiştir'
-            }
-            return render(request, 'accounts/customer_change_password.html', context)
+@login_required
+def admin_settings_view(request):
+    """Sistem ayarları sayfası"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
     
     context = {
-        'current_user': user,
-        'user_role': user.get_role_display(),
-        'page_title': 'Şifre Değiştir'
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'panel_title': 'Sistem Ayarları',
+        'page_title': 'Sistem Ayarları'
     }
+    return render(request, 'accounts/admin_settings.html', context)
+
+@login_required
+def admin_logs_view(request):
+    """Sistem logları sayfası"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
     
-    return render(request, 'accounts/customer_change_password.html', context)
+    context = {
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'panel_title': 'Sistem Logları',
+        'page_title': 'Sistem Logları'
+    }
+    return render(request, 'accounts/admin_logs.html', context)
+
+@login_required
+def admin_tokens_view(request):
+    """API token yönetimi sayfası"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
+    
+    tokens = CustomAuthToken.objects.all().order_by('-created')
+    
+    context = {
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'tokens': tokens,
+        'panel_title': 'API Token Yönetimi',
+        'page_title': 'API Token Yönetimi'
+    }
+    return render(request, 'accounts/admin_tokens.html', context)
+
+@login_required
+def admin_backup_view(request):
+    """Sistem yedekleme sayfası"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
+    
+    context = {
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'panel_title': 'Sistem Yedekleme',
+        'page_title': 'Sistem Yedekleme'
+    }
+    return render(request, 'accounts/admin_backup.html', context)
+
+@login_required
+def admin_maintenance_view(request):
+    """Sistem bakım sayfası"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
+    
+    context = {
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'panel_title': 'Sistem Bakım',
+        'page_title': 'Sistem Bakım'
+    }
+    return render(request, 'accounts/admin_maintenance.html', context)
+
+@login_required
+def admin_bulk_import_view(request):
+    """Toplu kullanıcı içe aktarma sayfası"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
+    
+    context = {
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'panel_title': 'Toplu İçe Aktarma',
+        'page_title': 'Toplu İçe Aktarma'
+    }
+    return render(request, 'accounts/admin_bulk_import.html', context)
+
+@login_required
+def admin_notifications_view(request):
+    """Bildirim gönderme sayfası"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
+    
+    context = {
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'panel_title': 'Bildirim Yönetimi',
+        'page_title': 'Bildirim Yönetimi'
+    }
+    return render(request, 'accounts/admin_notifications.html', context)
+
+@login_required
+def admin_cache_view(request):
+    """Cache yönetimi sayfası"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
+    
+    context = {
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'panel_title': 'Cache Yönetimi',
+        'page_title': 'Cache Yönetimi'
+    }
+    return render(request, 'accounts/admin_cache.html', context)
+
+@login_required
+def admin_export_view(request):
+    """Veri dışa aktarma sayfası"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
+    
+    context = {
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'panel_title': 'Veri Dışa Aktarma',
+        'page_title': 'Veri Dışa Aktarma'
+    }
+    return render(request, 'accounts/admin_export.html', context)
+
+# =========================
+# API Endpoints
+# =========================
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def signup_api_view(request):
+    """Kullanıcı kayıt API endpoint'i"""
+    try:
+        username = request.data.get('username', '').strip()
+        email = request.data.get('email', '').strip()
+        password = request.data.get('password', '')
+        confirm_password = request.data.get('confirm_password', '')
+        
+        # Validasyon
+        if not all([username, email, password, confirm_password]):
+            logger.debug(f"Signup validation failed: Missing fields - IP: {request.META.get('REMOTE_ADDR', 'unknown')}")
+            return Response({
+                'success': False,
+                'message': 'Tüm alanları doldurun.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        if password != confirm_password:
+            logger.debug(f"Signup validation failed: Password mismatch for user '{username}' - IP: {request.META.get('REMOTE_ADDR', 'unknown')}")
+            return Response({
+                'success': False,
+                'message': 'Şifreler eşleşmiyor.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        if len(password) < 8:
+            logger.debug(f"Signup validation failed: Password too short for user '{username}' - IP: {request.META.get('REMOTE_ADDR', 'unknown')}")
+            return Response({
+                'success': False,
+                'message': 'Şifre en az 8 karakter olmalıdır.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Kullanıcı adı kontrolü
+        if CustomUser.objects.filter(username=username).exists():
+            logger.debug(f"Signup validation failed: Duplicate username '{username}' - IP: {request.META.get('REMOTE_ADDR', 'unknown')}")
+            return Response({
+                'success': False,
+                'message': 'Bu kullanıcı adı zaten kullanılıyor.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Email kontrolü
+        if CustomUser.objects.filter(email=email).exists():
+            logger.debug(f"Signup validation failed: Duplicate email '{email}' - IP: {request.META.get('REMOTE_ADDR', 'unknown')}")
+            return Response({
+                'success': False,
+                'message': 'Bu e-posta adresi zaten kayıtlı.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Kullanıcı oluştur
+        user = CustomUser.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+            role='customer'  # Varsayılan olarak customer
+        )
+        
+        # Otomatik giriş yap
+        login(request, user)
+        
+        logger.info(f"New user registered and logged in successfully: '{username}' ({email}) - IP: {request.META.get('REMOTE_ADDR', 'unknown')}")
+        return Response({
+            'success': True,
+            'message': 'Hesabınız başarıyla oluşturuldu ve giriş yapıldı!',
+            'redirect_url': '/accounts/customer-panel/'
+        }, status=status.HTTP_201_CREATED)
+        
+    except Exception as e:
+        logger.error(f"Signup API error: {str(e)} - IP: {request.META.get('REMOTE_ADDR', 'unknown')}")
+        return Response({
+            'success': False,
+            'message': 'Bir hata oluştu. Lütfen tekrar deneyin.'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

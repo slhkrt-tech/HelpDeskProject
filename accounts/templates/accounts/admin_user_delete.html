@@ -1,355 +1,119 @@
 {% extends 'tickets/base.html' %}
 
-{% block title %}Kullanıcı Sil - {{ target_user.username }}{% endblock %}
+{% block title %}Kullanıcı Sil - HelpDesk{% endblock %}
+
+{% block page_title %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Ana Sayfa</a></li>
+                <li class="breadcrumb-item"><a href="/accounts/admin-panel/">Admin Panel</a></li>
+                <li class="breadcrumb-item"><a href="/accounts/admin/users/">Kullanıcılar</a></li>
+                <li class="breadcrumb-item active">Sil</li>
+            </ol>
+        </nav>
+        <h1 class="page-title">
+            <i class="fas fa-user-times text-danger me-3"></i>Kullanıcı Sil
+            <span class="badge bg-danger ms-2">Dikkat</span>
+        </h1>
+        <p class="page-subtitle">{{ delete_user.username }} kullanıcısını kalıcı olarak silin</p>
+    </div>
+</div>
+{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <!-- Page Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h1 class="h3 mb-0 text-danger">Kullanıcı Sil</h1>
-                    <p class="text-muted">{{ target_user.username }} kullanıcısını sistemden kalıcı olarak silin</p>
-                </div>
-                <div>
-                    <a href="/accounts/admin/users/" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left me-2"></i>Geri Dön
-                    </a>
-                </div>
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Kullanıcı Silme Onayı</h5>
             </div>
-
-            <!-- Warning and Confirmation -->
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <!-- Warning Card -->
-                    <div class="card border-danger shadow-sm mb-4">
-                        <div class="card-header bg-danger text-white">
-                            <h5 class="mb-0">
-                                <i class="bi bi-exclamation-triangle-fill me-2"></i>Tehlikeli İşlem!
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-2 text-center">
-                                    <i class="bi bi-person-x-fill text-danger" style="font-size: 4rem;"></i>
-                                </div>
-                                <div class="col-md-10">
-                                    <h6 class="text-danger mb-3">Bu işlem geri alınamaz!</h6>
-                                    <p class="mb-2">
-                                        <strong>{{ target_user.username }}</strong> kullanıcısını silmek üzeresiniz. 
-                                        Bu işlem şunları içerir:
-                                    </p>
-                                    <ul class="text-danger">
-                                        <li>Kullanıcı hesabının kalıcı olarak silinmesi</li>
-                                        <li>Kullanıcıya ait tüm oturum bilgilerinin silinmesi</li>
-                                        <li>Kullanıcının grup üyeliklerinin kaldırılması</li>
-                                        <li>İlişkili token'ların silinmesi</li>
-                                    </ul>
-                                    <div class="alert alert-warning border-0 mt-3">
-                                        <i class="bi bi-info-circle me-2"></i>
-                                        <strong>Not:</strong> Kullanıcının oluşturduğu talepler ve yorumlar korunacaktır ancak "silinen kullanıcı" olarak görünecektir.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <div class="card-body">
+                <div class="alert alert-danger" role="alert">
+                    <h6 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Dikkat!</h6>
+                    Bu işlem geri alınamaz. Kullanıcı ve tüm ilişkili verileri kalıcı olarak silinecektir.
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <strong>Kullanıcı Adı:</strong><br>
+                        <span class="text-primary">{{ delete_user.username }}</span>
                     </div>
-
-                    <!-- User Info Card -->
-                    <div class="card border-0 shadow-sm mb-4">
-                        <div class="card-header bg-light">
-                            <h6 class="mb-0">
-                                <i class="bi bi-person-badge me-2"></i>Silinecek Kullanıcı Bilgileri
-                            </h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <table class="table table-borderless table-sm">
-                                        <tr>
-                                            <td><strong>Kullanıcı Adı:</strong></td>
-                                            <td>{{ target_user.username }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>E-posta:</strong></td>
-                                            <td>{{ target_user.email }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Ad Soyad:</strong></td>
-                                            <td>{{ target_user.get_full_name|default:"Belirtilmemiş" }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Rol:</strong></td>
-                                            <td>
-                                                <span class="badge 
-                                                    {% if target_user.role == 'admin' %}bg-danger
-                                                    {% elif target_user.role == 'support' %}bg-warning
-                                                    {% else %}bg-info
-                                                    {% endif %}">
-                                                    {{ target_user.get_role_display|default:target_user.role|title }}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="col-md-6">
-                                    <table class="table table-borderless table-sm">
-                                        <tr>
-                                            <td><strong>Kayıt Tarihi:</strong></td>
-                                            <td>{{ target_user.date_joined|date:"d.m.Y H:i" }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Son Giriş:</strong></td>
-                                            <td>{{ target_user.last_login|date:"d.m.Y H:i"|default:"Hiç giriş yapmamış" }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Aktif:</strong></td>
-                                            <td>
-                                                {% if target_user.is_active %}
-                                                    <span class="badge bg-success">Evet</span>
-                                                {% else %}
-                                                    <span class="badge bg-secondary">Hayır</span>
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Gruplar:</strong></td>
-                                            <td>
-                                                {% for group in target_user.groups.all %}
-                                                    <span class="badge bg-secondary">{{ group.name }}</span>
-                                                {% empty %}
-                                                    <em class="text-muted">Grup yok</em>
-                                                {% endfor %}
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Confirmation Form -->
-                    <div class="card border-danger shadow-sm">
-                        <div class="card-header bg-light border-danger">
-                            <h6 class="mb-0 text-danger">
-                                <i class="bi bi-shield-exclamation me-2"></i>İşlemi Onayla
-                            </h6>
-                        </div>
-                        <div class="card-body">
-                            <form method="post" id="deleteForm">
-                                {% csrf_token %}
-                                
-                                <div class="mb-4">
-                                    <label for="confirmUsername" class="form-label">
-                                        <strong>Onaylamak için kullanıcı adını yazın:</strong>
-                                    </label>
-                                    <input type="text" 
-                                           class="form-control" 
-                                           id="confirmUsername" 
-                                           placeholder="{{ target_user.username }}" 
-                                           required>
-                                    <div class="form-text text-danger">
-                                        Silme işlemini onaylamak için yukarıya <strong>{{ target_user.username }}</strong> yazın.
-                                    </div>
-                                </div>
-
-                                <div class="form-check mb-4">
-                                    <input class="form-check-input" type="checkbox" id="confirmDelete" required>
-                                    <label class="form-check-label text-danger" for="confirmDelete">
-                                        <strong>Bu işlemin geri alınamaz olduğunu anlıyorum ve kullanıcıyı silmek istiyorum.</strong>
-                                    </label>
-                                </div>
-
-                                <div class="d-flex gap-3 justify-content-between">
-                                    <a href="/accounts/admin/users/" class="btn btn-outline-secondary">
-                                        <i class="bi bi-x-lg me-2"></i>İptal
-                                    </a>
-                                    
-                                    <button type="submit" class="btn btn-danger" id="deleteBtn" disabled>
-                                        <i class="bi bi-trash me-2"></i>Kullanıcıyı Sil
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Additional Warning -->
-                    <div class="alert alert-danger border-0 mt-3">
-                        <div class="d-flex align-items-start">
-                            <i class="bi bi-exclamation-octagon-fill text-danger me-3 mt-1"></i>
-                            <div>
-                                <strong>Son Uyarı:</strong> Bu kullanıcı silindiğinde, sistemdeki tüm aktiviteleri 
-                                "Silinen Kullanıcı" olarak görünecektir. Bu işlem geri alınamaz!
-                            </div>
-                        </div>
+                    <div class="col-md-6">
+                        <strong>E-posta:</strong><br>
+                        {{ delete_user.email|default:"Belirtilmemiş" }}
                     </div>
                 </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <strong>Ad Soyad:</strong><br>
+                        {{ delete_user.first_name }} {{ delete_user.last_name }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Rol:</strong><br>
+                        {% if delete_user.role == 'admin' %}
+                            <span class="badge bg-danger">Admin</span>
+                        {% elif delete_user.role == 'support' %}
+                            <span class="badge bg-success">Support</span>
+                        {% else %}
+                            <span class="badge bg-primary">Customer</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <strong>Kayıt Tarihi:</strong><br>
+                        {{ delete_user.date_joined|date:"d.m.Y H:i" }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Son Giriş:</strong><br>
+                        {% if delete_user.last_login %}
+                            {{ delete_user.last_login|date:"d.m.Y H:i" }}
+                        {% else %}
+                            Henüz giriş yapmamış
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <a href="/accounts/admin/users/" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>İptal Et
+                        </a>
+                        <div>
+                            <a href="/accounts/admin/users/{{ delete_user.id }}/edit/" class="btn btn-primary me-2">
+                                <i class="fas fa-edit me-2"></i>Düzenle
+                            </a>
+                            <button type="submit" class="btn btn-danger" 
+                                    onclick="return confirm('{{ delete_user.username }} kullanıcısını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!')">
+                                <i class="fas fa-trash me-2"></i>Kullanıcıyı Sil
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Uyarı Notu -->
+        <div class="card mt-4 border-warning">
+            <div class="card-header bg-warning">
+                <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Önemli Bilgiler</h6>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li>Bu kullanıcının oluşturduğu tüm talepler silinecek</li>
+                    <li>Kullanıcıya atanmış talepler "atanmamış" duruma geçecek</li>
+                    <li>Kullanıcının tüm yorumları ve aktivite geçmişi silinecek</li>
+                    <li>Bu işlem veri tabanından kalıcı olarak kaldırılacak</li>
+                </ul>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-.card {
-    border-radius: 0.75rem;
-}
-
-.card-header {
-    border-radius: 0.75rem 0.75rem 0 0 !important;
-}
-
-.table-borderless td {
-    padding: 0.5rem 0;
-}
-
-.badge {
-    font-size: 0.8em;
-    padding: 0.4em 0.8em;
-}
-
-.form-control:focus {
-    border-color: #dc3545;
-    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
-}
-
-.btn-danger:disabled {
-    background-color: #6c757d;
-    border-color: #6c757d;
-    cursor: not-allowed;
-}
-
-.alert-danger {
-    background: linear-gradient(135deg, #f8d7da, #f5c2c7);
-    color: #721c24;
-}
-
-.alert-warning {
-    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
-    color: #664d03;
-}
-
-/* Animation for delete button */
-.btn-danger:not(:disabled):hover {
-    transform: scale(1.05);
-    transition: all 0.2s ease;
-}
-
-/* Shake animation for invalid input */
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-    20%, 40%, 60%, 80% { transform: translateX(5px); }
-}
-
-.shake {
-    animation: shake 0.5s ease-in-out;
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const confirmUsernameInput = document.getElementById('confirmUsername');
-    const confirmDeleteCheckbox = document.getElementById('confirmDelete');
-    const deleteBtn = document.getElementById('deleteBtn');
-    const deleteForm = document.getElementById('deleteForm');
-    const targetUsername = '{{ target_user.username }}';
-    
-    // Form validation
-    function validateForm() {
-        const usernameValid = confirmUsernameInput.value === targetUsername;
-        const checkboxChecked = confirmDeleteCheckbox.checked;
-        
-        deleteBtn.disabled = !(usernameValid && checkboxChecked);
-        
-        // Visual feedback for username
-        if (confirmUsernameInput.value.length > 0) {
-            if (usernameValid) {
-                confirmUsernameInput.classList.remove('is-invalid');
-                confirmUsernameInput.classList.add('is-valid');
-            } else {
-                confirmUsernameInput.classList.remove('is-valid');
-                confirmUsernameInput.classList.add('is-invalid');
-            }
-        } else {
-            confirmUsernameInput.classList.remove('is-valid', 'is-invalid');
-        }
-    }
-    
-    // Event listeners
-    confirmUsernameInput.addEventListener('input', validateForm);
-    confirmDeleteCheckbox.addEventListener('change', validateForm);
-    
-    // Form submission with final confirmation
-    deleteForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        if (confirmUsernameInput.value !== targetUsername) {
-            confirmUsernameInput.classList.add('shake');
-            setTimeout(() => confirmUsernameInput.classList.remove('shake'), 500);
-            showAlert('Kullanıcı adı eşleşmiyor!', 'danger');
-            return;
-        }
-        
-        if (!confirmDeleteCheckbox.checked) {
-            showAlert('Onay kutusunu işaretlemelisiniz!', 'danger');
-            return;
-        }
-        
-        // Final confirmation dialog
-        const confirmed = confirm(
-            `SON UYARI!\n\n` +
-            `"${targetUsername}" kullanıcısını kalıcı olarak silmek istediğinizden emin misiniz?\n\n` +
-            `Bu işlem GERİ ALINAMAZ!\n\n` +
-            `Devam etmek için "Tamam"a, iptal etmek için "İptal"e tıklayın.`
-        );
-        
-        if (confirmed) {
-            // Show loading state
-            deleteBtn.disabled = true;
-            deleteBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Siliniyor...';
-            
-            // Submit form
-            this.submit();
-        }
-    });
-    
-    // Auto-focus on username input
-    confirmUsernameInput.focus();
-    
-    // Prevent accidental form submission with Enter
-    confirmUsernameInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            if (deleteBtn.disabled === false) {
-                deleteForm.dispatchEvent(new Event('submit'));
-            }
-        }
-    });
-});
-
-function showAlert(message, type) {
-    const alert = document.createElement('div');
-    alert.className = `alert alert-${type} alert-dismissible fade show`;
-    alert.innerHTML = `
-        <i class="bi bi-exclamation-triangle me-2"></i>
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    
-    const form = document.getElementById('deleteForm');
-    form.parentElement.insertBefore(alert, form);
-    
-    setTimeout(() => alert.remove(), 5000);
-}
-
-// Prevent browser back button during delete process
-window.addEventListener('beforeunload', function(e) {
-    const deleteBtn = document.getElementById('deleteBtn');
-    if (deleteBtn.innerHTML.includes('Siliniyor')) {
-        e.preventDefault();
-        e.returnValue = '';
-        return 'Silme işlemi devam ediyor. Sayfayı kapatmak istediğinizden emin misiniz?';
-    }
-});
-</script>
 {% endblock %}

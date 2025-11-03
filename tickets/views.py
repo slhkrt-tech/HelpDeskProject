@@ -4,24 +4,30 @@ HelpDesk Ticket Yönetimi - Ana View'lar
 ========================================
 
 Bu modül ticket CRUD işlemleri, yetkilendirme ve durum yönetimi içerir.
+Modern UI/UX desteği ile kullanıcı dostu arayüz
 Kullanıcı rolleri: admin, support, customer
 """
 
+# Django temel importları
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib import messages
-from django.db.models import Q
+from django import forms
+from django.db.models import Count
 import json
 
+# Yerel model ve form importları
 from .models import Talep, Category, Comment
 from .forms import TicketForm
 
+# Model alias'ları
+Ticket = Talep  # Kolay kullanım için alias
+
 # Dinamik olarak CustomUser modelini al
 User = get_user_model()
-
 
 # ================================================================================
 # Yardımcı Fonksiyonlar
@@ -31,34 +37,18 @@ def is_admin_user(user):
     """Admin kullanıcı kontrolü"""
     return user.is_superuser or getattr(user, 'role', None) == 'admin'
 
-
 def is_support_user(user):
     """Support kullanıcı kontrolü (admin + support)"""
-    return user.is_superuser or getattr(user, 'role', None) in ['admin', 'support']
-
+    return is_admin_user(user) or getattr(user, 'role', None) == 'support'
 
 def get_user_tickets_queryset(user):
-    """
-    Kullanıcı rolüne göre ticket queryset'ini döndür
-    
-    Args:
-        user: Kullanıcı objesi
-        
-    Returns:
-        QuerySet: Kullanıcının görebileceği ticket'lar
-    """
-    if is_admin_user(user) or is_support_user(user):
-        # Admin ve support tüm ticket'ları görebilir
+    """Kullanıcı rolüne göre ticket'ları filtrele"""
+    if is_admin_user(user):
         return Talep.objects.all()
-    
-    # Normal kullanıcılar sadece grup ticket'larını görebilir
-    if user.groups.exists():
-        group_users = User.objects.filter(groups__in=user.groups.all()).distinct()
-        return Talep.objects.filter(user__in=group_users)
-    
-    # Gruplu değilse sadece kendi ticket'larını görebilir
-    return Talep.objects.filter(user=user)
-
+    elif is_support_user(user):
+        return Talep.objects.all()
+    else:
+        return Talep.objects.filter(user=user)
 
 # ================================================================================
 # Ana View'lar
@@ -66,15 +56,7 @@ def get_user_tickets_queryset(user):
 
 @login_required
 def ticket_list(request):
-    """
-    Ticket listesi - rol bazlı erişim kontrolü
-    
-    Args:
-        request: HTTP request objesi
-        
-    Returns:
-        HttpResponse: Ticket listesi sayfası
-    """
+    """Ticket listesi - rol bazlı erişim kontrolü ve modern UI"""
     user = request.user
     
     # Kullanıcı rolüne göre ticket'ları al
@@ -91,239 +73,376 @@ def ticket_list(request):
     # Filtreleme parametreleri
     status_filter = request.GET.get('status')
     priority_filter = request.GET.get('priority')
-    
-    # Filtreleri uygula
+    category_filter = request.GET.get('category')
+    assigned_filter = request.GET.get('assigned_to')
+
+    # Filtreleme uygula
     if status_filter:
         tickets = tickets.filter(status=status_filter)
     if priority_filter:
         tickets = tickets.filter(priority=priority_filter)
+    if category_filter:
+        tickets = tickets.filter(category__id=category_filter)
+    if assigned_filter:
+        tickets = tickets.filter(assigned_to__id=assigned_filter)
+
+    # Seçenekler için veriler
+    categories = Category.objects.all()
+    
+    # Admin/Support kullanıcıları görebilsin
+    if is_support_user(user):
+        support_users = User.objects.filter(role__in=['admin', 'support'])
+    else:
+        support_users = []
+
+    # İstatistikler
+    total_tickets = tickets.count()
+    open_tickets = tickets.filter(status__in=['open', 'in_progress']).count()
+    closed_tickets = tickets.filter(status='closed').count()
 
     context = {
         'tickets': tickets,
         'user_role': user_role,
-        'is_admin': is_admin_user(user),
-        'is_support': is_support_user(user),
-        'status_choices': Talep.STATUS_CHOICES,
-        'priority_choices': Talep.PRIORITY_CHOICES,
-        'current_status_filter': status_filter,
-        'current_priority_filter': priority_filter,
+        'categories': categories,
+        'support_users': support_users,
+        'status_filter': status_filter,
+        'priority_filter': priority_filter,
+        'category_filter': category_filter,
+        'assigned_filter': assigned_filter,
+        'total_tickets': total_tickets,
+        'open_tickets': open_tickets,
+        'closed_tickets': closed_tickets,
     }
 
     return render(request, 'tickets/ticket_list.html', context)
 
-
-@login_required
-@require_POST
-def change_ticket_status(request, pk):
-    """
-    Ticket durumu değiştirme - sadece admin/support yetkili
-    
-    Args:
-        request: HTTP request objesi
-        pk: Ticket ID
-        
-    Returns:
-        JsonResponse: İşlem sonucu
-    """
-    ticket = get_object_or_404(Talep, pk=pk)
-    
-    # JSON ve form data desteği
-    if request.content_type == 'application/json':
-        try:
-            data = json.loads(request.body)
-            new_status = data.get('status')
-        except json.JSONDecodeError:
-            return JsonResponse({
-                'success': False, 
-                'message': 'Geçersiz JSON verisi.'
-            }, status=400)
-    else:
-        new_status = request.POST.get('status')
-
-    # Yetki kontrolü - sadece admin/support
-    if not is_support_user(request.user):
-        return JsonResponse({
-            'success': False, 
-            'message': 'Bu işlem için yetkiniz yok.'
-        }, status=403)
-
-    # Geçerli status kontrolü
-    valid_statuses = [choice[0] for choice in Talep.STATUS_CHOICES]
-    if new_status not in valid_statuses:
-        return JsonResponse({
-            'success': False, 
-            'message': 'Geçersiz durum.'
-        }, status=400)
-
-    # Admin olmayan kullanıcılar bazı durumlara geçemez
-    if not is_admin_user(request.user) and new_status in ['wrong_section']:
-        return JsonResponse({
-            'success': False, 
-            'message': 'Bu duruma geçiş için admin yetkisi gerekli.'
-        }, status=403)
-
-    # Durum değişikliğini kaydet
-    old_status = ticket.status
-    ticket.status = new_status
-
-        # Otomatik atama mantığı
-    if not ticket.assigned_to and is_support_user(request.user):
-        ticket.assigned_to = request.user
-
-    # Değişiklikleri kaydet
-    ticket.save()
-
-    # Status değişikliği için sistem yorumu ekle
-    status_display = dict(Talep.STATUS_CHOICES).get(new_status, new_status)
-    old_status_display = dict(Talep.STATUS_CHOICES).get(old_status, old_status)
-
-    Comment.objects.create(
-        talep=ticket,
-        user=request.user,
-        message=f"Durum '{old_status_display}' → '{status_display}' olarak değiştirildi."
-    )
-
-    return JsonResponse({
-        'success': True,
-        'status_display': status_display,
-        'message': f'Talep durumu "{status_display}" olarak değiştirildi.',
-        'assigned_to': ticket.assigned_to.username if ticket.assigned_to else None
-    })
-
-
 @login_required
 def ticket_detail(request, pk):
-    """
-    Ticket detay sayfası ve yorum ekleme işlemleri
-    
-    Args:
-        request: HTTP request objesi
-        pk: Ticket ID
-        
-    Returns:
-        HttpResponse: Ticket detay sayfası
-    """
-
-
-def _user_can_access_ticket(user, ticket):
-    """
-    Kullanıcının ticket'a erişip erişemeyeceğini kontrol eder
-    
-    Args:
-        user: Kullanıcı objesi
-        ticket: Ticket objesi
-        
-    Returns:
-        bool: Erişim izni var mı?
-    """
-    # Admin ve support her ticket'a erişebilir
-    if is_admin_user(user) or is_support_user(user):
-        return True
-    
-    # Normal kullanıcılar için grup kontrolü
-    if user.groups.exists():
-        group_users = User.objects.filter(groups__in=user.groups.all()).distinct()
-        return ticket.user in group_users
-    
-    # Grup yoksa sadece kendi ticket'ları
-    return ticket.user == user
-
-
-# ================================================================================
-# Ticket Detay View
-# ================================================================================
-@login_required
-def ticket_detail(request, pk):
-    """
-    Ticket detay sayfası ve yorum ekleme işlemleri
-    
-    Args:
-        request: HTTP request objesi
-        pk: Ticket ID
-        
-    Returns:
-        HttpResponse: Ticket detay sayfası
-    """
+    """Ticket detay sayfası ve yorum ekleme"""
     ticket = get_object_or_404(Talep, pk=pk)
     user = request.user
-
-    # Yetki kontrolü - kullanıcı bu ticket'a erişebilir mi?
-    if not _user_can_access_ticket(user, ticket):
-        messages.error(request, 'Bu talebe erişim yetkiniz yok.')
+    
+    # Yetki kontrolü
+    if not is_support_user(user) and ticket.user != user:
+        messages.error(request, 'Bu talebe erişim yetkiniz bulunmuyor.')
         return redirect('ticket_list')
+    
+    # Kullanıcı rolünü belirle
+    if is_admin_user(user):
+        user_role = 'admin'
+    elif is_support_user(user):
+        user_role = 'support'
+    else:
+        user_role = 'customer'
 
-    # Ticket yorumlarını al
-    comments = ticket.yorumlar.all().order_by('created_at')
-
-    # Yorum ekleme işlemi
-    if request.method == 'POST' and 'add_comment' in request.POST:
+    # POST request - Yorum ekleme
+    if request.method == 'POST':
         comment_text = request.POST.get('comment', '').strip()
         
         if comment_text:
-            try:
-                Comment.objects.create(
-                    talep=ticket, 
-                    user=user, 
-                    message=comment_text
-                )
-                messages.success(request, 'Yorum başarıyla eklendi.')
-                return redirect('ticket_detail', pk=pk)
-            except Exception as e:
-                messages.error(request, f'Yorum eklenirken hata oluştu: {str(e)}')
-        else:
-            messages.error(request, 'Yorum boş olamaz.')
+            Comment.objects.create(
+                talep=ticket,
+                user=user,
+                message=comment_text
+            )
+            messages.success(request, 'Yorumunuz başarıyla eklendi.')
+            return redirect('ticket_detail', pk=pk)
 
-    # Template context'i
+    # Yorumları getir
+    comments = Comment.objects.filter(talep=ticket).order_by('created_at')
+    
+    # Atanabilir kullanıcılar (sadece admin/support görebilir)
+    if is_support_user(user):
+        assignable_users = User.objects.filter(role__in=['admin', 'support'])
+    else:
+        assignable_users = []
+
     context = {
         'ticket': ticket,
         'comments': comments,
-        'is_admin': is_admin_user(user),
-        'is_support': is_support_user(user),
-        'status_choices': Talep.STATUS_CHOICES,
-        'priority_choices': Talep.PRIORITY_CHOICES,
+        'user_role': user_role,
+        'assignable_users': assignable_users,
     }
 
     return render(request, 'tickets/ticket_detail.html', context)
 
-
 @login_required
 def ticket_create(request):
-    """
-    Yeni ticket oluşturma
+    """Yeni ticket oluşturma"""
+    user = request.user
     
-    Args:
-        request: HTTP request objesi
-        
-    Returns:
-        HttpResponse: Ticket oluşturma sayfası veya yönlendirme
-    """
     if request.method == 'POST':
         form = TicketForm(request.POST)
+        
         if form.is_valid():
-            talep = form.save(commit=False)
-            talep.user = request.user
-
-            # Grup kategorisi otomatik ataması
-            if request.user.groups.exists():
-                group_name = request.user.groups.first().name
-                category = Category.objects.filter(name=group_name).first()
-                if category:
-                    talep.category = category
-
-            talep.save()
-
-            # Başarı mesajı ve yönlendirme
-            messages.success(request, 'Talep başarıyla oluşturuldu.')
+            ticket = form.save(commit=False)
+            ticket.user = user
             
-            # Kullanıcı rolüne göre yönlendir
-            if is_admin_user(request.user):
-                return redirect('admin_panel')
-            elif is_support_user(request.user):
-                return redirect('support_panel')
-            else:
-                return redirect('customer_panel')
+            # Müşteri sadece kendine ticket açabilir
+            if not is_support_user(user):
+                ticket.assigned_to = None
+            
+            ticket.save()
+            messages.success(request, f'Talep başarıyla oluşturuldu! Talep No: {ticket.talep_numarasi}')
+            return redirect('ticket_detail', pk=ticket.pk)
+        else:
+            messages.error(request, 'Lütfen formu doğru şekilde doldurun.')
     else:
-        # GET request - boş form göster
         form = TicketForm()
+        
+        # Müşteri kullanıcıları için assigned_to alanını gizle
+        if not is_support_user(user):
+            form.fields['assigned_to'].widget = forms.HiddenInput()
 
-    return render(request, 'tickets/ticket_create.html', {'form': form})
+    # Kullanıcı rolünü belirle
+    if is_admin_user(user):
+        user_role = 'admin'
+    elif is_support_user(user):
+        user_role = 'support'
+    else:
+        user_role = 'customer'
+
+    context = {
+        'form': form,
+        'user_role': user_role,
+    }
+
+    return render(request, 'tickets/ticket_create.html', context)
+
+@require_POST
+@login_required
+def change_ticket_status(request, pk):
+    """Ticket durumunu değiştir (AJAX)"""
+    # Sadece admin/support kullanıcıları
+    if not is_support_user(request.user):
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Bu işlem için yetkiniz bulunmuyor.'
+        }, status=403)
+
+    ticket = get_object_or_404(Talep, pk=pk)
+    
+    try:
+        data = json.loads(request.body)
+        new_status = data.get('status')
+        
+        # Geçerli durum değerleri
+        valid_statuses = ['new', 'seen', 'open', 'pending', 'in_progress', 'resolved', 'closed', 'wrong_section']
+        
+        if new_status not in valid_statuses:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Geçersiz durum değeri.'
+            })
+        
+        old_status = ticket.status
+        ticket.status = new_status
+        ticket.save()
+        
+        # Durum değişikliği yorumu ekle
+        status_display = dict(ticket.STATUS_CHOICES).get(new_status, new_status)
+        Comment.objects.create(
+            talep=ticket,
+            user=request.user,
+            message=f"🔄 Durum değiştirildi: {dict(ticket.STATUS_CHOICES).get(old_status, old_status)} → {status_display}"
+        )
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': f'Durum "{status_display}" olarak güncellendi.',
+            'new_status': new_status
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Geçersiz JSON verisi.'
+        }, status=400)
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Bir hata oluştu: {str(e)}'
+        }, status=500)
+
+@require_POST
+@login_required
+def update_ticket_assignment(request, pk):
+    """Ticket atamasını güncelle (AJAX)"""
+    # Sadece admin/support kullanıcıları
+    if not is_support_user(request.user):
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Bu işlem için yetkiniz bulunmuyor.'
+        }, status=403)
+
+    ticket = get_object_or_404(Talep, pk=pk)
+    
+    try:
+        data = json.loads(request.body)
+        assigned_to_id = data.get('assigned_to_id')
+        
+        if assigned_to_id:
+            assigned_user = get_object_or_404(User, pk=assigned_to_id)
+            old_assigned = ticket.assigned_to
+            ticket.assigned_to = assigned_user
+            ticket.save()
+            
+            # Atama değişikliği yorumu ekle
+            if old_assigned:
+                message = f"👤 Atama değiştirildi: {old_assigned.username} → {assigned_user.username}"
+            else:
+                message = f"👤 Talep atandı: {assigned_user.username}"
+                
+            Comment.objects.create(
+                talep=ticket,
+                user=request.user,
+                message=message
+            )
+            
+            return JsonResponse({
+                'status': 'success',
+                'message': f'Talep {assigned_user.username} kullanıcısına atandı.',
+                'assigned_to': assigned_user.username
+            })
+        else:
+            old_assigned = ticket.assigned_to
+            ticket.assigned_to = None
+            ticket.save()
+            
+            if old_assigned:
+                Comment.objects.create(
+                    talep=ticket,
+                    user=request.user,
+                    message=f"👤 Atama kaldırıldı: {old_assigned.username}"
+                )
+            
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Talep ataması kaldırıldı.',
+                'assigned_to': None
+            })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Geçersiz JSON verisi.'
+        }, status=400)
+    except User.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Kullanıcı bulunamadı.'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Bir hata oluştu: {str(e)}'
+        }, status=500)
+
+# ================================================================================
+# Ticket Admin Yönetimi
+# ================================================================================
+
+@login_required
+def tickets_admin_view(request):
+    """Ticket admin yönetimi sayfası"""
+    user_role = getattr(request.user, 'role', '').lower()
+    if user_role not in ['admin', 'support']:
+        return redirect('/accounts/login/')
+    
+    # Ticket istatistikleri
+    ticket_stats = {
+        'total_tickets': Ticket.objects.count(),
+        'open_tickets': Ticket.objects.filter(status='open').count(),
+        'in_progress_tickets': Ticket.objects.filter(status='in_progress').count(),
+        'closed_tickets': Ticket.objects.filter(status='closed').count(),
+        'tickets_by_priority': Ticket.objects.values('priority').annotate(count=Count('id')),
+        'tickets_by_category': Ticket.objects.values('category__name').annotate(count=Count('id')),
+    }
+    
+    # Son ticket'lar
+    recent_tickets = Ticket.objects.select_related('user', 'assigned_to', 'category').order_by('-created_at')[:10]
+    
+    context = {
+        'current_user': request.user,
+        'user_role': user_role,
+        'ticket_stats': ticket_stats,
+        'recent_tickets': recent_tickets,
+        'panel_title': 'Ticket Yönetimi',
+        'page_title': 'Ticket Yönetimi'
+    }
+    return render(request, 'tickets/tickets_admin.html', context)
+
+@login_required
+def ticket_categories_view(request):
+    """Ticket kategorileri yönetimi sayfası"""
+    user_role = getattr(request.user, 'role', '').lower()
+    if user_role not in ['admin', 'support']:
+        return redirect('/accounts/login/')
+    
+    categories = Category.objects.annotate(ticket_count=Count('talep')).order_by('name')
+    
+    # Ortalama ticket sayısını hesapla
+    total_tickets = sum(category.ticket_count for category in categories)
+    average_tickets = round(total_tickets / len(categories), 1) if categories else 0
+    
+    context = {
+        'current_user': request.user,
+        'user_role': user_role,
+        'categories': categories,
+        'total_tickets': total_tickets,
+        'average_tickets': average_tickets,
+        'panel_title': 'Kategori Yönetimi',
+        'page_title': 'Kategori Yönetimi'
+    }
+    return render(request, 'tickets/ticket_categories.html', context)
+
+@login_required
+@require_POST
+def update_ticket_status(request):
+    """
+    Admin ve Support kullanıcıları için ticket durumu güncelleme
+    AJAX endpoint
+    """
+    # Yetki kontrolü
+    if not hasattr(request.user, 'role') or request.user.role not in ['admin', 'support']:
+        return JsonResponse({'success': False, 'message': 'Bu işlemi yapmaya yetkiniz yok.'}, status=403)
+    
+    try:
+        data = json.loads(request.body)
+        ticket_id = data.get('ticket_id')
+        new_status = data.get('new_status')
+        
+        if not ticket_id or not new_status:
+            return JsonResponse({'success': False, 'message': 'Eksik bilgi gönderildi.'}, status=400)
+        
+        # Ticket'ı bul
+        ticket = get_object_or_404(Talep, pk=ticket_id)
+        
+        # Geçerli status seçenekleri
+        valid_statuses = [choice[0] for choice in Talep.STATUS_CHOICES]
+        if new_status not in valid_statuses:
+            return JsonResponse({'success': False, 'message': 'Geçersiz durum.'}, status=400)
+        
+        # Eski durum
+        old_status = ticket.get_status_display()
+        
+        # Durumu güncelle
+        ticket.status = new_status
+        ticket.save()
+        
+        # Yeni durum
+        new_status_display = ticket.get_status_display()
+        
+        # Başarılı response
+        return JsonResponse({
+            'success': True,
+            'message': f'Ticket durumu "{old_status}" → "{new_status_display}" olarak güncellendi.',
+            'new_status': new_status,
+            'new_status_display': new_status_display,
+            'ticket_id': ticket_id
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'message': 'Geçersiz JSON verisi.'}, status=400)
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'Bir hata oluştu: {str(e)}'}, status=500)

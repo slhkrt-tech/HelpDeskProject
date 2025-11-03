@@ -18,98 +18,36 @@
                 </div>
             </div>
 
-            <!-- Support Dashboard Cards -->
+            <!-- Dashboard Cards -->
             <div class="row g-4 mb-4">
-                <!-- Bekleyen Ticket'lar -->
+                {% for card in [
+                    {'title':'Bekleyen Talepler','text':'Yanıt bekliyor','color':'warning','icon':'clock','link':'/tickets/?status=pending'},
+                    {'title':'Devam Eden','text':'İşlemde olan talepler','color':'info','icon':'arrow-repeat','link':'/tickets/?status=in_progress'},
+                    {'title':'Çözülmüş','text':'Tamamlanan talepler','color':'success','icon':'check-circle','link':'/tickets/?status=closed'},
+                    {'title':'Yeni Talep','text':'Talep oluştur','color':'primary','icon':'plus-circle','link':'/tickets/create/'}
+                ] %}
                 <div class="col-lg-3 col-md-6">
-                    <div class="card text-white" style="background-color: var(--warning-color);">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <h6 class="card-title mb-0">Bekleyen Talepler</h6>
-                                    <p class="card-text small mb-0">Yanıt bekliyor</p>
-                                </div>
-                                <div class="ms-3">
-                                    <i class="bi bi-clock fs-2"></i>
-                                </div>
+                    <div class="card text-white" style="background-color: var(--{{ card.color }}-color);">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h6 class="card-title mb-0">{{ card.title }}</h6>
+                                <p class="card-text small mb-0">{{ card.text }}</p>
+                            </div>
+                            <div class="ms-3">
+                                <i class="bi bi-{{ card.icon }} fs-2"></i>
                             </div>
                         </div>
-                        <div class="card-footer border-0" style="background-color: var(--warning-color);">
-                            <a href="/tickets/?status=pending" class="text-white text-decoration-none small">
+                        <div class="card-footer border-0" style="background-color: var(--{{ card.color }}-color);">
+                            <a href="{{ card.link }}" class="text-white text-decoration-none small">
                                 Detayları Gör <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
                     </div>
                 </div>
-
-                <!-- Devam Eden -->
-                <div class="col-lg-3 col-md-6">
-                    <div class="card text-white" style="background-color: var(--info-color);">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <h6 class="card-title mb-0">Devam Eden</h6>
-                                    <p class="card-text small mb-0">İşlemde olan talepler</p>
-                                </div>
-                                <div class="ms-3">
-                                    <i class="bi bi-arrow-repeat fs-2"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer border-0" style="background-color: var(--info-color);">
-                            <a href="/tickets/?status=in_progress" class="text-white text-decoration-none small">
-                                Detayları Gör <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Çözülmüş -->
-                <div class="col-lg-3 col-md-6">
-                    <div class="card text-white" style="background-color: var(--success-color);">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <h6 class="card-title mb-0">Çözülmüş</h6>
-                                    <p class="card-text small mb-0">Tamamlanan talepler</p>
-                                </div>
-                                <div class="ms-3">
-                                    <i class="bi bi-check-circle fs-2"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer border-0" style="background-color: var(--success-color);">
-                            <a href="/tickets/?status=closed" class="text-white text-decoration-none small">
-                                Detayları Gör <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Yeni Talep -->
-                <div class="col-lg-3 col-md-6">
-                    <div class="card text-white" style="background-color: var(--primary-color);">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <h6 class="card-title mb-0">Yeni Talep</h6>
-                                    <p class="card-text small mb-0">Talep oluştur</p>
-                                </div>
-                                <div class="ms-3">
-                                    <i class="bi bi-plus-circle fs-2"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer border-0" style="background-color: var(--primary-color);">
-                            <a href="/tickets/create/" class="text-white text-decoration-none small">
-                                Yeni Talep <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
 
-            <!-- Support Content Tabs -->
+            <!-- Tabs -->
             <div class="card">
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs" id="supportTabs" role="tablist">
@@ -182,14 +120,10 @@
                                     <i class="bi bi-check2-all me-1"></i>Tümünü İşaretle
                                 </button>
                             </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="border rounded p-4 text-center">
-                                        <i class="bi bi-person-badge fs-1 text-muted mb-3"></i>
-                                        <h6 class="text-muted">Henüz size atanmış talep bulunmamaktadır.</h6>
-                                        <p class="text-muted small">Yeni talepler atandığında burada görünecektir.</p>
-                                    </div>
-                                </div>
+                            <div class="border rounded p-4 text-center">
+                                <i class="bi bi-person-badge fs-1 text-muted mb-3"></i>
+                                <h6 class="text-muted">Henüz size atanmış talep bulunmamaktadır.</h6>
+                                <p class="text-muted small">Yeni talepler atandığında burada görünecektir.</p>
                             </div>
                         </div>
 
@@ -197,57 +131,25 @@
                         <div class="tab-pane fade" id="quick-actions" role="tabpanel">
                             <h5 class="mb-3">Hızlı İşlemler</h5>
                             <div class="row g-3">
+                                {% for action in [
+                                    {'title':'Yeni Talep Oluştur','text':'Müşteri adına yeni talep oluşturun','color':'primary','icon':'plus-circle','link':'/tickets/create/'},
+                                    {'title':'Talep Ara','text':'Ticket numarası ile hızlı arama','color':'success','icon':'search','link':'#'},
+                                    {'title':'Müşteri Listesi','text':'Müşteri bilgilerini görüntüle','color':'info','icon':'people','link':'#'},
+                                    {'title':'Performans Raporu','text':'Çözülen talepler ve istatistikler','color':'warning','icon':'graph-up','link':'#'}
+                                ] %}
                                 <div class="col-md-6">
                                     <div class="card border-0 bg-light">
                                         <div class="card-body">
                                             <h6 class="card-title">
-                                                <i class="bi bi-plus-circle me-2" style="color: var(--primary-color);"></i>
-                                                Yeni Talep Oluştur
+                                                <i class="bi bi-{{ action.icon }} me-2" style="color: var(--{{ action.color }}-color);"></i>
+                                                {{ action.title }}
                                             </h6>
-                                            <p class="card-text small text-muted">Müşteri adına yeni talep oluşturun</p>
-                                            <a href="/tickets/create/" class="btn btn-sm" style="background-color: var(--primary-color); color: white;">Oluştur</a>
+                                            <p class="card-text small text-muted">{{ action.text }}</p>
+                                            <a href="{{ action.link }}" class="btn btn-sm" style="background-color: var(--{{ action.color }}-color); color:white;">{{ action.title.split(' ')[0] }}</a>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="card border-0 bg-light">
-                                        <div class="card-body">
-                                            <h6 class="card-title">
-                                                <i class="bi bi-search me-2" style="color: var(--success-color);"></i>
-                                                Talep Ara
-                                            </h6>
-                                            <p class="card-text small text-muted">Ticket numarası ile hızlı arama</p>
-                                            <div class="input-group input-group-sm">
-                                                <input type="text" class="form-control" placeholder="Ticket #...">
-                                                <button class="btn" type="button" style="background-color: var(--success-color); color: white;">Ara</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card border-0 bg-light">
-                                        <div class="card-body">
-                                            <h6 class="card-title">
-                                                <i class="bi bi-people me-2" style="color: var(--info-color);"></i>
-                                                Müşteri Listesi
-                                            </h6>
-                                            <p class="card-text small text-muted">Müşteri bilgilerini görüntüle</p>
-                                            <button class="btn btn-sm" style="background-color: var(--info-color); color: white;">Listele</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card border-0 bg-light">
-                                        <div class="card-body">
-                                            <h6 class="card-title">
-                                                <i class="bi bi-graph-up me-2" style="color: var(--warning-color);"></i>
-                                                Performans Raporu
-                                            </h6>
-                                            <p class="card-text small text-muted">Çözülen talepler ve istatistikler</p>
-                                            <button class="btn btn-sm" style="background-color: var(--warning-color); color: white;">Rapor Al</button>
-                                        </div>
-                                    </div>
-                                </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
@@ -258,101 +160,31 @@
 </div>
 
 <style>
-/* Support panel özel stilleri */
 .card {
     border: none;
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
     transition: all 0.3s ease;
 }
-
-.card:hover {
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
-}
-
-.nav-tabs .nav-link {
-    border: none;
-    color: var(--bs-gray-600);
-    transition: all 0.3s ease;
-}
-
-.nav-tabs .nav-link.active {
-    background-color: transparent;
-    border-bottom: 3px solid var(--bs-success);
-    color: var(--bs-success);
-}
-
-.nav-tabs .nav-link:hover {
-    border-color: transparent;
-    color: var(--bs-success);
-}
+.card:hover { box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15); transform: translateY(-2px); }
+.nav-tabs .nav-link { border: none; color: var(--bs-gray-600); transition: all 0.3s ease; }
+.nav-tabs .nav-link.active { border-bottom: 3px solid var(--bs-success); color: var(--bs-success); }
+.nav-tabs .nav-link:hover { color: var(--bs-success); }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Bootstrap tabs'ları manuel olarak initialize et
     const tabLinks = document.querySelectorAll('#supportTabs button[data-bs-toggle="tab"]');
-    
-    tabLinks.forEach(function(tabLink) {
-        tabLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Tüm tab'ları inaktif yap
-            tabLinks.forEach(link => {
-                link.classList.remove('active');
-                link.setAttribute('aria-selected', 'false');
-            });
-            
-            // Tüm tab content'lerini gizle
-            const tabPanes = document.querySelectorAll('#supportTabsContent .tab-pane');
-            tabPanes.forEach(pane => {
-                pane.classList.remove('show', 'active');
-            });
-            
-            // Tıklanan tab'ı aktif yap
-            this.classList.add('active');
-            this.setAttribute('aria-selected', 'true');
-            
-            // İlgili content'i göster
-            const targetId = this.getAttribute('data-bs-target');
-            const targetPane = document.querySelector(targetId);
-            if (targetPane) {
-                targetPane.classList.add('show', 'active');
-            }
-        });
-    });
-    
-    // İlk tab'ı manuel olarak aktif yap
-    const firstTab = document.querySelector('#tickets-tab');
-    const firstPane = document.querySelector('#tickets');
-    if (firstTab && firstPane) {
-        firstTab.classList.add('active');
-        firstTab.setAttribute('aria-selected', 'true');
-        firstPane.classList.add('show', 'active');
-    }
-    
-    // Card hover efekti
-    const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-2px)';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-        });
-    });
-    
-    // URL'deki tab parametresini kontrol et
-    const urlParams = new URLSearchParams(window.location.search);
-    const activeTab = urlParams.get('tab');
-    
-    if (activeTab) {
-        const tabButton = document.querySelector(`#supportTabs button[data-bs-target="#${activeTab}"]`);
-        if (tabButton) {
-            tabButton.click();
-        }
-    }
+    tabLinks.forEach(tab => tab.addEventListener('click', function(e){
+        e.preventDefault();
+        tabLinks.forEach(link => link.classList.remove('active'));
+        const panes = document.querySelectorAll('#supportTabsContent .tab-pane');
+        panes.forEach(p => p.classList.remove('show','active'));
+        this.classList.add('active'); 
+        const target = document.querySelector(this.dataset.bsTarget);
+        if(target) target.classList.add('show','active');
+    }));
+    const urlTab = new URLSearchParams(window.location.search).get('tab');
+    if(urlTab) document.querySelector(`#supportTabs button[data-bs-target="#${urlTab}"]`)?.click();
 });
 </script>
 {% endblock %}

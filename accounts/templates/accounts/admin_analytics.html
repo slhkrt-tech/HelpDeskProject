@@ -1,0 +1,376 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}{{ panel_title }} - HelpDesk{% endblock %}
+
+{% block extra_css %}
+<style>
+.analytics-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.analytics-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.metric-box {
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+}
+
+.metric-number {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.metric-label {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.chart-placeholder {
+    height: 300px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    border: 2px dashed #dee2e6;
+}
+</style>
+{% endblock %}
+
+{% block page_title %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/"><i class="fas fa-home"></i> Ana Sayfa</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'admin_panel' %}">Admin Panel</a>
+                </li>
+                <li class="breadcrumb-item active">Analitik</li>
+            </ol>
+        </nav>
+        <h1 class="page-title">
+            <i class="fas fa-chart-pie text-warning me-3"></i>{{ panel_title }}
+        </h1>
+        <p class="page-subtitle">Detaylı sistem analizi ve performans metrikleri</p>
+    </div>
+    <div class="text-end">
+        <div class="btn-group">
+            <button class="btn btn-outline-primary">
+                <i class="fas fa-sync me-2"></i>Yenile
+            </button>
+            <button class="btn btn-outline-success">
+                <i class="fas fa-download me-2"></i>Rapor İndir
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Ana Metrikler -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-3 col-md-6">
+        <div class="metric-box">
+            <div class="metric-number">1,247</div>
+            <div class="metric-label">Toplam Ziyaret</div>
+            <small class="d-block mt-2">
+                <i class="fas fa-arrow-up text-success me-1"></i>+12% bu hafta
+            </small>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="metric-box">
+            <div class="metric-number">89</div>
+            <div class="metric-label">Aktif Kullanıcı</div>
+            <small class="d-block mt-2">
+                <i class="fas fa-arrow-up text-success me-1"></i>+8% bu hafta
+            </small>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="metric-box">
+            <div class="metric-number">156</div>
+            <div class="metric-label">Çözülen Talep</div>
+            <small class="d-block mt-2">
+                <i class="fas fa-arrow-up text-success me-1"></i>+15% bu hafta
+            </small>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="metric-box">
+            <div class="metric-number">4.2</div>
+            <div class="metric-label">Ortalama Puan</div>
+            <small class="d-block mt-2">
+                <i class="fas fa-arrow-down text-danger me-1"></i>-0.3 bu hafta
+            </small>
+        </div>
+    </div>
+</div>
+
+<!-- Grafikler -->
+<div class="row g-4 mb-4">
+    <!-- Kullanıcı Aktivitesi -->
+    <div class="col-lg-8">
+        <div class="analytics-card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-line me-2"></i>Kullanıcı Aktivitesi (Son 30 Gün)
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-placeholder">
+                    <div class="text-center">
+                        <i class="fas fa-chart-line fs-1 mb-3"></i>
+                        <p>Grafik verisi yükleniyor...</p>
+                        <small class="text-muted">Chart.js ile dinamik grafik gösterilecek</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Talep Durumu -->
+    <div class="col-lg-4">
+        <div class="analytics-card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>Talep Durumu
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-placeholder">
+                    <div class="text-center">
+                        <i class="fas fa-chart-pie fs-1 mb-3"></i>
+                        <p>Pasta grafik</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Yanıt Süreleri -->
+    <div class="col-lg-6">
+        <div class="analytics-card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-clock me-2"></i>Ortalama Yanıt Süreleri
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>İlk Yanıt</span>
+                            <strong>2.4 saat</strong>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>Çözüm</span>
+                            <strong>18.6 saat</strong>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-warning" style="width: 60%"></div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>Kapatma</span>
+                            <strong>24.2 saat</strong>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-info" style="width: 45%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popüler Kategoriler -->
+    <div class="col-lg-6">
+        <div class="analytics-card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-tags me-2"></i>Popüler Kategoriler
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span><i class="fas fa-laptop text-primary me-2"></i>Teknik Destek</span>
+                            <span><strong>45</strong> <small class="text-muted">talep</small></span>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-primary" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span><i class="fas fa-user text-success me-2"></i>Hesap Yönetimi</span>
+                            <span><strong>32</strong> <small class="text-muted">talep</small></span>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-success" style="width: 65%"></div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span><i class="fas fa-bug text-danger me-2"></i>Hata Bildirimi</span>
+                            <span><strong>28</strong> <small class="text-muted">talep</small></span>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-danger" style="width: 55%"></div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span><i class="fas fa-question text-info me-2"></i>Genel Sorular</span>
+                            <span><strong>19</strong> <small class="text-muted">talep</small></span>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-info" style="width: 40%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detaylı Tablolar -->
+<div class="row g-4">
+    <!-- En Aktif Kullanıcılar -->
+    <div class="col-lg-6">
+        <div class="analytics-card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-star me-2"></i>En Aktif Kullanıcılar
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Kullanıcı</th>
+                                <th>Talep</th>
+                                <th>Son Aktivite</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-user-circle text-primary me-2"></i>
+                                        <span>admin</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-primary">23</span></td>
+                                <td><small>2 saat önce</small></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-user-circle text-success me-2"></i>
+                                        <span>customer1</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-success">18</span></td>
+                                <td><small>5 saat önce</small></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-user-circle text-warning me-2"></i>
+                                        <span>support1</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-warning">15</span></td>
+                                <td><small>1 gün önce</small></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sistem Performansı -->
+    <div class="col-lg-6">
+        <div class="analytics-card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-tachometer-alt me-2"></i>Sistem Performansı
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-6 text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-server fs-2 text-success"></i>
+                            <h6 class="mt-2">CPU Kullanımı</h6>
+                            <div class="progress" style="height: 10px;">
+                                <div class="progress-bar bg-success" style="width: 45%"></div>
+                            </div>
+                            <small>45%</small>
+                        </div>
+                    </div>
+                    <div class="col-6 text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-memory fs-2 text-info"></i>
+                            <h6 class="mt-2">RAM Kullanımı</h6>
+                            <div class="progress" style="height: 10px;">
+                                <div class="progress-bar bg-info" style="width: 68%"></div>
+                            </div>
+                            <small>68%</small>
+                        </div>
+                    </div>
+                    <div class="col-6 text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-hdd fs-2 text-warning"></i>
+                            <h6 class="mt-2">Disk Kullanımı</h6>
+                            <div class="progress" style="height: 10px;">
+                                <div class="progress-bar bg-warning" style="width: 34%"></div>
+                            </div>
+                            <small>34%</small>
+                        </div>
+                    </div>
+                    <div class="col-6 text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-wifi fs-2 text-primary"></i>
+                            <h6 class="mt-2">Ağ Trafiği</h6>
+                            <div class="progress" style="height: 10px;">
+                                <div class="progress-bar bg-primary" style="width: 23%"></div>
+                            </div>
+                            <small>23%</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

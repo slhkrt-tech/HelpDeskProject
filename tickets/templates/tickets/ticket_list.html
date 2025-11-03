@@ -1,280 +1,249 @@
 {% extends "tickets/base.html" %}
 {% load static %}
 
-{% block title %}Talep Listesi{% endblock %}
-{% block page_title %}Talep Listesi{% endblock %}
+{% block title %}Talep Listesi - HelpDesk{% endblock %}
 
-<!-- Modern CSS için -->
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'tickets/css/ticket_list_modern.css' %}">
-{% endblock %}
-
-{% block breadcrumb %}
-<nav aria-label="breadcrumb" class="mb-4">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item">
-      <a href="{% url 'home' %}" style="color: var(--accent-color);">
-        <i class="bi bi-house-door me-1"></i>Ana Sayfa
-      </a>
-    </li>
-    <li class="breadcrumb-item active" aria-current="page">Talepler</li>
-  </ol>
-</nav>
+{% block page_title %}
+{% csrf_token %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Ana Sayfa</a></li>
+        <li class="breadcrumb-item active">Talepler</li>
+      </ol>
+    </nav>
+    <!-- Rol bazlı başlık -->
+    {% if user_role == 'admin' %}
+      <h1 class="page-title"><i class="fas fa-shield-alt text-danger me-2"></i>Tüm Talepler <span class="badge bg-danger">Admin</span></h1>
+      <p class="page-subtitle">Sistem genelindeki tüm talepleri yönetebilirsiniz.</p>
+    {% elif user_role == 'support' %}
+      <h1 class="page-title"><i class="fas fa-headset text-success me-2"></i>Tüm Talepler <span class="badge bg-success">Destek</span></h1>
+      <p class="page-subtitle">Taleplerin durumlarını değiştirebilirsiniz.</p>
+    {% else %}
+      <h1 class="page-title"><i class="fas fa-users text-primary me-2"></i>Grup Talepleri <span class="badge bg-primary">Kullanıcı</span></h1>
+      <p class="page-subtitle">Grubunuzdaki talepleri görüntüleyebilirsiniz.</p>
+    {% endif %}
+  </div>
+  <div>
+    <a href="/tickets/create/" class="btn btn-primary"><i class="fas fa-plus-circle me-2"></i>Yeni Talep</a>
+  </div>
+</div>
 {% endblock %}
 
 {% block content %}
-<!-- CSRF Token için hidden form -->
-<form style="display: none;">
-  {% csrf_token %}
-</form>
-<div class="container-fluid">
-  <!-- Filtreler ve Başlık -->
-  <div class="row mb-4">
-    <div class="col-12">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <h1 class="h3 mb-0">
-            {% if user_role == 'admin' %}
-              <i class="bi bi-shield-check text-danger me-2"></i>Tüm Talepler (Admin)
-            {% elif user_role == 'support' %}
-              <i class="bi bi-headset text-success me-2"></i>Tüm Talepler (Destek)
-            {% else %}
-              <i class="bi bi-person text-primary me-2"></i>Grup Talepleri
-            {% endif %}
-          </h1>
-          <p class="text-muted mb-0">
-            {% if user_role == 'admin' %}
-              Sistem genelindeki tüm talepleri görüntüleyebilir ve yönetebilirsiniz.
-            {% elif user_role == 'support' %}
-              Sistem genelindeki tüm talepleri görüntüleyebilir ve durumlarını değiştirebilirsiniz.
-            {% else %}
-              Grup içindeki talepleri görüntüleyebilirsiniz.
-            {% endif %}
-          </p>
-        </div>
-        <div>
-          <a href="{% url 'ticket_create' %}" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-2"></i>Yeni Talep
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Filtreler -->
-  <div class="row mb-4">
-    <div class="col-12">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body">
-          <form method="get" class="row g-3">
-            <div class="col-md-3">
-              <label for="status" class="form-label">Durum</label>
-              <select name="status" id="status" class="form-select">
-                <option value="">Tüm Durumlar</option>
-                {% for status_value, status_display in status_choices %}
-                  <option value="{{ status_value }}" {% if current_status_filter == status_value %}selected{% endif %}>
-                    {{ status_display }}
-                  </option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-md-3">
-              <label for="priority" class="form-label">Öncelik</label>
-              <select name="priority" id="priority" class="form-select">
-                <option value="">Tüm Öncelikler</option>
-                {% for priority_value, priority_display in priority_choices %}
-                  <option value="{{ priority_value }}" {% if current_priority_filter == priority_value %}selected{% endif %}>
-                    {{ priority_display }}
-                  </option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-md-6 d-flex align-items-end">
-              <button type="submit" class="btn btn-outline-primary me-2">
-                <i class="bi bi-funnel me-1"></i>Filtrele
-              </button>
-              <a href="{% url 'ticket_list' %}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-clockwise me-1"></i>Temizle
-              </a>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+<!-- CSRF token -->
+<form style="display:none;">{% csrf_token %}</form>
 
-  <!-- Talep Listesi -->
-  <div class="row">
-    <div class="col-12">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body">
-          {% if tickets %}
-            <!-- Modern Ticket Table -->
-            <div class="table-responsive-modern">
-              <table class="table modern-table mb-0">
-                <thead>
-                  <tr>
-                    <th><i class="bi bi-hash me-1"></i>Numara</th>
-                    <th><i class="bi bi-card-text me-1"></i>Başlık</th>
-                    <th><i class="bi bi-person me-1"></i>Kullanıcı</th>
-                    <th><i class="bi bi-folder me-1"></i>Kategori</th>
-                    <th><i class="bi bi-circle me-1"></i>Durum</th>
-                    <th><i class="bi bi-exclamation-circle me-1"></i>Öncelik</th>
-                    <th><i class="bi bi-person-check me-1"></i>Atanan</th>
-                    <th><i class="bi bi-calendar me-1"></i>Oluşturulma</th>
-                    {% if is_admin or is_support %}
-                      <th class="actions-column"><i class="bi bi-gear me-1"></i>İşlemler</th>
-                    {% endif %}
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for ticket in tickets %}
-                    <tr>
-                      <td>
-                        <a href="{% url 'ticket_detail' ticket.pk %}" class="text-decoration-none fw-bold text-primary">
-                          #{{ ticket.talep_numarasi }}
-                        </a>
-                      </td>
-                      <td>
-                        <a href="{% url 'ticket_detail' ticket.pk %}" class="text-decoration-none text-dark">
-                          {{ ticket.title|truncatechars:50 }}
-                        </a>
-                      </td>
-                      <td>
-                        <div class="d-flex align-items-center">
-                          <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 0.875rem;">
-                            {{ ticket.user.username|first|upper }}
-                          </div>
-                          {{ ticket.user.username }}
-                        </div>
-                      </td>
-                      <td>
-                        {% if ticket.category %}
-                          <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-3 py-2">
-                            <i class="bi bi-folder me-1"></i>{{ ticket.category.name }}
-                          </span>
-                        {% else %}
-                          <span class="text-muted">-</span>
-                        {% endif %}
-                      </td>
-                      <td>
-                        <span class="status-badge status-{{ ticket.status }}" id="status-badge-{{ ticket.pk }}">
-                          {{ ticket.get_status_display }}
-                        </span>
-                      </td>
-                      <td>
-                        <span class="badge 
-                          {% if ticket.priority == 'low' %}bg-success bg-opacity-10 text-success border border-success border-opacity-25
-                          {% elif ticket.priority == 'normal' %}bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25
-                          {% elif ticket.priority == 'high' %}bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25
-                          {% elif ticket.priority == 'urgent' %}bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25
-                          {% endif %} px-3 py-2">
-                          {% if ticket.priority == 'low' %}<i class="bi bi-arrow-down me-1"></i>
-                          {% elif ticket.priority == 'normal' %}<i class="bi bi-dash me-1"></i>
-                          {% elif ticket.priority == 'high' %}<i class="bi bi-arrow-up me-1"></i>
-                          {% elif ticket.priority == 'urgent' %}<i class="bi bi-exclamation-triangle me-1"></i>
-                          {% endif %}
-                          {{ ticket.get_priority_display }}
-                        </span>
-                      </td>
-                      <td>
-                        {% if ticket.assigned_to %}
-                          <div class="d-flex align-items-center">
-                            <div class="avatar-sm bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 0.875rem;">
-                              {{ ticket.assigned_to.username|first|upper }}
-                            </div>
-                            {{ ticket.assigned_to.username }}
-                          </div>
-                        {% else %}
-                          <span class="text-muted">
-                            <i class="bi bi-person-dash me-1"></i>Atanmamış
-                          </span>
-                        {% endif %}
-                      </td>
-                      <td>
-                        <div class="d-flex flex-column">
-                          <span class="fw-medium">{{ ticket.created_at|date:"d.m.Y" }}</span>
-                          <small class="text-muted">{{ ticket.created_at|date:"H:i" }}</small>
-                        </div>
-                      </td>
-                      {% if is_admin or is_support %}
-                        <td class="actions-column">
-                          <button class="btn btn-sm btn-outline-primary status-change-btn" 
-                                  type="button" 
-                                  data-ticket-id="{{ ticket.pk }}" 
-                                  data-current-status="{{ ticket.status }}"
-                                  data-ticket-title="{{ ticket.title|truncatechars:30 }}"
-                                  title="Durum Değiştir">
-                            <i class="bi bi-arrow-repeat me-1"></i>
-                            <span class="d-none d-lg-inline">Durum</span>
-                          </button>
-                        </td>
-                      {% endif %}
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          {% else %}
-            <div class="text-center py-5">
-              <i class="bi bi-inbox display-1 text-muted"></i>
-              <h5 class="mt-3 text-muted">Henüz talep bulunmamaktadır.</h5>
-              <p class="text-muted">Yeni bir talep oluşturmak için yukarıdaki butonu kullanabilirsiniz.</p>
-              <a href="{% url 'ticket_create' %}" class="btn btn-primary">
-                <i class="bi bi-plus-circle me-2"></i>İlk Talebinizi Oluşturun
-              </a>
-            </div>
-          {% endif %}
-        </div>
+<!-- Filtre alanı -->
+<div class="card mb-4">
+  <div class="card-body">
+    <form method="get" class="row g-3 align-items-end">
+      {% include "includes/filter_select.html" with label="Durum" icon="fa-flag" name="status" choices=status_choices current=current_status_filter %}
+      {% include "includes/filter_select.html" with label="Öncelik" icon="fa-exclamation-triangle" name="priority" choices=priority_choices current=current_priority_filter %}
+      <div class="col-md-6">
+        <button type="submit" class="btn btn-outline-primary me-2"><i class="fas fa-filter me-1"></i>Filtrele</button>
+        <a href="/tickets/" class="btn btn-outline-secondary"><i class="fas fa-redo me-1"></i>Temizle</a>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 
-<!-- Status Change Modal -->
-<div class="modal fade" id="statusChangeModal" tabindex="-1" aria-labelledby="statusChangeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+<!-- Listeleme alanı -->
+{% if tickets %}
+  <div class="table-responsive mt-4">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Başlık</th>
+          <th>Kullanıcı</th>
+          <th>Kategori</th>
+          <th>Durum</th>
+          <th>Öncelik</th>
+          <th>Atanan</th>
+          <th>Oluşturulma</th>
+          {% if is_admin or is_support %}<th>İşlemler</th>{% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for ticket in tickets %}
+          <tr>
+            <td><a href="/tickets/{{ ticket.pk }}/" class="fw-bold text-primary">#{{ ticket.talep_numarasi|default:ticket.pk }}</a></td>
+            <td>{{ ticket.title|truncatechars:50 }}</td>
+            <td>{{ ticket.user.username }}</td>
+            <td>{{ ticket.category.name|default:"-" }}</td>
+
+            <!-- Durum etiketi: helper partial -->
+            {% include "includes/status_badge.html" with value=ticket.status display=ticket.get_status_display %}
+
+            <!-- Öncelik etiketi: helper partial -->
+            {% include "includes/priority_badge.html" with value=ticket.priority display=ticket.get_priority_display %}
+
+            <td>{{ ticket.assigned_to.username|default:"Atanmamış" }}</td>
+            <td>{{ ticket.created_at|date:"d.m.Y H:i" }}</td>
+
+            {% if is_admin or is_support %}
+              <td>
+                <div class="btn-group">
+                  <button class="btn btn-outline-primary btn-sm status-change-btn"
+                          data-ticket-id="{{ ticket.pk }}"
+                          data-current-status="{{ ticket.status }}"
+                          data-ticket-title="{{ ticket.title|truncatechars:30 }}">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <a href="/tickets/{{ ticket.pk }}/" class="btn btn-outline-secondary btn-sm"><i class="fas fa-eye"></i></a>
+                </div>
+              </td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <!-- Hiç kayıt yoksa -->
+  <div class="text-center py-5">
+    <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+    <h5 class="text-muted">Henüz talep bulunmamaktadır</h5>
+    <a href="/tickets/create/" class="btn btn-primary mt-2"><i class="fas fa-plus-circle me-2"></i>İlk Talebinizi Oluşturun</a>
+  </div>
+{% endif %}
+
+<!-- Status Değiştirme Modal -->
+<div class="modal fade" id="statusModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="statusChangeModalLabel">
-          <i class="bi bi-arrow-repeat me-2"></i>Talep Durumu Değiştir
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Durum Değiştir</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
+        <p class="mb-3">Ticket: <strong id="modalTicketTitle"></strong></p>
         <div class="mb-3">
-          <label class="form-label text-muted">Talep:</label>
-          <div class="fw-bold" id="modalTicketTitle"></div>
-        </div>
-        <div class="mb-3">
-          <label class="form-label text-muted">Mevcut Durum:</label>
-          <div class="current-status-display" id="modalCurrentStatus"></div>
-        </div>
-        <div class="mb-3">
-          <label for="newStatusSelect" class="form-label">Yeni Durum:</label>
-          <select class="form-select" id="newStatusSelect">
-            <option value="">Yeni durum seçin...</option>
-            {% for status_value, status_display in status_choices %}
-              <option value="{{ status_value }}">{{ status_display }}</option>
-            {% endfor %}
+          <label for="newStatus" class="form-label">Yeni Durum</label>
+          <select class="form-select" id="newStatus">
+            <option value="new">Yeni</option>
+            <option value="seen">Görüldü</option>
+            <option value="open">Açık</option>
+            <option value="pending">Beklemeye Alındı</option>
+            <option value="in_progress">İşlemde</option>
+            <option value="resolved">Çözüldü</option>
+            <option value="closed">Kapatıldı</option>
+            <option value="wrong_section">Yanlış Bölüm</option>
           </select>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          <i class="bi bi-x-circle me-1"></i>İptal
-        </button>
-        <button type="button" class="btn btn-primary" id="confirmStatusChange" disabled>
-          <i class="bi bi-check-circle me-1"></i>Durumu Değiştir
-        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+        <button type="button" class="btn btn-primary" id="updateStatusBtn">Durumu Güncelle</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modern JavaScript için -->
-{% block extra_js %}
-<script src="{% static 'tickets/js/ticket_list_modern.js' %}"></script>
-{% endblock %}
-
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let currentTicketId = null;
+    const statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
+    
+    // Status change button click handler
+    document.querySelectorAll('.status-change-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            currentTicketId = this.dataset.ticketId;
+            const currentStatus = this.dataset.currentStatus;
+            const ticketTitle = this.dataset.ticketTitle;
+            
+            document.getElementById('modalTicketTitle').textContent = ticketTitle;
+            document.getElementById('newStatus').value = currentStatus;
+            
+            statusModal.show();
+        });
+    });
+    
+    // Update status button handler
+    document.getElementById('updateStatusBtn').addEventListener('click', function() {
+        const newStatus = document.getElementById('newStatus').value;
+        const btn = this;
+        
+        // Disable button and show loading
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Güncelleniyor...';
+        
+        fetch('/tickets/update-status/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                ticket_id: currentTicketId,
+                new_status: newStatus
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success message
+                showAlert('success', data.message);
+                
+                // Update the status badge in the table
+                updateStatusBadgeInTable(currentTicketId, newStatus, data.new_status_display);
+                
+                // Close modal
+                statusModal.hide();
+            } else {
+                showAlert('danger', data.message);
+            }
+        })
+        .catch(error => {
+            showAlert('danger', 'Bir hata oluştu: ' + error.message);
+        })
+        .finally(() => {
+            // Reset button
+            btn.disabled = false;
+            btn.innerHTML = 'Durumu Güncelle';
+        });
+    });
+    
+    function updateStatusBadgeInTable(ticketId, newStatus, newStatusDisplay) {
+        // Find the ticket row and update the status badge
+        const statusCell = document.querySelector(`tr [data-ticket-id="${ticketId}"]`).closest('tr').querySelector('td:nth-child(5)');
+        if (statusCell) {
+            // Get status color
+            const statusColors = {
+                'new': 'primary',
+                'seen': 'info',
+                'open': 'warning',
+                'pending': 'secondary',
+                'in_progress': 'info',
+                'resolved': 'success',
+                'closed': 'dark',
+                'wrong_section': 'danger'
+            };
+            const color = statusColors[newStatus] || 'secondary';
+            statusCell.innerHTML = `<span class="badge bg-${color} bg-opacity-10 text-${color} border border-${color} border-opacity-25 px-3 py-2">${newStatusDisplay}</span>`;
+        }
+    }
+    
+    function showAlert(type, message) {
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        alert.style.cssText = 'top: 20px; right: 20px; z-index: 1060; min-width: 300px;';
+        alert.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(alert);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (alert.parentNode) {
+                alert.remove();
+            }
+        }, 5000);
+    }
+});
+</script>
 {% endblock %}

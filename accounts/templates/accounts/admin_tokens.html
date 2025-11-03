@@ -1,0 +1,188 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}{{ panel_title }} - HelpDesk{% endblock %}
+
+{% block page_title %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/"><i class="fas fa-home"></i> Ana Sayfa</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'admin_panel' %}">Admin Panel</a>
+                </li>
+                <li class="breadcrumb-item active">API Tokenları</li>
+            </ol>
+        </nav>
+        <h1 class="page-title">
+            <i class="fas fa-key text-warning me-3"></i>{{ panel_title }}
+        </h1>
+        <p class="page-subtitle">API erişim tokenlarını yönetin</p>
+    </div>
+    <div class="text-end">
+        <a href="#" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Yeni Token
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-key me-2"></i>Aktif API Tokenları
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Kullanıcı</th>
+                                <th>Token</th>
+                                <th>Oluşturma Tarihi</th>
+                                <th>Son Kullanım</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for token in tokens %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-user text-primary me-2"></i>
+                                        <div>
+                                            <strong>{{ token.user.username }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ token.user.get_role_display }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <code class="bg-light p-1 rounded">{{ token.key|slice:":20" }}...</code>
+                                    <button class="btn btn-sm btn-outline-secondary ms-1" onclick="copyToken('{{ token.key }}')">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <small>{{ token.created_at|date:"d M Y H:i" }}</small>
+                                </td>
+                                <td>
+                                    {% if token.last_used %}
+                                        <small>{{ token.last_used|date:"d M Y H:i" }}</small>
+                                    {% else %}
+                                        <small class="text-muted">Henüz kullanılmamış</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if token.is_active %}
+                                        <span class="badge bg-success">Aktif</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Pasif</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-outline-info" onclick="showTokenDetails('{{ token.key }}')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-warning" onclick="regenerateToken('{{ token.user.id }}')">
+                                            <i class="fas fa-sync"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteToken('{{ token.key }}')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center py-4">
+                                    <i class="fas fa-key fs-1 text-muted mb-3"></i>
+                                    <p class="text-muted">Henüz hiç API token oluşturulmamış.</p>
+                                    <a href="#" class="btn btn-primary">
+                                        <i class="fas fa-plus me-2"></i>İlk Token'ı Oluştur
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Token İstatistikleri -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-key fs-1 text-primary mb-3"></i>
+                <h4>{{ tokens|length }}</h4>
+                <p class="text-muted mb-0">Toplam Token</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-check-circle fs-1 text-success mb-3"></i>
+                <h4>{{ tokens|length }}</h4>
+                <p class="text-muted mb-0">Aktif Token</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-clock fs-1 text-warning mb-3"></i>
+                <h4>0</h4>
+                <p class="text-muted mb-0">Süresi Dolacak</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-ban fs-1 text-danger mb-3"></i>
+                <h4>0</h4>
+                <p class="text-muted mb-0">Pasif Token</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToken(token) {
+    navigator.clipboard.writeText(token).then(function() {
+        alert('Token kopyalandı!');
+    });
+}
+
+function showTokenDetails(token) {
+    alert('Token detayları: ' + token);
+}
+
+function regenerateToken(userId) {
+    if (confirm('Bu token\'ı yeniden oluşturmak istediğinizden emin misiniz?')) {
+        // AJAX isteği yapılacak
+        alert('Token yenilendi!');
+    }
+}
+
+function deleteToken(token) {
+    if (confirm('Bu token\'ı silmek istediğinizden emin misiniz?')) {
+        // AJAX isteği yapılacak
+        alert('Token silindi!');
+    }
+}
+</script>
+{% endblock %}

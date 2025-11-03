@@ -1,201 +1,135 @@
 {% extends 'tickets/base.html' %}
 
-{% block title %}{{ page_title }}{% endblock %}
-{% block page_title %}{{ page_title }}{% endblock %}
+{% block title %}Raporlar - HelpDesk{% endblock %}
+
+{% block sidebar_nav %}
+<div class="nav-section">
+    <div class="nav-section-title">Yönetim Paneli</div>
+    <div class="nav-item"><a href="/accounts/admin-panel/" class="nav-link"><i class="fas fa-tachometer-alt"></i><span>Ana Panel</span></a></div>
+    <div class="nav-item"><a href="/accounts/admin/users/" class="nav-link"><i class="fas fa-users"></i><span>Kullanıcılar</span></a></div>
+    <div class="nav-item"><a href="/accounts/admin/groups/" class="nav-link"><i class="fas fa-users-cog"></i><span>Gruplar</span></a></div>
+    <div class="nav-item"><a href="/accounts/admin/settings/" class="nav-link"><i class="fas fa-cog"></i><span>Sistem Ayarları</span></a></div>
+    <div class="nav-item"><a href="/accounts/admin/reports/" class="nav-link active"><i class="fas fa-chart-bar"></i><span>Raporlar</span></a></div>
+    <div class="nav-item"><a href="/accounts/debug-tokens/" class="nav-link"><i class="fas fa-bug"></i><span>Debug</span></a></div>
+</div>
+
+<div class="nav-section">
+    <div class="nav-section-title">Ana Menü</div>
+    <div class="nav-item"><a href="/" class="nav-link"><i class="fas fa-home"></i><span>Ana Sayfa</span></a></div>
+    <div class="nav-item"><a href="/tickets/" class="nav-link"><i class="fas fa-ticket-alt"></i><span>Talepler</span></a></div>
+</div>
+
+<div class="nav-section">
+    <div class="nav-section-title">Kişisel</div>
+    <div class="nav-item"><a href="/accounts/profile/" class="nav-link"><i class="fas fa-user"></i><span>Profil</span></a></div>
+</div>
+{% endblock %}
 
 {% block breadcrumb %}
-<nav aria-label="breadcrumb" class="mb-4">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item">
-      <a href="{% url 'home' %}" style="color: var(--accent-color);">
-        <i class="bi bi-house-door me-1"></i>Ana Sayfa
-      </a>
-    </li>
-    <li class="breadcrumb-item">
-      <a href="/accounts/admin-panel/" style="color: var(--accent-color);">
-        <i class="bi bi-shield-check me-1"></i>Admin Panel
-      </a>
-    </li>
-    <li class="breadcrumb-item active" aria-current="page">Raporlar</li>
-  </ol>
-</nav>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
+    <li class="breadcrumb-item"><a href="/accounts/admin-panel/">Admin Panel</a></li>
+    <li class="breadcrumb-item active">Raporlar</li>
+</ol>
+{% endblock %}
+
+{% block page_title %}
+<div class="d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="page-title"><i class="fas fa-chart-bar text-info me-3"></i>Sistem Raporları<span class="badge bg-info ms-2">Admin</span></h1>
+        <p class="page-subtitle">Analiz, istatistik ve raporlar</p>
+    </div>
+    <div>
+        <a href="/accounts/admin/reports/export/" class="btn btn-info"><i class="fas fa-download me-2"></i>Rapor İndir</a>
+    </div>
+</div>
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid">
-  <!-- Page Header -->
-  <div class="row mb-4">
-    <div class="col-12">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <h1 class="h3 mb-0">
-            <i class="bi bi-graph-up text-info me-2"></i>Raporlar ve Analitik
-          </h1>
-          <p class="text-muted mb-0">Sistem istatistikleri ve performans raporları</p>
-        </div>
-        <div>
-          <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-            <i class="bi bi-download me-2"></i>Rapor İndir
-          </button>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#" onclick="exportReport('tickets', 'csv')">
-              <i class="bi bi-file-earmark-spreadsheet me-2"></i>Talep Raporu (CSV)
-            </a></li>
-            <li><a class="dropdown-item" href="#" onclick="exportReport('users', 'csv')">
-              <i class="bi bi-people me-2"></i>Kullanıcı Raporu (CSV)
-            </a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#" onclick="generatePDFReport()">
-              <i class="bi bi-file-earmark-pdf me-2"></i>PDF Özet Raporu
-            </a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Report Cards -->
+  <!-- Rapor Kartları -->
   <div class="row g-4 mb-4">
-    <!-- Toplam Talepler -->
     <div class="col-lg-3 col-md-6">
-      <div class="card text-white" style="background-color: var(--primary-color);">
-        <div class="card-body">
-          <div class="d-flex align-items-center">
-            <div class="flex-grow-1">
-              <h6 class="card-title mb-0">Toplam Talep</h6>
-              <h3 class="mb-0">{{ stats.total_tickets }}</h3>
-            </div>
-            <div class="ms-3">
-              <i class="bi bi-ticket-perforated fs-2"></i>
-            </div>
+      <div class="card text-white bg-primary">
+        <div class="card-body d-flex align-items-center">
+          <div class="flex-grow-1">
+            <h6 class="card-title mb-0">Toplam Talep</h6>
+            <h3 class="mb-0">{{ stats.total_tickets }}</h3>
           </div>
+          <div class="ms-3"><i class="bi bi-ticket-perforated fs-2"></i></div>
         </div>
       </div>
     </div>
 
-    <!-- Toplam Kullanıcılar -->
     <div class="col-lg-3 col-md-6">
-      <div class="card text-white" style="background-color: var(--info-color);">
-        <div class="card-body">
-          <div class="d-flex align-items-center">
-            <div class="flex-grow-1">
-              <h6 class="card-title mb-0">Toplam Kullanıcı</h6>
-              <h3 class="mb-0">{{ stats.total_users }}</h3>
-            </div>
-            <div class="ms-3">
-              <i class="bi bi-people fs-2"></i>
-            </div>
+      <div class="card text-white bg-info">
+        <div class="card-body d-flex align-items-center">
+          <div class="flex-grow-1">
+            <h6 class="card-title mb-0">Toplam Kullanıcı</h6>
+            <h3 class="mb-0">{{ stats.total_users }}</h3>
           </div>
+          <div class="ms-3"><i class="bi bi-people fs-2"></i></div>
         </div>
       </div>
     </div>
 
-    <!-- Toplam Talepler -->
     <div class="col-lg-3 col-md-6">
-      <div class="card text-white" style="background-color: var(--success-color);">
-        <div class="card-body">
-          <div class="d-flex align-items-center">
-            <div class="flex-grow-1">
-              <h6 class="card-title mb-0">Toplam Talep</h6>
-              <h3 class="mb-0">1,247</h3>
-            </div>
-            <div class="ms-3">
-              <i class="bi bi-ticket-perforated fs-2"></i>
-            </div>
+      <div class="card text-white bg-success">
+        <div class="card-body d-flex align-items-center">
+          <div class="flex-grow-1">
+            <h6 class="card-title mb-0">Çözülen Talepler</h6>
+            <h3 class="mb-0">{{ stats.resolved_tickets }}</h3>
           </div>
+          <div class="ms-3"><i class="bi bi-check-circle fs-2"></i></div>
         </div>
       </div>
     </div>
 
-    <!-- Çözülen Talepler -->
     <div class="col-lg-3 col-md-6">
-      <div class="card text-white" style="background-color: var(--info-color);">
-        <div class="card-body">
-          <div class="d-flex align-items-center">
-            <div class="flex-grow-1">
-              <h6 class="card-title mb-0">Çözülen</h6>
-              <h3 class="mb-0">1,089</h3>
-            </div>
-            <div class="ms-3">
-              <i class="bi bi-check-circle fs-2"></i>
-            </div>
+      <div class="card text-white bg-warning">
+        <div class="card-body d-flex align-items-center">
+          <div class="flex-grow-1">
+            <h6 class="card-title mb-0">Bekleyen Talepler</h6>
+            <h3 class="mb-0">{{ stats.pending_tickets }}</h3>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bekleyen Talepler -->
-    <div class="col-lg-3 col-md-6">
-      <div class="card text-white" style="background-color: var(--warning-color);">
-        <div class="card-body">
-          <div class="d-flex align-items-center">
-            <div class="flex-grow-1">
-              <h6 class="card-title mb-0">Bekleyen</h6>
-              <h3 class="mb-0">158</h3>
-            </div>
-            <div class="ms-3">
-              <i class="bi bi-hourglass-split fs-2"></i>
-            </div>
-          </div>
+          <div class="ms-3"><i class="bi bi-hourglass-split fs-2"></i></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Charts and Reports -->
+  <!-- Grafikler -->
   <div class="row">
-    <!-- Ticket Status Chart -->
     <div class="col-lg-6 mb-4">
       <div class="card">
-        <div class="card-header">
-          <h5 class="card-title mb-0">
-            <i class="bi bi-pie-chart me-2"></i>Talep Durumu Dağılımı
-          </h5>
-        </div>
+        <div class="card-header"><h5 class="card-title mb-0"><i class="bi bi-pie-chart me-2"></i>Talep Durumu Dağılımı</h5></div>
         <div class="card-body">
-          <div class="text-center py-5">
-            <i class="bi bi-bar-chart-fill fs-1 text-muted"></i>
-            <p class="text-muted mt-3">Grafik verisi yükleniyor...</p>
-          </div>
+          <canvas id="ticketStatusChart" height="200"></canvas>
         </div>
       </div>
     </div>
 
-    <!-- Monthly Activity -->
     <div class="col-lg-6 mb-4">
       <div class="card">
-        <div class="card-header">
-          <h5 class="card-title mb-0">
-            <i class="bi bi-graph-up me-2"></i>Aylık Aktivite
-          </h5>
-        </div>
+        <div class="card-header"><h5 class="card-title mb-0"><i class="bi bi-graph-up me-2"></i>Aylık Aktivite</h5></div>
         <div class="card-body">
-          <div class="text-center py-5">
-            <i class="bi bi-graph-up-arrow fs-1 text-muted"></i>
-            <p class="text-muted mt-3">Grafik verisi yükleniyor...</p>
-          </div>
+          <canvas id="monthlyActivityChart" height="200"></canvas>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Recent Activity -->
+  <!-- Son Aktiviteler -->
+  <div class="row">
     <div class="col-12">
       <div class="card">
-        <div class="card-header">
-          <h5 class="card-title mb-0">
-            <i class="bi bi-clock-history me-2"></i>Son Aktiviteler
-          </h5>
-        </div>
+        <div class="card-header"><h5 class="card-title mb-0"><i class="bi bi-clock-history me-2"></i>Son Aktiviteler</h5></div>
         <div class="card-body">
           <div class="table-responsive">
             <table class="table table-hover">
               <thead>
-                <tr>
-                  <th>Tarih</th>
-                  <th>Kullanıcı</th>
-                  <th>Aktivite</th>
-                  <th>Durum</th>
-                </tr>
+                <tr><th>Tarih</th><th>Kullanıcı</th><th>Aktivite</th><th>Durum</th></tr>
               </thead>
               <tbody>
                 {% for activity in recent_activities %}
@@ -216,12 +150,7 @@
                   </td>
                 </tr>
                 {% empty %}
-                <tr>
-                  <td colspan="4" class="text-center text-muted py-4">
-                    <i class="bi bi-inbox fs-1"></i>
-                    <p class="mt-2">Henüz aktivite bulunmuyor.</p>
-                  </td>
-                </tr>
+                <tr><td colspan="4" class="text-center text-muted py-4"><i class="bi bi-inbox fs-1"></i><p class="mt-2">Henüz aktivite bulunmuyor.</p></td></tr>
                 {% endfor %}
               </tbody>
             </table>
@@ -232,72 +161,37 @@
   </div>
 </div>
 
+<!-- Chart.js Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+const ticketStatusCtx = document.getElementById('ticketStatusChart').getContext('2d');
+const monthlyActivityCtx = document.getElementById('monthlyActivityChart').getContext('2d');
+
+// Placeholder Chart.js config (verileri backend'den doldur)
+const ticketStatusChart = new Chart(ticketStatusCtx, {
+    type: 'pie',
+    data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] },
+    options: { responsive: true }
+});
+const monthlyActivityChart = new Chart(monthlyActivityCtx, {
+    type: 'bar',
+    data: { labels: [], datasets: [{ label: 'Talepler', data: [], backgroundColor: 'rgba(54, 162, 235, 0.7)' }] },
+    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+});
+
+// Rapor indirme ve toast fonksiyonları
 function exportReport(type, format) {
-    // Loading state göster
-    const toast = showToast('info', 'Rapor hazırlanıyor, lütfen bekleyin...');
-    
-    // Export URL'ini oluştur
+    showToast('info', 'Rapor hazırlanıyor...');
     const url = `/accounts/admin/reports/export/?type=${type}&format=${format}`;
-    
-    // Download link oluştur
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = '';
-    link.style.display = 'none';
-    
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    // Başarı mesajı
-    setTimeout(() => {
-        showToast('success', 'Rapor başarıyla indirildi!');
-    }, 1000);
+    const link = document.createElement('a'); link.href = url; link.style.display='none'; document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    setTimeout(()=>showToast('success','Rapor başarıyla indirildi!'),1000);
 }
-
-function generatePDFReport() {
-    showToast('warning', 'PDF rapor özelliği yakında eklenecek!');
-}
-
-function showToast(type, message) {
-    // Bootstrap toast gösterme fonksiyonu
-    const toastHtml = `
-        <div class="toast align-items-center text-white bg-${type === 'info' ? 'primary' : type === 'success' ? 'success' : 'warning'} border-0" role="alert">
-            <div class="d-flex">
-                <div class="toast-body">
-                    <i class="bi bi-${type === 'info' ? 'info-circle' : type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
-                    ${message}
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-            </div>
-        </div>
-    `;
-    
-    // Toast container oluştur veya mevcut olanı kullan
-    let toastContainer = document.getElementById('toast-container');
-    if (!toastContainer) {
-        toastContainer = document.createElement('div');
-        toastContainer.id = 'toast-container';
-        toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
-        toastContainer.style.zIndex = '1055';
-        document.body.appendChild(toastContainer);
-    }
-    
-    // Toast'u ekle
-    toastContainer.insertAdjacentHTML('beforeend', toastHtml);
-    
-    // Toast'u göster
-    const toastElement = toastContainer.lastElementChild;
-    const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
-    toast.show();
-    
-    // Toast kapandığında elementi kaldır
-    toastElement.addEventListener('hidden.bs.toast', () => {
-        toastElement.remove();
-    });
-    
-    return toast;
+function generatePDFReport() { showToast('warning','PDF rapor özelliği yakında eklenecek!'); }
+function showToast(type,message){
+    const toastHtml = `<div class="toast align-items-center text-white bg-${type==='info'?'primary':type==='success'?'success':'warning'} border-0" role="alert"><div class="d-flex"><div class="toast-body"><i class="bi bi-${type==='info'?'info-circle':type==='success'?'check-circle':'exclamation-triangle'} me-2"></i>${message}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>`;
+    let container = document.getElementById('toast-container'); if(!container){ container=document.createElement('div'); container.id='toast-container'; container.className='toast-container position-fixed top-0 end-0 p-3'; container.style.zIndex='1055'; document.body.appendChild(container);}
+    container.insertAdjacentHTML('beforeend',toastHtml);
+    const t=document.querySelector('#toast-container .toast:last-child'); const b=new bootstrap.Toast(t,{delay:3000}); b.show(); t.addEventListener('hidden.bs.toast',()=>t.remove()); return b;
 }
 </script>
 {% endblock %}

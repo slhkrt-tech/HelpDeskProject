@@ -62,16 +62,29 @@ class TicketForm(forms.ModelForm):
         """
         super().__init__(*args, **kwargs)
         
+        # Zorunlu alanlar - sadece başlık ve açıklama
         self.fields['title'].required = True
         self.fields['description'].required = True
         
-        # Atama alanı için boş seçenek
+        # Opsiyonel alanlar - kullanıcı isterse doldurmayabilir
+        self.fields['category'].required = False
+        self.fields['sla'].required = False
+        self.fields['priority'].required = False
+        self.fields['assigned_to'].required = False
+        
+        # Boş seçenekler ekleme
+        self.fields['category'].empty_label = "--- Kategori Seçin (İsteğe Bağlı) ---"
+        self.fields['sla'].empty_label = "--- Hizmet Seviyesi Seçin (İsteğe Bağlı) ---"
+        self.fields['priority'].empty_label = "--- Öncelik Seçin (İsteğe Bağlı) ---"
         self.fields['assigned_to'].empty_label = "--- Otomatik Atama ---"
         
         # Zorunlu alanlara 'required' attribute ekle
         for field_name, field in self.fields.items():
             if field.required:
                 field.widget.attrs['required'] = True
+            else:
+                # Zorunlu olmayan alanlardan required attribute'unu kaldır
+                field.widget.attrs.pop('required', None)
 
 
 # ================================================================================

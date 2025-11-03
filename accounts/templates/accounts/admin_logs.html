@@ -1,0 +1,270 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}{{ panel_title }} - HelpDesk{% endblock %}
+
+{% block page_title %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/"><i class="fas fa-home"></i> Ana Sayfa</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'admin_panel' %}">Admin Panel</a>
+                </li>
+                <li class="breadcrumb-item active">Sistem Logları</li>
+            </ol>
+        </nav>
+        <h1 class="page-title">
+            <i class="fas fa-file-alt text-info me-3"></i>{{ panel_title }}
+        </h1>
+        <p class="page-subtitle">Sistem aktivitelerini izleyin</p>
+    </div>
+    <div class="text-end">
+        <div class="btn-group">
+            <button class="btn btn-outline-primary">
+                <i class="fas fa-sync me-2"></i>Yenile
+            </button>
+            <button class="btn btn-outline-danger">
+                <i class="fas fa-trash me-2"></i>Logları Temizle
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Log Filtreleri -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Log Seviyesi</label>
+                        <select class="form-select">
+                            <option value="">Tümü</option>
+                            <option value="info">Bilgi</option>
+                            <option value="warning">Uyarı</option>
+                            <option value="error">Hata</option>
+                            <option value="critical">Kritik</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Tarih Aralığı</label>
+                        <select class="form-select">
+                            <option value="today">Bugün</option>
+                            <option value="week">Bu Hafta</option>
+                            <option value="month">Bu Ay</option>
+                            <option value="all">Tümü</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Arama</label>
+                        <input type="text" class="form-control" placeholder="Log mesajında ara...">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search me-2"></i>Filtrele
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Log Listesi -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>Son Aktiviteler
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 120px;">Zaman</th>
+                                <th style="width: 80px;">Seviye</th>
+                                <th style="width: 120px;">Kullanıcı</th>
+                                <th>Mesaj</th>
+                                <th style="width: 100px;">IP Adresi</th>
+                                <th style="width: 80px;">İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Örnek log kayıtları -->
+                            <tr>
+                                <td><small>10:35:22</small></td>
+                                <td><span class="badge bg-success">INFO</span></td>
+                                <td>admin</td>
+                                <td>Kullanıcı giriş yaptı</td>
+                                <td><code>127.0.0.1</code></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-info">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><small>10:34:15</small></td>
+                                <td><span class="badge bg-info">DEBUG</span></td>
+                                <td>system</td>
+                                <td>Database connection established</td>
+                                <td><code>-</code></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-info">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><small>10:33:42</small></td>
+                                <td><span class="badge bg-warning">WARNING</span></td>
+                                <td>customer1</td>
+                                <td>Failed login attempt</td>
+                                <td><code>192.168.1.100</code></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-info">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><small>10:32:18</small></td>
+                                <td><span class="badge bg-success">INFO</span></td>
+                                <td>admin</td>
+                                <td>Yeni kullanıcı oluşturuldu: testuser</td>
+                                <td><code>127.0.0.1</code></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-info">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><small>10:30:55</small></td>
+                                <td><span class="badge bg-danger">ERROR</span></td>
+                                <td>system</td>
+                                <td>Email service connection failed</td>
+                                <td><code>-</code></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-info">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><small>10:28:33</small></td>
+                                <td><span class="badge bg-info">INFO</span></td>
+                                <td>support1</td>
+                                <td>Ticket #001 çözüldü olarak işaretlendi</td>
+                                <td><code>10.0.0.5</code></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-info">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><small>10:25:12</small></td>
+                                <td><span class="badge bg-success">INFO</span></td>
+                                <td>customer2</td>
+                                <td>Yeni talep oluşturuldu: #002</td>
+                                <td><code>203.0.113.5</code></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-info">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><small>10:22:47</small></td>
+                                <td><span class="badge bg-dark">CRITICAL</span></td>
+                                <td>system</td>
+                                <td>Disk space low: 95% used</td>
+                                <td><code>-</code></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-info">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">Toplam 125 log kaydı</small>
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#">Önceki</a>
+                            </li>
+                            <li class="page-item active">
+                                <a class="page-link" href="#">1</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">2</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">3</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Sonraki</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Log İstatistikleri -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-info-circle fs-1 text-info mb-3"></i>
+                <h4 class="text-info">89</h4>
+                <p class="text-muted mb-0">Bilgi</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-exclamation-triangle fs-1 text-warning mb-3"></i>
+                <h4 class="text-warning">12</h4>
+                <p class="text-muted mb-0">Uyarı</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-times-circle fs-1 text-danger mb-3"></i>
+                <h4 class="text-danger">3</h4>
+                <p class="text-muted mb-0">Hata</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-ban fs-1 text-dark mb-3"></i>
+                <h4 class="text-dark">1</h4>
+                <p class="text-muted mb-0">Kritik</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

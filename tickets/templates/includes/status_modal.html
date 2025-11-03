@@ -1,0 +1,86 @@
+<!-- Status Change Modal -->
+<div class="modal fade" id="statusModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Talep Durumu Değiştir</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="statusForm">
+          {% csrf_token %}
+          <input type="hidden" id="ticketId" name="ticket_id">
+          
+          <div class="mb-3">
+            <strong id="ticketTitle"></strong>
+          </div>
+          
+          <div class="mb-3">
+            <label for="newStatus" class="form-label">Yeni Durum</label>
+            <select class="form-select" id="newStatus" name="status" required>
+              <option value="open">Açık</option>
+              <option value="in_progress">İşlemde</option>
+              <option value="resolved">Çözüldü</option>
+              <option value="closed">Kapalı</option>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label for="statusNote" class="form-label">Not (İsteğe bağlı)</label>
+            <textarea class="form-control" id="statusNote" name="note" rows="3" placeholder="Durum değişikliği hakkında not..."></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+        <button type="button" class="btn btn-primary" id="saveStatusBtn">Kaydet</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
+  const statusButtons = document.querySelectorAll('.status-change-btn');
+  
+  statusButtons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const ticketId = this.dataset.ticketId;
+      const currentStatus = this.dataset.currentStatus;
+      const ticketTitle = this.dataset.ticketTitle;
+      
+      document.getElementById('ticketId').value = ticketId;
+      document.getElementById('ticketTitle').textContent = ticketTitle;
+      document.getElementById('newStatus').value = currentStatus;
+      
+      statusModal.show();
+    });
+  });
+  
+  document.getElementById('saveStatusBtn').addEventListener('click', function() {
+    const formData = new FormData(document.getElementById('statusForm'));
+    
+    fetch('/tickets/api/change-status/', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        location.reload();
+      } else {
+        alert('Hata: ' + data.error);
+      }
+    })
+    .catch(error => {
+      alert('Bir hata oluştu.');
+    });
+    
+    statusModal.hide();
+  });
+});
+</script>

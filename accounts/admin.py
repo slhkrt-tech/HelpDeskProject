@@ -46,6 +46,22 @@ class CustomUserAdmin(UserAdmin):
     # Arama ve sıralama
     search_fields = ("username", "email", "role")
     ordering = ("username",)
+    
+    def get_readonly_fields(self, request, obj=None):
+        """Superuser'lar için role field'ını readonly yap"""
+        readonly_fields = list(super().get_readonly_fields(request, obj))
+        
+        if obj and obj.is_superuser:
+            if 'role' not in readonly_fields:
+                readonly_fields.append('role')
+        
+        return readonly_fields
+    
+    def save_model(self, request, obj, form, change):
+        """Admin kullanıcılarının role'ünü koru"""
+        if obj.is_superuser:
+            obj.role = 'admin'
+        super().save_model(request, obj, form, change)
 
 # ================================================================================
 # Custom Auth Token Admin Configuration
@@ -57,9 +73,9 @@ class CustomAuthTokenAdmin(admin.ModelAdmin):
     Custom authentication token'lar için admin interface
     Token yönetimi ve güvenlik takibi
     """
-    list_display = ('user', 'username', 'created', 'expires_at', 'last_used', 'is_active', 'is_expired')
+    list_display = ('user', 'created', 'expires_at', 'last_used', 'is_active', 'is_expired')
     list_filter = ('is_active', 'created', 'expires_at')
-    search_fields = ('user__username', 'username')
+    search_fields = ('user__username',)
     readonly_fields = ('key', 'created', 'password_hash')
     ordering = ('-created',)
 

@@ -1,3 +1,13 @@
+# accounts/models.py
+"""
+HelpDesk Kullanıcı Modelleri
+===========================
+
+- CustomUser: Rol tabanlı kullanıcı modeli (admin, support, customer)
+- CustomAuthToken: Gelişmiş token authentication sistemi, çoklu cihaz desteği
+- SystemSettings: Sistem konfigürasyon ayarları (singleton)
+"""
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.utils import timezone
@@ -5,19 +15,21 @@ from django.contrib.auth.hashers import make_password
 from datetime import timedelta
 import secrets
 
-# Django'nun varsayılan kullanıcı modelini genişleten özel kullanıcı sınıfı.
-# Yeni kullanıcı rolleri tanımlanır (admin, support, customer).
-# Grup ve izin ilişkileri yeniden tanımlanarak isim çakışmaları önlenir.
+# ================================================================================
+# Kullanıcı Modeli
+# ================================================================================
 
 class CustomUser(AbstractUser):
-
-    # Kullanıcının sistemdeki rolünü belirtir.
+    """
+    Django'nun varsayılan kullanıcı modelini genişleten özel kullanıcı sınıfı.
+    """
 
     ROLE_CHOICES = (
         ('admin', 'Admin'),
         ('support', 'Support'),
         ('customer', 'Customer'),
     )
+    
     role = models.CharField(
         max_length=10,
         choices=ROLE_CHOICES,
@@ -25,128 +37,168 @@ class CustomUser(AbstractUser):
         help_text="Kullanıcının sistemdeki rolünü belirtir."
     )
 
-    # Django'nun yerleşik 'groups' alanı yeniden tanımlandı.
-    # related_name parametresi, ters ilişki adının diğer modellerle çakışmaması için değiştirildi.
-
     groups = models.ManyToManyField(
         Group,
         related_name='customuser_set',
         blank=True,
-        help_text="Kullanıcının dahil olduğu gruplar."
+        help_text='Bu kullanıcının ait olduğu gruplar.',
+        verbose_name='groups',
     )
-
-    # Kullanıcının sahip olduğu özel izinler.
-    # related_name yine çakışmayı önlemek için değiştirildi.
 
     user_permissions = models.ManyToManyField(
         Permission,
-        related_name='customuser_permissions_set',
+        related_name='customuser_set',
         blank=True,
-        help_text="Kullanıcının sahip olduğu özel izinler."
+        help_text='Bu kullanıcının sahip olduğu özel izinler.',
+        verbose_name='user permissions',
     )
 
+    class Meta:
+        verbose_name = 'Kullanıcı'
+        verbose_name_plural = 'Kullanıcılar'
+        db_table = 'accounts_customuser'
+
     def __str__(self):
-
-        # Admin panelinde kullanıcı nesneleri anlamlı görünsün diye
-
         return f"{self.username} ({self.get_role_display()})"
 
+    def get_full_name_or_username(self):
+        full_name = f"{self.first_name} {self.last_name}".strip()
+        return full_name if full_name else self.username
+    
+    def save(self, *args, **kwargs):
+        # Superuser'lar için admin role'ünü zorla
+        if self.is_superuser:
+            self.role = 'admin'
+        
+        # Mevcut admin kullanıcısının role'ünü değiştirmeyi engelle
+        if self.pk and self.is_superuser:
+            try:
+                old_instance = CustomUser.objects.get(pk=self.pk)
+                if old_instance.is_superuser and old_instance.role == 'admin':
+                    self.role = 'admin'  # Admin role'ünü koru
+            except CustomUser.DoesNotExist:
+                pass
+        
+        super().save(*args, **kwargs)
+
+# ================================================================================
+# Token Modeli (Çoklu cihaz desteği ile)
+# ================================================================================
 
 class CustomAuthToken(models.Model):
     """
-    Gelişmiş authentication token modeli
-    Kullanıcı bilgileri ve süre sonu dahil
+    Gelişmiş authentication token modeli.
+    Çoklu cihaz destekli, kullanıcı başına birden fazla token.
     """
-    key = models.CharField(max_length=128, unique=True)
-    user = models.OneToOneField(
-        'CustomUser', 
-        related_name='custom_auth_token',
-        on_delete=models.CASCADE
+    
+    key = models.CharField(
+        max_length=128, 
+        unique=True,
+        help_text="Token için benzersiz anahtar"
     )
-    username = models.CharField(max_length=150)
-    password_hash = models.CharField(max_length=255)  # Hashed password
-    created = models.DateTimeField(auto_now_add=True)
-    expires_at = models.DateTimeField()
-    last_used = models.DateTimeField(null=True, blank=True)
-    is_active = models.BooleanField(default=True)
     
+    user = models.ForeignKey(
+        CustomUser, 
+        related_name='auth_tokens',
+        on_delete=models.CASCADE,
+        help_text="Token'ın sahibi olan kullanıcı"
+    )
+    
+    device_name = models.CharField(
+        max_length=100,
+        default='Unknown device',
+        help_text="Token hangi cihaz için oluşturuldu"
+    )
+
+    created = models.DateTimeField(auto_now_add=True, help_text="Token oluşturulma tarihi")
+    expires_at = models.DateTimeField(help_text="Token'ın geçerlilik süresi")
+    last_used = models.DateTimeField(null=True, blank=True, help_text="Son kullanım tarihi")
+    is_active = models.BooleanField(default=True, help_text="Token aktif mi?")
+    
+    # Opsiyonel şifre hash alanı (isteğe bağlı)
+    password_hash = models.CharField(max_length=255, blank=True, help_text="Hash'lenmiş şifre")
+
     class Meta:
-        verbose_name = "Custom Auth Token"
-        verbose_name_plural = "Custom Auth Tokens"
-    
+        verbose_name = "Auth Token"
+        verbose_name_plural = "Auth Tokens"
+        db_table = 'accounts_customauthtoken'
+        ordering = ['-created']
+
     def save(self, *args, **kwargs):
+        # Token key yoksa oluştur
         if not self.key:
             self.key = self.generate_key()
+        # Süre sonu yoksa varsayılan 7 gün
         if not self.expires_at:
-            # Token 7 gün geçerli (güvenlik için kısaltıldı)
             self.expires_at = timezone.now() + timedelta(days=7)
-        if not self.username:
-            self.username = self.user.username
         super().save(*args, **kwargs)
-    
+
     def generate_key(self):
         return secrets.token_urlsafe(64)
-    
+
     def is_expired(self):
         return timezone.now() > self.expires_at
-    
-    def refresh_token(self):
-        """Token'ı yenile"""
-        self.key = self.generate_key()
-        self.expires_at = timezone.now() + timedelta(days=7)  # 7 gün
-        self.save()
-        return self.key
-    
-    def use_token(self):
-        """Token kullanıldığını kaydet"""
-        self.last_used = timezone.now()
-        self.save()
-    
-    def set_password_hash(self, raw_password):
-        """Şifreyi hash'le ve kaydet"""
-        self.password_hash = make_password(raw_password)
-    
-    def __str__(self):
-        return f"Custom Token for {self.username}"
 
+    def refresh_token(self):
+        self.key = self.generate_key()
+        self.expires_at = timezone.now() + timedelta(days=7)
+        self.save(update_fields=['key', 'expires_at'])
+        return self.key
+
+    def use_token(self):
+        self.last_used = timezone.now()
+        self.save(update_fields=['last_used'])
+
+    def set_password_hash(self, raw_password):
+        self.password_hash = make_password(raw_password)
+        self.save(update_fields=['password_hash'])
+
+    def __str__(self):
+        return f"Token for {self.user.username} ({self.device_name})"
+
+# ================================================================================
+# Sistem Ayarları Modeli (Singleton)
+# ================================================================================
 
 class SystemSettings(models.Model):
     """
-    Sistem ayarları tablosu - Admin panel ayarları
+    Sistem ayarları tablosu - tek kayıt (singleton) kullanılır.
     """
-    # Genel ayarlar
-    site_name = models.CharField(max_length=200, default='Yardım Masası')
-    site_description = models.TextField(default='Müşteri destek ve talep yönetim sistemi')
-    admin_email = models.EmailField(default='admin@example.com')
-    timezone = models.CharField(max_length=50, default='Europe/Istanbul')
-    
-    # E-posta ayarları
-    smtp_host = models.CharField(max_length=200, blank=True, null=True)
-    smtp_port = models.PositiveIntegerField(default=587)
-    smtp_username = models.CharField(max_length=200, blank=True, null=True)
-    smtp_password = models.CharField(max_length=200, blank=True, null=True)
-    smtp_use_tls = models.BooleanField(default=True)
-    
-    # Güvenlik ayarları
-    token_expiry_days = models.PositiveIntegerField(default=30)
-    max_login_attempts = models.PositiveIntegerField(default=5)
-    session_timeout_minutes = models.PositiveIntegerField(default=30)
-    require_password_change = models.BooleanField(default=False)
-    
-    # Meta bilgiler
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
-    
+
+    site_name = models.CharField(max_length=200, default='Yardım Masası', help_text="Sitenin adı")
+    site_description = models.TextField(default='Müşteri destek ve talep yönetim sistemi', help_text="Site açıklaması")
+    admin_email = models.EmailField(default='admin@example.com', help_text="Sistem yöneticisi e-posta adresi")
+    timezone = models.CharField(max_length=50, default='Europe/Istanbul', help_text="Sistem zaman dilimi")
+
+    smtp_host = models.CharField(max_length=200, blank=True, null=True, help_text="SMTP sunucu adresi")
+    smtp_port = models.PositiveIntegerField(default=587, help_text="SMTP port")
+    smtp_username = models.CharField(max_length=200, blank=True, null=True, help_text="SMTP kullanıcı adı")
+    smtp_password = models.CharField(max_length=200, blank=True, null=True, help_text="SMTP şifresi")
+    smtp_use_tls = models.BooleanField(default=True, help_text="TLS kullanımı")
+
+    token_expiry_days = models.PositiveIntegerField(default=30, help_text="Token geçerlilik süresi (gün)")
+    max_login_attempts = models.PositiveIntegerField(default=5, help_text="Maks giriş denemesi")
+    session_timeout_minutes = models.PositiveIntegerField(default=30, help_text="Oturum zaman aşımı")
+    require_password_change = models.BooleanField(default=False, help_text="İlk girişte şifre değişimi zorunlu mu?")
+
+    created_at = models.DateTimeField(auto_now_add=True, help_text="Oluşturulma tarihi")
+    updated_at = models.DateTimeField(auto_now=True, help_text="Son güncelleme tarihi")
+    updated_by = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, help_text="Son güncelleyen kullanıcı")
+
     class Meta:
-        verbose_name = 'System Settings'
-        verbose_name_plural = 'System Settings'
-    
+        verbose_name = 'Sistem Ayarları'
+        verbose_name_plural = 'Sistem Ayarları'
+        db_table = 'accounts_systemsettings'
+
     def __str__(self):
-        return f"System Settings - {self.site_name}"
-    
+        return f"Sistem Ayarları - {self.site_name}"
+
+    def save(self, *args, **kwargs):
+        # Singleton kontrolü
+        self.pk = 1
+        super().save(*args, **kwargs)
+
     @classmethod
     def get_settings(cls):
-        """Singleton pattern - tek bir settings instance döndür"""
         settings, created = cls.objects.get_or_create(pk=1)
         return settings

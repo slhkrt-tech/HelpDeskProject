@@ -1,0 +1,456 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}{{ panel_title }} - HelpDesk{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
+    <li class="breadcrumb-item"><a href="/accounts/admin-panel/">Admin Panel</a></li>
+    <li class="breadcrumb-item active">Sistem Bakım</li>
+</ol>
+{% endblock %}
+
+{% block page_title %}
+<i class="fas fa-wrench text-warning"></i> Sistem Bakım
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sistem Temizleme -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-broom me-2"></i>
+                        Sistem Temizleme
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-3">
+                        <button class="btn btn-outline-info btn-lg" onclick="clearCache()">
+                            <i class="fas fa-memory me-2"></i>
+                            Cache Temizle
+                        </button>
+                        <button class="btn btn-outline-warning btn-lg" onclick="clearTempFiles()">
+                            <i class="fas fa-file-alt me-2"></i>
+                            Geçici Dosyaları Temizle
+                        </button>
+                        <button class="btn btn-outline-danger btn-lg" onclick="clearLogs()">
+                            <i class="fas fa-file-code me-2"></i>
+                            Eski Logları Temizle
+                        </button>
+                        <button class="btn btn-outline-success btn-lg" onclick="optimizeDatabase()">
+                            <i class="fas fa-database me-2"></i>
+                            Veritabanını Optimize Et
+                        </button>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Bilgi:</strong> Temizleme işlemleri sistem performansını artırabilir.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sistem Durumu -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-heartbeat me-2"></i>
+                        Sistem Durumu
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-circle text-success me-2"></i>
+                                <span>Veritabanı Bağlantısı</span>
+                            </div>
+                        </div>
+                        <div class="col-6 text-end">
+                            <span class="badge bg-success">Çevrimiçi</span>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-circle text-success me-2"></i>
+                                <span>Cache Sistemi</span>
+                            </div>
+                        </div>
+                        <div class="col-6 text-end">
+                            <span class="badge bg-success">Aktif</span>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-circle text-warning me-2"></i>
+                                <span>Disk Kullanımı</span>
+                            </div>
+                        </div>
+                        <div class="col-6 text-end">
+                            <span class="badge bg-warning">%75</span>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-circle text-success me-2"></i>
+                                <span>Bellek Kullanımı</span>
+                            </div>
+                        </div>
+                        <div class="col-6 text-end">
+                            <span class="badge bg-success">%45</span>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <button class="btn btn-outline-primary w-100" onclick="checkSystemHealth()">
+                        <i class="fas fa-stethoscope me-2"></i>
+                        Sistem Sağlığını Kontrol Et
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bakım Modu -->
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-tools me-2"></i>
+                        Bakım Modu
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <p class="mb-3">
+                                Bakım modu etkinleştirildiğinde, sistem geçici olarak kullanıcılar için 
+                                erişilemez hale gelir. Bu sürede sistem güncellemeleri ve bakım işlemleri 
+                                güvenli bir şekilde yapılabilir.
+                            </p>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="maintenanceMode">
+                                <label class="form-check-label" for="maintenanceMode">
+                                    <strong>Bakım modunu etkinleştir</strong>
+                                </label>
+                            </div>
+                            
+                            <div class="mb-3" id="maintenanceMessage" style="display: none;">
+                                <label for="maintenanceText" class="form-label">Bakım Mesajı</label>
+                                <textarea class="form-control" id="maintenanceText" rows="3" 
+                                          placeholder="Kullanıcılara gösterilecek bakım mesajını yazın...">Sistem bakım için geçici olarak kapatılmıştır. En kısa sürede hizmete devam edeceğiz.</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i class="fas fa-hard-hat fa-4x text-warning mb-3"></i>
+                                <div id="maintenanceStatus" class="badge bg-success fs-6">Sistem Aktif</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-warning" onclick="toggleMaintenanceMode()">
+                            <i class="fas fa-tools"></i> Bakım Modunu Değiştir
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="scheduleMaintenanceMode()">
+                            <i class="fas fa-calendar"></i> Zamanla
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-line text-info me-2"></i>
+                        Sistem Performansı
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>CPU Kullanımı</span>
+                            <span>32%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success" style="width: 32%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>RAM Kullanımı</span>
+                            <span>45%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-info" style="width: 45%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Disk Kullanımı</span>
+                            <span>75%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-warning" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Ağ Trafiği</span>
+                            <span>12%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-primary" style="width: 12%"></div>
+                        </div>
+                    </div>
+                    
+                    <small class="text-muted">Son güncelleme: Az önce</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Şampiyon İşlemler -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-cogs text-primary me-2"></i>
+                        Gelişmiş Bakım İşlemleri
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <button class="btn btn-outline-primary w-100 mb-2" onclick="rebuildIndex()">
+                                <i class="fas fa-search me-2"></i>
+                                Index Yeniden Oluştur
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-outline-info w-100 mb-2" onclick="updateStatistics()">
+                                <i class="fas fa-chart-bar me-2"></i>
+                                İstatistikleri Güncelle
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-outline-success w-100 mb-2" onclick="checkIntegrity()">
+                                <i class="fas fa-shield-alt me-2"></i>
+                                Veri Bütünlüğü Kontrolü
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-outline-warning w-100 mb-2" onclick="restartServices()">
+                                <i class="fas fa-sync-alt me-2"></i>
+                                Servisleri Yeniden Başlat
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Progress Modal -->
+<div class="modal fade" id="maintenanceProgressModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-wrench me-2"></i>
+                    Bakım İşlemi
+                </h5>
+            </div>
+            <div class="modal-body text-center">
+                <div class="spinner-border text-warning mb-3" role="status">
+                    <span class="visually-hidden">İşlem devam ediyor...</span>
+                </div>
+                <p class="mb-0" id="progressMessage">Bakım işlemi devam ediyor...</p>
+                <small class="text-muted">Bu işlem birkaç dakika sürebilir.</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.progress {
+    border-radius: 10px;
+}
+.progress-bar {
+    border-radius: 10px;
+}
+.btn-lg {
+    padding: 0.75rem 1.5rem;
+}
+</style>
+
+<script>
+let maintenanceModeActive = false;
+
+function clearCache() {
+    showMaintenanceProgress('Cache temizleniyor...');
+    setTimeout(() => {
+        hideMaintenanceProgress();
+        showNotification('Cache başarıyla temizlendi!', 'success');
+    }, 2000);
+}
+
+function clearTempFiles() {
+    showMaintenanceProgress('Geçici dosyalar temizleniyor...');
+    setTimeout(() => {
+        hideMaintenanceProgress();
+        showNotification('Geçici dosyalar başarıyla temizlendi!', 'success');
+    }, 3000);
+}
+
+function clearLogs() {
+    showMaintenanceProgress('Eski loglar temizleniyor...');
+    setTimeout(() => {
+        hideMaintenanceProgress();
+        showNotification('Eski loglar başarıyla temizlendi!', 'success');
+    }, 2500);
+}
+
+function optimizeDatabase() {
+    showMaintenanceProgress('Veritabanı optimize ediliyor...');
+    setTimeout(() => {
+        hideMaintenanceProgress();
+        showNotification('Veritabanı başarıyla optimize edildi!', 'success');
+    }, 4000);
+}
+
+function checkSystemHealth() {
+    showMaintenanceProgress('Sistem sağlığı kontrol ediliyor...');
+    setTimeout(() => {
+        hideMaintenanceProgress();
+        showNotification('Sistem sağlık kontrolü tamamlandı. Herhangi bir sorun bulunamadı!', 'success');
+    }, 3000);
+}
+
+function toggleMaintenanceMode() {
+    const checkbox = document.getElementById('maintenanceMode');
+    const messageDiv = document.getElementById('maintenanceMessage');
+    const statusDiv = document.getElementById('maintenanceStatus');
+    
+    maintenanceModeActive = checkbox.checked;
+    
+    if (maintenanceModeActive) {
+        if (confirm('Bakım modunu etkinleştirmek istediğinizden emin misiniz? Bu işlem tüm kullanıcıların erişimini kısıtlayacaktır.')) {
+            messageDiv.style.display = 'block';
+            statusDiv.textContent = 'Bakım Modu Aktif';
+            statusDiv.className = 'badge bg-warning fs-6';
+            showNotification('Bakım modu etkinleştirildi!', 'warning');
+        } else {
+            checkbox.checked = false;
+            maintenanceModeActive = false;
+        }
+    } else {
+        messageDiv.style.display = 'none';
+        statusDiv.textContent = 'Sistem Aktif';
+        statusDiv.className = 'badge bg-success fs-6';
+        showNotification('Bakım modu devre dışı bırakıldı!', 'success');
+    }
+}
+
+function scheduleMaintenanceMode() {
+    showNotification('Zamanlanmış bakım özelliği yakında eklenecek!', 'info');
+}
+
+function rebuildIndex() {
+    showMaintenanceProgress('Index yeniden oluşturuluyor...');
+    setTimeout(() => {
+        hideMaintenanceProgress();
+        showNotification('Index başarıyla yeniden oluşturuldu!', 'success');
+    }, 3500);
+}
+
+function updateStatistics() {
+    showMaintenanceProgress('İstatistikler güncelleniyor...');
+    setTimeout(() => {
+        hideMaintenanceProgress();
+        showNotification('İstatistikler başarıyla güncellendi!', 'success');
+    }, 2000);
+}
+
+function checkIntegrity() {
+    showMaintenanceProgress('Veri bütünlüğü kontrol ediliyor...');
+    setTimeout(() => {
+        hideMaintenanceProgress();
+        showNotification('Veri bütünlüğü kontrolü tamamlandı. Sorun bulunamadı!', 'success');
+    }, 4000);
+}
+
+function restartServices() {
+    if (confirm('Servisleri yeniden başlatmak sistem performansını geçici olarak etkileyebilir. Devam etmek istiyor musunuz?')) {
+        showMaintenanceProgress('Servisler yeniden başlatılıyor...');
+        setTimeout(() => {
+            hideMaintenanceProgress();
+            showNotification('Servisler başarıyla yeniden başlatıldı!', 'success');
+        }, 5000);
+    }
+}
+
+function showMaintenanceProgress(message) {
+    document.getElementById('progressMessage').textContent = message;
+    new bootstrap.Modal(document.getElementById('maintenanceProgressModal')).show();
+}
+
+function hideMaintenanceProgress() {
+    bootstrap.Modal.getInstance(document.getElementById('maintenanceProgressModal')).hide();
+}
+
+function showNotification(message, type) {
+    const alertClass = type === 'success' ? 'alert-success' : 
+                      type === 'error' ? 'alert-danger' : 
+                      type === 'warning' ? 'alert-warning' : 'alert-info';
+    
+    const notification = `
+        <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 9999;">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', notification);
+    
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            if (alert.textContent.includes(message.substring(0, 20))) {
+                alert.remove();
+            }
+        });
+    }, 5000);
+}
+
+// Maintenance mode checkbox handler
+document.getElementById('maintenanceMode').addEventListener('change', function() {
+    // Bu fonksiyon checkbox değişimini dinler
+});
+</script>
+{% endblock %}

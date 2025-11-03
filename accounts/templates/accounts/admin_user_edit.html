@@ -24,12 +24,9 @@
                 <div class="col-lg-8">
                     <div class="card border-0 shadow-sm">
                         <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0">
-                                <i class="bi bi-person-gear me-2"></i>Kullanıcı Bilgileri
-                            </h5>
+                            <h5 class="mb-0"><i class="bi bi-person-gear me-2"></i>Kullanıcı Bilgileri</h5>
                         </div>
                         <div class="card-body">
-                            <!-- Messages -->
                             {% if messages %}
                                 {% for message in messages %}
                                     <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
@@ -42,7 +39,6 @@
                             
                             <form method="post">
                                 {% csrf_token %}
-                                
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label for="username" class="form-label">Kullanıcı Adı <span class="text-danger">*</span></label>
@@ -68,19 +64,26 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label for="role" class="form-label">Rol <span class="text-danger">*</span></label>
-                                        <select class="form-select" id="role" name="role" required>
-                                            <option value="customer" {% if target_user.role == 'customer' %}selected{% endif %}>Müşteri</option>
-                                            <option value="support" {% if target_user.role == 'support' %}selected{% endif %}>Destek</option>
-                                            <option value="admin" {% if target_user.role == 'admin' %}selected{% endif %}>Admin</option>
-                                        </select>
+                                        {% if target_user.is_superuser %}
+                                            <input type="text" class="form-control" value="Admin (Sistem Yöneticisi)" readonly>
+                                            <input type="hidden" name="role" value="admin">
+                                            <small class="form-text text-muted">
+                                                <i class="bi bi-shield-check me-1"></i>
+                                                Sistem yöneticilerinin rolü değiştirilemez.
+                                            </small>
+                                        {% else %}
+                                            <select class="form-select" id="role" name="role" required>
+                                                <option value="customer" {% if target_user.role == 'customer' %}selected{% endif %}>Müşteri</option>
+                                                <option value="support" {% if target_user.role == 'support' %}selected{% endif %}>Destek</option>
+                                                <option value="admin" {% if target_user.role == 'admin' %}selected{% endif %}>Admin</option>
+                                            </select>
+                                        {% endif %}
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Durum</label>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if target_user.is_active %}checked{% endif %}>
-                                            <label class="form-check-label" for="is_active">
-                                                Aktif
-                                            </label>
+                                            <label class="form-check-label" for="is_active">Aktif</label>
                                         </div>
                                     </div>
                                 </div>
@@ -92,12 +95,8 @@
                                 </div>
 
                                 <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="bi bi-check-lg me-2"></i>Kaydet
-                                    </button>
-                                    <a href="/accounts/admin/users/" class="btn btn-outline-secondary">
-                                        <i class="bi bi-x-lg me-2"></i>İptal
-                                    </a>
+                                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-2"></i>Kaydet</button>
+                                    <a href="/accounts/admin/users/" class="btn btn-outline-secondary"><i class="bi bi-x-lg me-2"></i>İptal</a>
                                 </div>
                             </form>
                         </div>
@@ -108,44 +107,17 @@
                     <!-- User Info Card -->
                     <div class="card border-0 shadow-sm mb-3">
                         <div class="card-header bg-info text-white">
-                            <h6 class="mb-0">
-                                <i class="bi bi-info-circle me-2"></i>Kullanıcı Bilgileri
-                            </h6>
+                            <h6 class="mb-0"><i class="bi bi-info-circle me-2"></i>Kullanıcı Bilgileri</h6>
                         </div>
                         <div class="card-body">
                             <table class="table table-borderless table-sm">
-                                <tr>
-                                    <td><strong>ID:</strong></td>
-                                    <td>{{ target_user.id }}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Kayıt Tarihi:</strong></td>
-                                    <td>{{ target_user.date_joined|date:"d.m.Y H:i" }}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Son Giriş:</strong></td>
-                                    <td>{{ target_user.last_login|date:"d.m.Y H:i"|default:"Hiç giriş yapmamış" }}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Superuser:</strong></td>
-                                    <td>
-                                        {% if target_user.is_superuser %}
-                                            <span class="badge bg-danger">Evet</span>
-                                        {% else %}
-                                            <span class="badge bg-secondary">Hayır</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Staff:</strong></td>
-                                    <td>
-                                        {% if target_user.is_staff %}
-                                            <span class="badge bg-warning">Evet</span>
-                                        {% else %}
-                                            <span class="badge bg-secondary">Hayır</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
+                                <tr><td><strong>ID:</strong></td><td>{{ target_user.id }}</td></tr>
+                                <tr><td><strong>Kayıt Tarihi:</strong></td><td>{{ target_user.date_joined|date:"d.m.Y H:i" }}</td></tr>
+                                <tr><td><strong>Son Giriş:</strong></td><td>{{ target_user.last_login|date:"d.m.Y H:i"|default:"Hiç giriş yapmamış" }}</td></tr>
+                                <tr><td><strong>Superuser:</strong></td>
+                                    <td>{% if target_user.is_superuser %}<span class="badge bg-danger">Evet</span>{% else %}<span class="badge bg-secondary">Hayır</span>{% endif %}</td></tr>
+                                <tr><td><strong>Staff:</strong></td>
+                                    <td>{% if target_user.is_staff %}<span class="badge bg-warning">Evet</span>{% else %}<span class="badge bg-secondary">Hayır</span>{% endif %}</td></tr>
                             </table>
                         </div>
                     </div>
@@ -153,9 +125,7 @@
                     <!-- Actions Card -->
                     <div class="card border-0 shadow-sm">
                         <div class="card-header bg-warning text-dark">
-                            <h6 class="mb-0">
-                                <i class="bi bi-gear me-2"></i>İşlemler
-                            </h6>
+                            <h6 class="mb-0"><i class="bi bi-gear me-2"></i>İşlemler</h6>
                         </div>
                         <div class="card-body">
                             <div class="d-grid gap-2">
@@ -175,25 +145,10 @@
 </div>
 
 <style>
-.card {
-    border-radius: 0.5rem;
-}
-
-.card-header {
-    border-radius: 0.5rem 0.5rem 0 0 !important;
-}
-
-.form-control:focus, .form-select:focus {
-    border-color: var(--bs-primary);
-    box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
-}
-
-.table-borderless td {
-    padding: 0.25rem 0.5rem;
-}
-
-.badge {
-    font-size: 0.75em;
-}
+.card { border-radius: 0.5rem; }
+.card-header { border-radius: 0.5rem 0.5rem 0 0 !important; }
+.form-control:focus, .form-select:focus { border-color: var(--bs-primary); box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb),0.25); }
+.table-borderless td { padding: 0.25rem 0.5rem; }
+.badge { font-size: 0.75em; }
 </style>
 {% endblock %}

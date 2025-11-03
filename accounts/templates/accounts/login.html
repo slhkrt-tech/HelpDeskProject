@@ -1,214 +1,98 @@
 {% extends "tickets/base.html" %}
+{% load static %}
 
-{% block title %}Yardım Masası – Giriş{% endblock %}
+{% block title %}Giriş Yap - HelpDesk{% endblock %}
+{% block page_title %}Giriş Yap{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-    <div class="w-100" style="max-width: 400px;">
-      
-        <!-- Başlık tema rengini kullanıyor -->
-
-        <h2 class="text-center mb-4" style="color: var(--primary-color);">Giriş Yap</h2>
-
-        <!-- Token-based Login Form -->
-        <form id="loginForm" novalidate>
-            <!-- CSRF Token -->
-            {% csrf_token %}
-
-            <!-- Hata Mesajları -->
-            <div id="errorMessages" class="alert alert-danger d-none" role="alert"></div>
-            
-            <!-- Başarı Mesajları -->
-            <div id="successMessages" class="alert alert-success d-none" role="alert"></div>
-
-            <!-- Kullanıcı Adı -->
-            <div class="mb-3">
-                <input type="text" 
-                       id="username" 
-                       name="username" 
-                       class="form-control bg-body text-body" 
-                       placeholder="Kullanıcı Adı" 
-                       required>
-                <div class="invalid-feedback"></div>
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow">
+            <div class="card-header text-center text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <h4 class="mb-0">
+                    <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+                </h4>
             </div>
+            <div class="card-body p-4">
+                <!-- Hata Mesajları -->
+                {% if messages %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endif %}
 
-            <!-- Parola -->
-            <div class="mb-3">
-                <input type="password" 
-                       id="password" 
-                       name="password" 
-                       class="form-control bg-body text-body" 
-                       placeholder="Parola" 
-                       required>
-                <div class="invalid-feedback"></div>
+                <!-- Login Form -->
+                <form method="post" id="loginForm">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Kullanıcı Adı</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Şifre</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="remember_me" name="remember_me">
+                        <label class="form-check-label" for="remember_me">
+                            Beni hatırla
+                        </label>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                            <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Demo Login Buttons -->
+                <hr class="my-4">
+                <div class="text-center">
+                    <p class="text-muted small mb-3">Demo Hesap:</p>
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-success btn-sm demo-login" 
+                                data-username="admin" data-password="123456">
+                            <i class="fas fa-crown me-1"></i>Admin Olarak Giriş
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Alt Linkler -->
+                <div class="text-center mt-4">
+                    <p class="mb-0">
+                        Hesabınız yok mu? 
+                        <a href="{% url 'signup' %}" class="text-decoration-none">Kayıt olun</a>
+                    </p>
+                </div>
             </div>
-
-            <div class="d-grid mt-3">
-                <button type="submit" id="loginBtn" class="btn w-100" style="background-color: var(--primary-color); color: var(--bg-color);">
-                    <span class="spinner-border spinner-border-sm d-none me-2" role="status"></span>
-                    Giriş Yap
-                </button>
-            </div>
-        </form>
-
-        <div class="mt-3 text-center">
-            <a href="/auth/password_reset/" class="text-decoration-none" style="color: var(--accent-color);">Parolamı Unuttum?</a> |
-            <a href="{% url 'signup' %}" class="text-decoration-none" style="color: var(--accent-color);">Kayıt Ol</a>
         </div>
     </div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const loginForm = document.getElementById('loginForm');
-    const loginBtn = document.getElementById('loginBtn');
-    const spinner = loginBtn.querySelector('.spinner-border');
-    const errorDiv = document.getElementById('errorMessages');
-    const successDiv = document.getElementById('successMessages');
-
-    // Sadece login sayfasında değilsek token kontrolü yap
-    const currentPath = window.location.pathname;
-    if (!currentPath.includes('/login/') && !currentPath.includes('/signup/')) {
-        const token = localStorage.getItem('authToken');
-        if (token) {
-            // Token varsa ana sayfaya yönlendir (role-based yönlendirme için)
-            window.location.href = '/';
-            return;
-        }
-    }
-
-    loginForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        // Input validation
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value;
-        
-        // Client-side validation
-        if (!username || username.length < 3) {
-            showMessage(errorDiv, 'Kullanıcı adı en az 3 karakter olmalıdır.');
-            return;
-        }
-        
-        if (!password || password.length < 6) {
-            showMessage(errorDiv, 'Parola en az 6 karakter olmalıdır.');
-            return;
-        }
-        
-        // Input sanitization
-        const sanitizedUsername = username.replace(/[<>\"'&]/g, '');
-        if (sanitizedUsername !== username) {
-            showMessage(errorDiv, 'Kullanıcı adında geçersiz karakterler bulunuyor.');
-            return;
-        }
-        
-        // Loading state
-        loginBtn.disabled = true;
-        spinner.classList.remove('d-none');
-        
-        // CSRF token'ını al
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        
-        try {
-            const response = await fetch('/accounts/api/login/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken,
-                },
-                body: JSON.stringify({
-                    username: sanitizedUsername,
-                    password: password
-                })
-            });
-            
-            const data = await response.json();
-            
-            if (response.ok) {
-                // Token'ı localStorage'a kaydet
-                localStorage.setItem('authToken', data.token);
-                localStorage.setItem('userData', JSON.stringify(data.user));
-                
-                // Başarı mesajı göster
-                showMessage(successDiv, data.message || 'Başarıyla giriş yapıldı.');
-                
-                // Page reload için flag set et
-                sessionStorage.setItem('justLoggedIn', 'true');
-                
-                console.log('Login successful, redirecting...', data);
-                console.log('User role:', data.user.role);
-                
-                // Role-based yönlendirme yap (hemen, timeout olmadan)
-                // URL'deki next parametresini kontrol et
-                const urlParams = new URLSearchParams(window.location.search);
-                const next = urlParams.get('next');
-                
-                if (next) {
-                    // Next parametresi varsa ona göre yönlendir
-                    if (next === 'admin-panel') {
-                        console.log('Redirecting to admin panel');
-                        window.location.href = '/accounts/admin-panel/';
-                    } else if (next === 'support-panel') {
-                        console.log('Redirecting to support panel');
-                        window.location.href = '/accounts/support-panel/';
-                    } else if (next === 'customer-panel') {
-                        console.log('Redirecting to customer panel');
-                        window.location.href = '/accounts/customer-panel/';
-                    } else {
-                        console.log('Redirecting to:', data.redirect_url || '/');
-                        window.location.href = data.redirect_url || '/';
-                    }
-                } else if (data.redirect_url) {
-                    // API'den gelen redirect URL'ini kullan
-                    console.log('Using API redirect URL:', data.redirect_url);
-                    window.location.href = data.redirect_url;
-                } else {
-                    // Fallback: Ana sayfaya git (home_view otomatik yönlendirecek)
-                    console.log('Fallback redirect to /');
-                    window.location.href = '/';
-                }
-                
-            } else {
-                // Hata mesajlarını göster
-                let errorText = '';
-                if (data.non_field_errors) {
-                    errorText = data.non_field_errors.join(', ');
-                } else if (data.username) {
-                    errorText += 'Kullanıcı adı: ' + data.username.join(', ') + ' ';
-                } else if (data.password) {
-                    errorText += 'Parola: ' + data.password.join(', ') + ' ';
-                } else {
-                    errorText = 'Geçersiz kullanıcı adı veya şifre.';
-                }
-                showMessage(errorDiv, errorText);
-            }
-            
-        } catch (error) {
-            console.error('Login hatası:', error);
-            showMessage(errorDiv, 'Bir hata oluştu. Lütfen tekrar deneyin.');
-        } finally {
-            // Loading state'i kaldır
-            loginBtn.disabled = false;
-            spinner.classList.add('d-none');
-        }
+    // Demo login butonları
+    document.querySelectorAll('.demo-login').forEach(button => {
+        button.addEventListener('click', function() {
+            const username = this.getAttribute('data-username');
+            const password = this.getAttribute('data-password');
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = password;
+        });
     });
-    
-    function showMessage(element, message) {
-        element.textContent = message;
-        element.classList.remove('d-none');
-        
-        // Diğer mesaj kutusunu gizle
-        if (element === errorDiv) {
-            successDiv.classList.add('d-none');
-        } else {
-            errorDiv.classList.add('d-none');
-        }
-        
-        // 5 saniye sonra mesajı gizle
-        setTimeout(() => {
-            element.classList.add('d-none');
-        }, 5000);
-    }
 });
 </script>
 {% endblock %}

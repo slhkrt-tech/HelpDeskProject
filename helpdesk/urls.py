@@ -7,11 +7,15 @@ Tüm proje genelinde URL yönlendirmelerini tanımlar:
 - Özelleştirilmiş admin panelleri
 """
 
+from django.contrib import admin
 from django.urls import include, path
 from django.contrib.auth import views as auth_views
 from accounts.views import home_view
 
 urlpatterns = [
+    
+    # Django Admin Panel
+    path('admin/', admin.site.urls),
 
     # Ana sayfa (Token kontrolü ile role-based yönlendirme)
     path('', home_view, name='home'),
@@ -24,10 +28,10 @@ urlpatterns = [
     
     path('accounts/', include('accounts.urls')),
 
-    # Django auth URL'leri (password reset vb.) - Özelleştirilmiş
+    # Django auth URL'leri (password reset vb.) - Özelleştirilmiş Admin
     path('auth/password_reset/', 
          auth_views.PasswordResetView.as_view(
-             template_name='registration/password_reset_form.html',
+             template_name='accounts/password_reset_admin.html',
              success_url='/auth/password_reset/done/'
          ), 
          name='password_reset'),

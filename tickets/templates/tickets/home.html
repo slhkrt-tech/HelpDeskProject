@@ -1,152 +1,128 @@
 {% extends "tickets/base.html" %}
+{% load static %}
 
-{% block title %}Ana Sayfa{% endblock %}
+{% block title %}Ana Sayfa - HelpDesk{% endblock %}
 {% block page_title %}Ana Sayfa{% endblock %}
 
-{% block breadcrumb %}
-<!-- Ana sayfada breadcrumb gösterme -->
-{% endblock %}
-
 {% block content %}
-<div class="container-fluid">
-  <!-- Hero Section -->
-  <div class="row mb-5">
-    <div class="col-lg-8 mx-auto text-center">
-      <h1 class="display-4 fw-bold mb-3" style="color: var(--primary-color);">
-        Yardım Masası Sistemi
-      </h1>
-      <p class="lead mb-4" style="color: var(--text-color);">
-        Teknik destek taleplerinizi hızlı ve kolay bir şekilde oluşturun, takip edin ve yönetin.
-      </p>
-      
-      <div id="authButtons" class="d-flex gap-3 justify-content-center flex-wrap">
-        <!-- Bu alanı JavaScript ile dolduracağız -->
-      </div>
-    </div>
-  </div>
+<!-- Hero Bölümü -->
+<div class="row mb-5">
+    <div class="col-lg-10 mx-auto text-center">
+        <div class="card shadow-sm">
+            <div class="card-body p-5">
+                <i class="fas fa-headset mb-4" style="font-size: 4rem; color: #3498db;"></i>
+                <h1 class="display-5 fw-bold mb-3">Yardım Masası Sistemi</h1>
+                <p class="lead text-muted mb-4">
+                    Teknik destek taleplerinizi hızlı ve kolay bir şekilde oluşturun, takip edin ve yönetin.
+                </p>
 
-  <!-- Features Section -->
-  <div class="row g-4 mb-5">
-    <div class="col-md-4">
-      <div class="card h-100 border-0 shadow-sm" style="background-color: var(--bg-color);">
-        <div class="card-body text-center p-4">
-          <div class="mb-3">
-            <i class="bi bi-ticket-perforated" style="font-size: 2.5rem; color: var(--primary-color);"></i>
-          </div>
-          <h5 class="card-title" style="color: var(--text-color);">Talep Oluştur</h5>
-          <p class="card-text" style="color: var(--text-color);">
-            Hızlı ve kolay form ile yeni destek talebi oluşturun.
-          </p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    {% if user.is_authenticated %}
+                        <a class="btn btn-primary btn-lg" href="{% url 'ticket_create' %}">
+                            <i class="fas fa-plus-circle me-2"></i>Yeni Talep Oluştur
+                        </a>
+                        <a class="btn btn-outline-secondary btn-lg" href="{% url 'ticket_list' %}">
+                            <i class="fas fa-list me-2"></i>Tüm Talepler
+                        </a>
+                    {% else %}
+                        <a class="btn btn-primary btn-lg" href="{% url 'login' %}">
+                            <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+                        </a>
+                        <a class="btn btn-outline-secondary btn-lg" href="{% url 'signup' %}">
+                            <i class="fas fa-user-plus me-2"></i>Kayıt Ol
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-
-    <div class="col-md-4">
-      <div class="card h-100 border-0 shadow-sm" style="background-color: var(--bg-color);">
-        <div class="card-body text-center p-4">
-          <div class="mb-3">
-            <i class="bi bi-list-check" style="font-size: 2.5rem; color: var(--accent-color);"></i>
-          </div>
-          <h5 class="card-title" style="color: var(--text-color);">Talepleri Takip Et</h5>
-          <p class="card-text" style="color: var(--text-color);">
-            Tüm taleplerinizi tek bir yerden görüntüleyin ve durumlarını takip edin.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="card h-100 border-0 shadow-sm" style="background-color: var(--bg-color);">
-        <div class="card-body text-center p-4">
-          <div class="mb-3">
-            <i class="bi bi-people" style="font-size: 2.5rem; color: var(--success-color);"></i>
-          </div>
-          <h5 class="card-title" style="color: var(--text-color);">Ekip Çalışması</h5>
-          <p class="card-text" style="color: var(--text-color);">
-            Grubunuzdaki diğer kullanıcıların talepleriyle işbirliği yapın.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Stats Section (Sadece giriş yapan kullanıcılar için) -->
-  <div id="statsSection" class="row g-4 d-none">
-    <div class="col-12">
-      <h3 class="text-center mb-4" style="color: var(--text-color);">Hızlı Özet</h3>
-    </div>
-    
-    <div class="col-lg-3 col-md-6">
-      <div class="card text-center border-0 shadow-sm" style="background-color: var(--primary-color); color: white;">
-        <div class="card-body">
-          <h4 class="card-title">12</h4>
-          <p class="card-text">Açık Talepler</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-lg-3 col-md-6">
-      <div class="card text-center border-0 shadow-sm" style="background-color: var(--accent-color); color: white;">
-        <div class="card-body">
-          <h4 class="card-title">5</h4>
-          <p class="card-text">Devam Eden</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-lg-3 col-md-6">
-      <div class="card text-center border-0 shadow-sm" style="background-color: var(--success-color); color: white;">
-        <div class="card-body">
-          <h4 class="card-title">23</h4>
-          <p class="card-text">Çözülmüş</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-lg-3 col-md-6">
-      <div class="card text-center border-0 shadow-sm" style="background-color: var(--warning-color); color: white;">
-        <div class="card-body">
-          <h4 class="card-title">2</h4>
-          <p class="card-text">Bekleyen</p>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const authButtonsContainer = document.getElementById('authButtons');
-  const statsSection = document.getElementById('statsSection');
-  
-  // Authentication durumunu kontrol et
-  const token = localStorage.getItem('authToken');
-  const userData = localStorage.getItem('userData');
-  
-  if (token && userData) {
-    // Kullanıcı giriş yapmış - action butonları göster
-    authButtonsContainer.innerHTML = `
-      <a class="btn btn-lg me-2" href="/tickets/create/" style="background-color: var(--primary-color); color: var(--bg-color);">
-        <i class="bi bi-plus-circle me-2"></i>Yeni Talep Oluştur
-      </a>
-      <a class="btn btn-lg btn-outline-secondary" href="/tickets/">
-        <i class="bi bi-list me-2"></i>Tüm Talepler
-      </a>
-    `;
-    
-    // Stats section'ı göster
-    statsSection.classList.remove('d-none');
-  } else {
-    // Kullanıcı giriş yapmamış - giriş butonları göster
-    authButtonsContainer.innerHTML = `
-      <a class="btn btn-lg me-2" href="/accounts/login/" style="background-color: var(--primary-color); color: var(--bg-color);">
-        <i class="bi bi-box-arrow-in-right me-2"></i>Giriş Yap
-      </a>
-      <a class="btn btn-lg btn-outline-secondary" href="/accounts/signup/">
-        <i class="bi bi-person-plus me-2"></i>Kayıt Ol
-      </a>
-    `;
-  }
-});
-</script>
+<!-- Özellik Kartları -->
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="card h-100 text-center">
+            <div class="card-body p-4">
+                <div class="mb-3">
+                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width:80px;height:80px;">
+                        <i class="fas fa-ticket-alt text-primary" style="font-size:2rem;"></i>
+                    </div>
+                </div>
+                <h5 class="card-title fw-bold">Talep Oluştur</h5>
+                <p class="card-text text-muted">Hızlı ve kolay form ile yeni destek talebi oluşturun.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 text-center">
+            <div class="card-body p-4">
+                <div class="mb-3">
+                    <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width:80px;height:80px;">
+                        <i class="fas fa-search text-success" style="font-size:2rem;"></i>
+                    </div>
+                </div>
+                <h5 class="card-title fw-bold">Talepleri Takip Et</h5>
+                <p class="card-text text-muted">Tüm taleplerinizi tek bir yerden görüntüleyin ve durumlarını takip edin.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 text-center">
+            <div class="card-body p-4">
+                <div class="mb-3">
+                    <div class="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width:80px;height:80px;">
+                        <i class="fas fa-users text-info" style="font-size:2rem;"></i>
+                    </div>
+                </div>
+                <h5 class="card-title fw-bold">Ekip Çalışması</h5>
+                <p class="card-text text-muted">Profesyonel destek ekibimiz ile iletişim kurun. Uzman çözümler ve hızlı geri dönüşler için.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if user.is_authenticated %}
+<!-- Hızlı Özet -->
+<div class="row g-4 mb-5">
+    <div class="col-lg-3 col-md-6">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-folder-open text-primary mb-2" style="font-size:2rem;"></i>
+                <h3 class="mb-0">12</h3>
+                <p class="text-muted mb-0">Açık Talepler</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-clock text-warning mb-2" style="font-size:2rem;"></i>
+                <h3 class="mb-0">3</h3>
+                <p class="text-muted mb-0">Bekleyen</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-check-circle text-success mb-2" style="font-size:2rem;"></i>
+                <h3 class="mb-0">28</h3>
+                <p class="text-muted mb-0">Çözüldü</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-chart-bar text-info mb-2" style="font-size:2rem;"></i>
+                <h3 class="mb-0">43</h3>
+                <p class="text-muted mb-0">Toplam</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endblock %}
+           

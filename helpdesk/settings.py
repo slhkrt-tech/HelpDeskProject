@@ -13,30 +13,29 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ============================================================
-# GÜVENLİK AYARLARI - ALPHA PRODUCTION
+# GÜVENLİK AYARLARI - DEVELOPMENT
 # ============================================================
 
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'alpha-production-secret-key-change-for-real-production')
-DEBUG = False  # Alpha production için DEBUG kapalı
-ALPHA_MODE = True  # Alpha production flag
+SECRET_KEY = 'django-insecure-development-key-only'
+DEBUG = True  # Development mode
+ALPHA_MODE = False  # Development flag
 
-# Alpha production için localhost only
+# Development için localhost
 ALLOWED_HOSTS = [
     'localhost', 
     '127.0.0.1',
     '[::1]',
-    '192.168.1.*',  # Local network
-    os.getenv('ALLOWED_HOST', 'localhost')
+    '*'  # Development için tüm hostlara izin
 ]
 
-# Security headers - Alpha production optimized
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-X_FRAME_OPTIONS = 'DENY'  # Strict security for alpha production
-SECURE_HSTS_SECONDS = 31536000  # 1 year
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SECURE_REFERRER_POLICY = 'same-origin'
+# Security headers - Development (relaxed)
+SECURE_BROWSER_XSS_FILTER = False
+SECURE_CONTENT_TYPE_NOSNIFF = False
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+SECURE_HSTS_SECONDS = 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
+SECURE_REFERRER_POLICY = 'no-referrer-when-downgrade'
 
 # HTTPS settings - Alpha production (localhost için relaxed)
 SECURE_SSL_REDIRECT = False  # Alpha production'da localhost için kapalı
@@ -54,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',  # Tarih ve sayı formatları için
 
     # Üçüncü parti - Production optimized
     'rest_framework',
@@ -76,7 +76,6 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # Static files - production
-    'accounts.security.SecurityMiddleware',  # Custom security middleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -111,28 +110,23 @@ DATABASES = {
         'HOST': os.getenv('DB_HOST', 'localhost'),
         'PORT': os.getenv('DB_PORT', '5432'),
         'OPTIONS': {
-            'sslmode': 'prefer',
+            'sslmode': 'disable',  # Development için SSL yok
         }
     }
 }
 
-# Cache configuration - Alpha production optimized
+# Cache configuration - Development
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'alpha-production-cache',
-        'OPTIONS': {
-            'MAX_ENTRIES': 5000,  # Increased for production
-            'CULL_FREQUENCY': 2,  # More aggressive cleanup
-        }
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',  # Development için cache yok
     }
 }
 
-# Database connection pooling
+# Database connection pooling - Development (disabled)
 DATABASE_CONNECTION_POOLING = {
     'default': {
-        'MAX_CONNS': 20,
-        'MAX_CONNS_PER_APP': 5,
+        'MAX_CONNS': 1,
+        'MAX_CONNS_PER_APP': 1,
     }
 }
 
@@ -307,41 +301,41 @@ LOGGING = {
     },
     'handlers': {
         'file': {
-            'level': 'WARNING',  # Alpha production: sadece warning ve error
+            'level': 'INFO',  # Development: info ve üstü loglar
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': BASE_DIR / 'logs' / 'django.log',
             'formatter': 'verbose',
             'maxBytes': 10*1024*1024,  # 10MB
-            'backupCount': 5,
+            'backupCount': 3,
         },
         'security_file': {
-            'level': 'WARNING',
+            'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': BASE_DIR / 'logs' / 'security.log',
             'formatter': 'security',
             'maxBytes': 10*1024*1024,  # 10MB
-            'backupCount': 5,
+            'backupCount': 3,
         },
         'console': {
-            'level': 'ERROR',  # Alpha production: sadece error console'da
+            'level': 'INFO',  # Development: info ve üstü loglar console'da
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
     },
     'loggers': {
         'django': {
-            'handlers': ['file'],
-            'level': 'WARNING',
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
             'propagate': False,
         },
         'django.security': {
             'handlers': ['security_file', 'console'],
-            'level': 'WARNING',
+            'level': 'INFO',
             'propagate': False,
         },
         'accounts': {
-            'handlers': ['file', 'security_file'],
-            'level': 'WARNING',
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
             'propagate': False,
         },
         'tickets': {
@@ -377,3 +371,12 @@ EMAIL_SUBJECT_PREFIX = '[HelpDesk Alpha] '
 
 # E-posta timeout ayarları
 EMAIL_TIMEOUT = 10  # Daha kısa timeout
+
+# ============================================================
+# LOGIN/LOGOUT AYARLARI
+# ============================================================
+
+# Login URL ayarları
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'

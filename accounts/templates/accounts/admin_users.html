@@ -1,368 +1,215 @@
 {% extends 'tickets/base.html' %}
 
-{% block title %}{{ page_title }}{% endblock %}
-{% block page_title %}{{ page_title }}{% endblock %}
+{% block title %}Kullanıcı Yönetimi - HelpDesk{% endblock %}
 
-{% block breadcrumb %}
-<nav aria-label="breadcrumb" class="mb-4">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item">
-      <a href="{% url 'home' %}" style="color: var(--accent-color);">
-        <i class="bi bi-house-door me-1"></i>Ana Sayfa
-      </a>
-    </li>
-    <li class="breadcrumb-item">
-      <a href="/accounts/admin-panel/" style="color: var(--accent-color);">
-        <i class="bi bi-shield-check me-1"></i>Admin Panel
-      </a>
-    </li>
-    <li class="breadcrumb-item active" aria-current="page">Kullanıcı Yönetimi</li>
-  </ol>
-</nav>
+{% block page_title %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Ana Sayfa</a></li>
+                <li class="breadcrumb-item"><a href="/accounts/admin-panel/">Admin Panel</a></li>
+                <li class="breadcrumb-item active">Kullanıcı Yönetimi</li>
+            </ol>
+        </nav>
+        <h1 class="page-title">
+            <i class="fas fa-users text-primary me-3"></i>Kullanıcı Yönetimi
+            <span class="badge bg-primary ms-2">Admin</span>
+        </h1>
+        <p class="page-subtitle">Sistem kullanıcılarını yönetin</p>
+    </div>
+    <div>
+        <a href="/accounts/admin/users/create/" class="btn btn-primary">
+            <i class="fas fa-user-plus me-2"></i>Yeni Kullanıcı
+        </a>
+    </div>
+</div>
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-  <!-- Page Header -->
-  <div class="row mb-4">
-    <div class="col-12">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <h1 class="h3 mb-0">
-            <i class="bi bi-people text-primary me-2"></i>Kullanıcı Yönetimi
-          </h1>
-          <p class="text-muted mb-0">Sistem kullanıcılarını yönetin ve düzenleyin</p>
+<!-- Stats Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card bg-primary">
+            <div class="stat-card-body">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-content">
+                    <h3 class="stat-number">{{ users|length }}</h3>
+                    <p class="stat-label">Toplam Kullanıcı</p>
+                </div>
+            </div>
         </div>
-        <div>
-          <a href="/accounts/admin/users/create/" class="btn btn-primary">
-            <i class="bi bi-person-plus me-2"></i>Yeni Kullanıcı
-          </a>
-        </div>
-      </div>
     </div>
-  </div>
+    
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card bg-success">
+            <div class="stat-card-body">
+                <div class="stat-icon"><i class="fas fa-user-check"></i></div>
+                <div class="stat-content">
+                    <h3 class="stat-number">{{ users|length }}</h3>
+                    <p class="stat-label">Aktif Kullanıcı</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <!-- Stats Cards -->
-  <div class="row g-4 mb-4">
     <div class="col-lg-3 col-md-6">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body">
-          <div class="d-flex align-items-center">
-            <div class="flex-grow-1">
-              <h6 class="text-muted mb-0">Toplam Kullanıcı</h6>
-              <h4 class="text-primary mb-0">{{ users|length }}</h4>
+        <div class="stat-card bg-warning">
+            <div class="stat-card-body">
+                <div class="stat-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="stat-content">
+                    <h3 class="stat-number">1</h3>
+                    <p class="stat-label">Admin Kullanıcı</p>
+                </div>
             </div>
-            <div class="ms-3">
-              <i class="bi bi-people fs-2 text-primary"></i>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
-    
-    <div class="col-lg-3 col-md-6">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body">
-          <div class="d-flex align-items-center">
-            <div class="flex-grow-1">
-              <h6 class="text-muted mb-0">Aktif Kullanıcı</h6>
-              <h4 class="text-success mb-0">
-                {{ users|length }}
-                {% comment %}{{ users|filter:"is_active=True"|length }}{% endcomment %}
-              </h4>
-            </div>
-            <div class="ms-3">
-              <i class="bi bi-person-check fs-2 text-success"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="col-lg-3 col-md-6">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body">
-          <div class="d-flex align-items-center">
-            <div class="flex-grow-1">
-              <h6 class="text-muted mb-0">Admin Kullanıcı</h6>
-              <h4 class="text-warning mb-0">
-                {% for user in users %}
-                  {% if user.role == 'admin' or user.is_superuser %}1{% endif %}
-                {% endfor %}
-              </h4>
-            </div>
-            <div class="ms-3">
-              <i class="bi bi-shield-check fs-2 text-warning"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="col-lg-3 col-md-6">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body">
-          <div class="d-flex align-items-center">
-            <div class="flex-grow-1">
-              <h6 class="text-muted mb-0">Support Kullanıcı</h6>
-              <h4 class="text-info mb-0">
-                {% for user in users %}
-                  {% if user.role == 'support' %}1{% endif %}
-                {% endfor %}
-              </h4>
-            </div>
-            <div class="ms-3">
-              <i class="bi bi-headset fs-2 text-info"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Users Table -->
-  <div class="row">
-    <div class="col-12">
-      <div class="card border-0 shadow-sm">
-        <div class="card-header bg-transparent border-0 py-3">
-          <div class="d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Kullanıcı Listesi</h5>
-            <div class="input-group" style="max-width: 300px;">
-              <input type="text" id="searchInput" class="form-control" placeholder="Kullanıcı ara...">
-              <span class="input-group-text">
-                <i class="bi bi-search"></i>
-              </span>
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card bg-info">
+            <div class="stat-card-body">
+                <div class="stat-icon"><i class="fas fa-headset"></i></div>
+                <div class="stat-content">
+                    <h3 class="stat-number">0</h3>
+                    <p class="stat-label">Support Kullanıcı</p>
+                </div>
             </div>
-          </div>
         </div>
-        <div class="card-body">
-          {% if users %}
-            <div class="table-responsive">
-              <table class="table table-hover align-middle" id="usersTable">
-                <thead class="table-light">
-                  <tr>
-                    <th>
-                      <i class="bi bi-person me-1"></i>Kullanıcı
-                    </th>
-                    <th>
-                      <i class="bi bi-envelope me-1"></i>E-posta
-                    </th>
-                    <th>
-                      <i class="bi bi-shield me-1"></i>Rol
-                    </th>
-                    <th>
-                      <i class="bi bi-collection me-1"></i>Grup
-                    </th>
-                    <th>
-                      <i class="bi bi-activity me-1"></i>Durum
-                    </th>
-                    <th>
-                      <i class="bi bi-calendar me-1"></i>Kayıt Tarihi
-                    </th>
-                    <th>
-                      <i class="bi bi-gear me-1"></i>İşlemler
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for user in users %}
-                    <tr class="user-row">
-                      <td>
-                        <div class="d-flex align-items-center">
-                          <div class="avatar-circle me-3">
-                            {% if user.is_superuser %}
-                              <i class="bi bi-crown text-warning"></i>
-                            {% elif user.role == 'admin' %}
-                              <i class="bi bi-shield-check text-danger"></i>
-                            {% elif user.role == 'support' %}
-                              <i class="bi bi-headset text-success"></i>
-                            {% else %}
-                              <i class="bi bi-person text-primary"></i>
-                            {% endif %}
-                          </div>
-                          <div>
-                            <strong>{{ user.username }}</strong>
-                            {% if user.first_name or user.last_name %}
-                              <br><small class="text-muted">{{ user.first_name }} {{ user.last_name }}</small>
-                            {% endif %}
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        {% if user.email %}
-                          <a href="mailto:{{ user.email }}" class="text-decoration-none">
-                            {{ user.email }}
-                          </a>
-                        {% else %}
-                          <span class="text-muted">E-posta yok</span>
-                        {% endif %}
-                      </td>
-                      <td>
-                        {% if user.is_superuser %}
-                          <span class="badge bg-warning">
-                            <i class="bi bi-crown me-1"></i>Super Admin
-                          </span>
-                        {% elif user.role == 'admin' %}
-                          <span class="badge bg-danger">
-                            <i class="bi bi-shield-check me-1"></i>Admin
-                          </span>
-                        {% elif user.role == 'support' %}
-                          <span class="badge bg-success">
-                            <i class="bi bi-headset me-1"></i>Support
-                          </span>
-                        {% else %}
-                          <span class="badge bg-primary">
-                            <i class="bi bi-person me-1"></i>Customer
-                          </span>
-                        {% endif %}
-                      </td>
-                      <td>
-                        {% if user.groups.exists %}
-                          {% for group in user.groups.all %}
-                            <span class="badge bg-info me-1">
-                              <i class="bi bi-collection me-1"></i>{{ group.name }}
-                            </span>
-                            {% if not forloop.last %}<br>{% endif %}
-                          {% endfor %}
-                        {% else %}
-                          <span class="text-muted">Grup yok</span>
-                        {% endif %}
-                      </td>
-                      <td>
-                        {% if user.is_active %}
-                          <span class="badge bg-success">
-                            <i class="bi bi-check-circle me-1"></i>Aktif
-                          </span>
-                        {% else %}
-                          <span class="badge bg-secondary">
-                            <i class="bi bi-x-circle me-1"></i>Pasif
-                          </span>
-                        {% endif %}
-                      </td>
-                      <td>
-                        <small class="text-muted">
-                          {{ user.date_joined|date:"d.m.Y H:i" }}
-                        </small>
-                      </td>
-                      <td>
-                        <div class="btn-group" role="group">
-                          <a href="/accounts/admin/users/{{ user.id }}/edit/" 
-                             class="btn btn-sm btn-outline-primary" 
-                             title="Düzenle">
-                            <i class="bi bi-pencil"></i>
-                          </a>
-                          <a href="/accounts/admin/users/{{ user.id }}/assign-groups/" 
-                             class="btn btn-sm btn-outline-info" 
-                             title="Grup Ata">
-                            <i class="bi bi-people"></i>
-                          </a>
-                          {% if user.id != current_user.id %}
-                            <a href="/accounts/admin/users/{{ user.id }}/delete/" 
-                               class="btn btn-sm btn-outline-danger" 
-                               title="Sil"
-                               onclick="return confirm('{{ user.username }} kullanıcısını silmek istediğinizden emin misiniz?')">
-                              <i class="bi bi-trash"></i>
-                            </a>
-                          {% endif %}
-                        </div>
-                      </td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          {% else %}
-            <div class="text-center py-5">
-              <i class="bi bi-people display-1 text-muted"></i>
-              <h5 class="mt-3 text-muted">Henüz kullanıcı bulunmamaktadır.</h5>
-              <p class="text-muted">Yeni bir kullanıcı oluşturmak için yukarıdaki butonu kullanabilirsiniz.</p>
-              <a href="/accounts/admin/users/create/" class="btn btn-primary">
-                <i class="bi bi-person-plus me-2"></i>İlk Kullanıcıyı Oluşturun
-              </a>
-            </div>
-          {% endif %}
-        </div>
-      </div>
     </div>
-  </div>
 </div>
 
-<style>
-.avatar-circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: var(--surface-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-}
-
-.btn-group .btn {
-  border-radius: 6px !important;
-  margin-right: 4px;
-}
-
-.table th {
-  font-weight: 600;
-  color: var(--text-color);
-  border-bottom: 2px solid var(--border-color);
-}
-
-.user-row:hover {
-  background-color: var(--surface-color);
-}
-
-#searchInput {
-  border: 1px solid var(--border-color);
-  background-color: var(--secondary-bg);
-  color: var(--text-color);
-}
-
-#searchInput:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
-}
-</style>
+<!-- Users Table -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Kullanıcı Listesi</h5>
+        <div class="input-group" style="max-width: 300px;">
+            <input type="text" id="searchInput" class="form-control" placeholder="Kullanıcı ara...">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if users %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" id="usersTable">
+                <thead class="table-light">
+                    <tr>
+                        <th>Kullanıcı</th>
+                        <th>E-posta</th>
+                        <th>Rol</th>
+                        <th>Durum</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr class="user-row">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    {% if user.is_superuser %}
+                                        <i class="fas fa-crown text-warning"></i>
+                                    {% elif user.role == 'admin' %}
+                                        <i class="fas fa-shield-alt text-danger"></i>
+                                    {% elif user.role == 'support' %}
+                                        <i class="fas fa-headset text-success"></i>
+                                    {% else %}
+                                        <i class="fas fa-user text-primary"></i>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <strong>{{ user.username }}</strong>
+                                    {% if user.first_name or user.last_name %}
+                                        <br><small class="text-muted">{{ user.first_name }} {{ user.last_name }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            {% if user.email %}
+                                <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+                            {% else %}
+                                <span class="text-muted">E-posta yok</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.is_superuser %}
+                                <span class="badge bg-warning">Super Admin</span>
+                            {% elif user.role == 'admin' %}
+                                <span class="badge bg-danger">Admin</span>
+                            {% elif user.role == 'support' %}
+                                <span class="badge bg-success">Support</span>
+                            {% else %}
+                                <span class="badge bg-primary">Customer</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.is_active %}
+                                <span class="badge bg-success">Aktif</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Pasif</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ user.date_joined|date:"d.m.Y H:i" }}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="/accounts/admin/users/{{ user.id }}/edit/" class="btn btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                {% if not user.is_superuser %}
+                                <button class="btn btn-outline-danger" onclick="deleteUser({{ user.id }}, '{{ user.username }}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-users fa-4x text-muted mb-3"></i>
+            <h5 class="text-muted">Henüz kullanıcı bulunmamaktadır</h5>
+            <a href="/accounts/admin/users/create/" class="btn btn-primary mt-2">
+                <i class="fas fa-user-plus me-2"></i>İlk Kullanıcıyı Oluşturun
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
 
 <script>
+// Simple search functionality
 document.addEventListener('DOMContentLoaded', function() {
-    // Search functionality
     const searchInput = document.getElementById('searchInput');
-    const userRows = document.querySelectorAll('.user-row');
+    const tableRows = document.querySelectorAll('.user-row');
     
-    searchInput.addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        
-        userRows.forEach(row => {
-            const username = row.querySelector('strong').textContent.toLowerCase();
-            const email = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
             
-            if (username.includes(searchTerm) || email.includes(searchTerm)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    });
-    
-    // Table hover effects
-    const table = document.getElementById('usersTable');
-    if (table) {
-        table.addEventListener('mouseover', function(e) {
-            if (e.target.closest('tr') && e.target.closest('tbody')) {
-                e.target.closest('tr').style.backgroundColor = 'var(--surface-color)';
-            }
-        });
-        
-        table.addEventListener('mouseout', function(e) {
-            if (e.target.closest('tr') && e.target.closest('tbody')) {
-                e.target.closest('tr').style.backgroundColor = '';
-            }
+            tableRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         });
     }
 });
+
+// Delete user function
+function deleteUser(userId, username) {
+    if (confirm(`"${username}" kullanıcısını silmek istediğinizden emin misiniz?`)) {
+        alert('Silme işlemi henüz implementa edilmedi.');
+    }
+}
 </script>
 
+<!-- CSRF Token for AJAX -->
+<form style="display:none;">{% csrf_token %}</form>
 {% endblock %}

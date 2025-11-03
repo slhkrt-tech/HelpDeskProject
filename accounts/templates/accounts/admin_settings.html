@@ -1,276 +1,150 @@
 {% extends 'tickets/base.html' %}
 
-{% block title %}{{ page_title }}{% endblock %}
-{% block page_title %}{{ page_title }}{% endblock %}
+{% block title %}Sistem Ayarları - HelpDesk{% endblock %}
+
+{% block sidebar_nav %}
+<div class="nav-section">
+    <div class="nav-section-title">Yönetim Paneli</div>
+    <div class="nav-item"><a href="/accounts/admin-panel/" class="nav-link"><i class="fas fa-tachometer-alt"></i><span>Ana Panel</span></a></div>
+    <div class="nav-item"><a href="/accounts/admin/users/" class="nav-link"><i class="fas fa-users"></i><span>Kullanıcılar</span></a></div>
+    <div class="nav-item"><a href="/accounts/admin/groups/" class="nav-link"><i class="fas fa-users-cog"></i><span>Gruplar</span></a></div>
+    <div class="nav-item"><a href="/accounts/admin/settings/" class="nav-link active"><i class="fas fa-cog"></i><span>Sistem Ayarları</span></a></div>
+    <div class="nav-item"><a href="/accounts/admin/reports/" class="nav-link"><i class="fas fa-chart-bar"></i><span>Raporlar</span></a></div>
+    <div class="nav-item"><a href="/accounts/debug-tokens/" class="nav-link"><i class="fas fa-bug"></i><span>Debug</span></a></div>
+</div>
+
+<div class="nav-section">
+    <div class="nav-section-title">Ana Menü</div>
+    <div class="nav-item"><a href="/" class="nav-link"><i class="fas fa-home"></i><span>Ana Sayfa</span></a></div>
+    <div class="nav-item"><a href="/tickets/" class="nav-link"><i class="fas fa-ticket-alt"></i><span>Talepler</span></a></div>
+</div>
+
+<div class="nav-section">
+    <div class="nav-section-title">Kişisel</div>
+    <div class="nav-item"><a href="/accounts/profile/" class="nav-link"><i class="fas fa-user"></i><span>Profil</span></a></div>
+</div>
+{% endblock %}
 
 {% block breadcrumb %}
-<nav aria-label="breadcrumb" class="mb-4">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item">
-      <a href="{% url 'home' %}" style="color: var(--accent-color);">
-        <i class="bi bi-house-door me-1"></i>Ana Sayfa
-      </a>
-    </li>
-    <li class="breadcrumb-item">
-      <a href="/accounts/admin-panel/" style="color: var(--accent-color);">
-        <i class="bi bi-shield-check me-1"></i>Admin Panel
-      </a>
-    </li>
-    <li class="breadcrumb-item active" aria-current="page">Sistem Ayarları</li>
-  </ol>
-</nav>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
+    <li class="breadcrumb-item"><a href="/accounts/admin-panel/">Admin Panel</a></li>
+    <li class="breadcrumb-item active">Sistem Ayarları</li>
+</ol>
+{% endblock %}
+
+{% block page_title %}
+<div class="d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="page-title"><i class="fas fa-cog text-warning me-3"></i>Sistem Ayarları <span class="badge bg-warning text-dark ms-2">Admin</span></h1>
+        <p class="page-subtitle">Sistem konfigürasyonu ve ayarları</p>
+    </div>
+</div>
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid">
-  <!-- Page Header -->
-  <div class="row mb-4">
-    <div class="col-12">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <h1 class="h3 mb-0">
-            <i class="bi bi-sliders text-warning me-2"></i>Sistem Ayarları
-          </h1>
-          <p class="text-muted mb-0">Sistem konfigürasyonu ve ayarları</p>
-        </div>
-        <div>
-          <button class="btn btn-primary" onclick="saveSettings()">
-            <i class="bi bi-save me-2"></i>Ayarları Kaydet
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Settings Tabs -->
   <div class="card">
     <div class="card-header">
       <ul class="nav nav-tabs card-header-tabs" id="settingsTabs" role="tablist">
         <li class="nav-item" role="presentation">
-          <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab">
-            <i class="bi bi-gear me-2"></i>Genel
-          </button>
+          <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab"><i class="bi bi-gear me-2"></i>Genel</button>
         </li>
         <li class="nav-item" role="presentation">
-          <button class="nav-link" id="email-tab" data-bs-toggle="tab" data-bs-target="#email" type="button" role="tab">
-            <i class="bi bi-envelope me-2"></i>E-posta
-          </button>
+          <button class="nav-link" id="email-tab" data-bs-toggle="tab" data-bs-target="#email" type="button" role="tab"><i class="bi bi-envelope me-2"></i>E-posta</button>
         </li>
         <li class="nav-item" role="presentation">
-          <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab">
-            <i class="bi bi-shield me-2"></i>Güvenlik
-          </button>
+          <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab"><i class="bi bi-shield me-2"></i>Güvenlik</button>
         </li>
       </ul>
     </div>
-    <div class="card-body">
-      <div class="tab-content" id="settingsTabsContent">
-        <!-- Genel Ayarlar -->
-        <div class="tab-pane fade show active" id="general" role="tabpanel">
-          <h5>Genel Sistem Ayarları</h5>
-          <form method="post" action="{% url 'admin_settings' %}">
-            {% csrf_token %}
-            <input type="hidden" name="tab" value="general">
-            <div class="row">
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label for="site_name" class="form-label">Site Adı</label>
-                  <input type="text" class="form-control" id="site_name" name="site_name" value="{{ settings.site_name }}">
-                </div>
-                <div class="mb-3">
-                  <label for="site_description" class="form-label">Site Açıklaması</label>
-                  <textarea class="form-control" id="site_description" name="site_description" rows="3">{{ settings.site_description }}</textarea>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label for="admin_email" class="form-label">Yönetici E-postası</label>
-                  <input type="email" class="form-control" id="admin_email" name="admin_email" value="{{ settings.admin_email }}">
-                </div>
-                <div class="mb-3">
-                  <label for="timezone" class="form-label">Zaman Dilimi</label>
-                  <select class="form-select" id="timezone" name="timezone">
-                    <option value="Europe/Istanbul" {% if settings.timezone == 'Europe/Istanbul' %}selected{% endif %}>Türkiye (UTC+3)</option>
-                    <option value="UTC" {% if settings.timezone == 'UTC' %}selected{% endif %}>UTC</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="text-end">
-              <button type="submit" class="btn btn-primary">
-                <i class="bi bi-check2 me-2"></i>Genel Ayarları Kaydet
-              </button>
-            </div>
-          </form>
-        </div>
+    <div class="card-body tab-content" id="settingsTabsContent">
 
-        <!-- E-posta Ayarları -->
-        <div class="tab-pane fade" id="email" role="tabpanel">
-          <h5>E-posta Konfigürasyonu</h5>
-          <form method="post" action="{% url 'admin_settings' %}">
-            {% csrf_token %}
-            <input type="hidden" name="tab" value="email">
-            <div class="row">
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label for="smtp_host" class="form-label">SMTP Sunucusu</label>
-                  <input type="text" class="form-control" id="smtp_host" name="smtp_host" value="{{ settings.smtp_host|default:'' }}" placeholder="smtp.gmail.com">
-                </div>
-                <div class="mb-3">
-                  <label for="smtp_port" class="form-label">SMTP Portu</label>
-                  <input type="number" class="form-control" id="smtp_port" name="smtp_port" value="{{ settings.smtp_port }}">
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label for="smtp_username" class="form-label">SMTP Kullanıcı Adı</label>
-                  <input type="text" class="form-control" id="smtp_username" name="smtp_username" value="{{ settings.smtp_username|default:'' }}" placeholder="email@domain.com">
-                </div>
-                <div class="mb-3">
-                  <label for="smtp_password" class="form-label">SMTP Şifresi</label>
-                  <input type="password" class="form-control" id="smtp_password" name="smtp_password" placeholder="Değiştirmek için yeni şifre girin">
-                  {% if settings.smtp_password %}
-                    <div class="form-text">Mevcut şifre kaydedilmiş. Değiştirmek için yeni şifre girin.</div>
-                  {% endif %}
-                </div>
+      <!-- Genel -->
+      <div class="tab-pane fade show active" id="general" role="tabpanel">
+        <form method="post" action="{% url 'admin_settings' %}">{% csrf_token %}
+          <input type="hidden" name="tab" value="general">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3"><label for="site_name" class="form-label">Site Adı</label><input type="text" class="form-control" id="site_name" name="site_name" value="{{ settings.site_name }}"></div>
+              <div class="mb-3"><label for="site_description" class="form-label">Site Açıklaması</label><textarea class="form-control" id="site_description" name="site_description" rows="3">{{ settings.site_description }}</textarea></div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3"><label for="admin_email" class="form-label">Yönetici E-postası</label><input type="email" class="form-control" id="admin_email" name="admin_email" value="{{ settings.admin_email }}"></div>
+              <div class="mb-3"><label for="timezone" class="form-label">Zaman Dilimi</label>
+                <select class="form-select" id="timezone" name="timezone">
+                  <option value="Europe/Istanbul" {% if settings.timezone == 'Europe/Istanbul' %}selected{% endif %}>Türkiye (UTC+3)</option>
+                  <option value="UTC" {% if settings.timezone == 'UTC' %}selected{% endif %}>UTC</option>
+                </select>
               </div>
             </div>
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="smtp_use_tls" name="smtp_use_tls" {% if settings.smtp_use_tls %}checked{% endif %}>
-                <label class="form-check-label" for="smtp_use_tls">
-                  TLS/SSL Kullan
-                </label>
-              </div>
-            </div>
-            <div class="text-end">
-              <button type="button" class="btn btn-outline-primary me-2">
-                <i class="bi bi-envelope-check me-2"></i>Test E-postası Gönder
-              </button>
-              <button type="submit" class="btn btn-primary">
-                <i class="bi bi-check2 me-2"></i>E-posta Ayarları Kaydet
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Güvenlik Ayarları -->
-        <div class="tab-pane fade" id="security" role="tabpanel">
-          <h5>Güvenlik Ayarları</h5>
-          <form method="post" action="{% url 'admin_settings' %}">
-            {% csrf_token %}
-            <input type="hidden" name="tab" value="security">
-            <div class="row">
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label for="token_expiry_days" class="form-label">Token Geçerlilik Süresi (Gün)</label>
-                  <input type="number" class="form-control" id="token_expiry_days" name="token_expiry_days" value="{{ settings.token_expiry_days }}" min="1" max="365">
-                </div>
-                <div class="mb-3">
-                  <label for="max_login_attempts" class="form-label">Maksimum Giriş Denemesi</label>
-                  <input type="number" class="form-control" id="max_login_attempts" name="max_login_attempts" value="{{ settings.max_login_attempts }}" min="1" max="20">
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label for="session_timeout_minutes" class="form-label">Oturum Zaman Aşımı (Dakika)</label>
-                  <input type="number" class="form-control" id="session_timeout_minutes" name="session_timeout_minutes" value="{{ settings.session_timeout_minutes }}" min="5" max="480">
-                </div>
-                <div class="mb-3">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="require_password_change" name="require_password_change" {% if settings.require_password_change %}checked{% endif %}>
-                    <label class="form-check-label" for="require_password_change">
-                      Düzenli Parola Değişikliği Zorunlu
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="text-end">
-              <button type="submit" class="btn btn-primary">
-                <i class="bi bi-check2 me-2"></i>Güvenlik Ayarları Kaydet
-              </button>
-            </div>
-          </form>
-        </div>
-                  <label for="max-login-attempts" class="form-label">Maksimum Giriş Denemesi</label>
-                  <input type="number" class="form-control" id="max-login-attempts" value="5">
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="enable-2fa">
-                    <label class="form-check-label" for="enable-2fa">
-                      İki Faktörlü Kimlik Doğrulama (2FA)
-                    </label>
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="force-password-change" checked>
-                    <label class="form-check-label" for="force-password-change">
-                      Düzenli Şifre Değiştirmeyi Zorla
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
+          </div>
+          <div class="text-end"><button type="submit" class="btn btn-primary"><i class="bi bi-check2 me-2"></i>Genel Ayarları Kaydet</button></div>
+        </form>
       </div>
+
+      <!-- E-posta -->
+      <div class="tab-pane fade" id="email" role="tabpanel">
+        <form method="post" action="{% url 'admin_settings' %}">{% csrf_token %}
+          <input type="hidden" name="tab" value="email">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3"><label for="smtp_host" class="form-label">SMTP Sunucusu</label><input type="text" class="form-control" id="smtp_host" name="smtp_host" value="{{ settings.smtp_host|default:'' }}" placeholder="smtp.gmail.com"></div>
+              <div class="mb-3"><label for="smtp_port" class="form-label">SMTP Portu</label><input type="number" class="form-control" id="smtp_port" name="smtp_port" value="{{ settings.smtp_port }}"></div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3"><label for="smtp_username" class="form-label">SMTP Kullanıcı Adı</label><input type="text" class="form-control" id="smtp_username" name="smtp_username" value="{{ settings.smtp_username|default:'' }}"></div>
+              <div class="mb-3"><label for="smtp_password" class="form-label">SMTP Şifresi</label><input type="password" class="form-control" id="smtp_password" name="smtp_password" placeholder="Değiştirmek için yeni şifre girin">{% if settings.smtp_password %}<div class="form-text">Mevcut şifre kaydedilmiş. Değiştirmek için yeni şifre girin.</div>{% endif %}</div>
+            </div>
+          </div>
+          <div class="mb-3 form-check"><input class="form-check-input" type="checkbox" id="smtp_use_tls" name="smtp_use_tls" {% if settings.smtp_use_tls %}checked{% endif %}><label class="form-check-label" for="smtp_use_tls">TLS/SSL Kullan</label></div>
+          <div class="text-end"><button type="button" class="btn btn-outline-primary me-2"><i class="bi bi-envelope-check me-2"></i>Test E-postası Gönder</button><button type="submit" class="btn btn-primary"><i class="bi bi-check2 me-2"></i>E-posta Ayarları Kaydet</button></div>
+        </form>
+      </div>
+
+      <!-- Güvenlik -->
+      <div class="tab-pane fade" id="security" role="tabpanel">
+        <form method="post" action="{% url 'admin_settings' %}">{% csrf_token %}
+          <input type="hidden" name="tab" value="security">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3"><label for="token_expiry_days" class="form-label">Token Geçerlilik Süresi (Gün)</label><input type="number" class="form-control" id="token_expiry_days" name="token_expiry_days" value="{{ settings.token_expiry_days }}" min="1" max="365"></div>
+              <div class="mb-3"><label for="max_login_attempts" class="form-label">Maksimum Giriş Denemesi</label><input type="number" class="form-control" id="max_login_attempts" name="max_login_attempts" value="{{ settings.max_login_attempts }}" min="1" max="20"></div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3"><label for="session_timeout_minutes" class="form-label">Oturum Zaman Aşımı (Dakika)</label><input type="number" class="form-control" id="session_timeout_minutes" name="session_timeout_minutes" value="{{ settings.session_timeout_minutes }}" min="5" max="480"></div>
+              <div class="mb-3 form-check"><input class="form-check-input" type="checkbox" id="require_password_change" name="require_password_change" {% if settings.require_password_change %}checked{% endif %}><label class="form-check-label" for="require_password_change">Düzenli Parola Değişikliği Zorunlu</label></div>
+              <div class="mb-3 form-check"><input class="form-check-input" type="checkbox" id="enable_2fa" name="enable_2fa" {% if settings.enable_2fa %}checked{% endif %}><label class="form-check-label" for="enable_2fa">İki Faktörlü Kimlik Doğrulama (2FA)</label></div>
+            </div>
+          </div>
+          <div class="text-end"><button type="submit" class="btn btn-primary"><i class="bi bi-check2 me-2"></i>Güvenlik Ayarları Kaydet</button></div>
+        </form>
+      </div>
+
     </div>
   </div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Bootstrap tabs initialization
     const tabLinks = document.querySelectorAll('#settingsTabs button[data-bs-toggle="tab"]');
-    
-    tabLinks.forEach(function(tabLink) {
-        tabLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Remove active from all tabs
-            tabLinks.forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // Hide all tab panes
-            const tabPanes = document.querySelectorAll('#settingsTabsContent .tab-pane');
-            tabPanes.forEach(pane => {
-                pane.classList.remove('show', 'active');
-            });
-            
-            // Activate clicked tab
-            this.classList.add('active');
-            
-            // Show target pane
-            const targetId = this.getAttribute('data-bs-target');
-            const targetPane = document.querySelector(targetId);
-            if (targetPane) {
-                targetPane.classList.add('show', 'active');
-            }
-        });
-    });
+    tabLinks.forEach(link => link.addEventListener('click', function(e){
+        e.preventDefault();
+        tabLinks.forEach(l=>l.classList.remove('active'));
+        document.querySelectorAll('#settingsTabsContent .tab-pane').forEach(p=>p.classList.remove('show','active'));
+        this.classList.add('active');
+        document.querySelector(this.getAttribute('data-bs-target')).classList.add('show','active');
+    }));
 
-    // Tab'dan tab'a geçerken form verilerini koruma
-    window.addEventListener('beforeunload', function(e) {
+    // Kaydedilmemiş değişiklik uyarısı
+    window.addEventListener('beforeunload', function(e){
         const forms = document.querySelectorAll('form');
         let hasChanges = false;
-        
-        forms.forEach(form => {
+        forms.forEach(form=>{
             const formData = new FormData(form);
-            if (formData.entries().next().value) {
-                hasChanges = true;
-            }
+            if (Array.from(formData.entries()).some(([k,v])=>v)) hasChanges = true;
         });
-        
-        if (hasChanges) {
-            e.preventDefault();
-            e.returnValue = 'Kaydedilmemiş değişiklikler var. Sayfadan ayrılmak istediğinizden emin misiniz?';
-        }
+        if(hasChanges){ e.preventDefault(); e.returnValue='Kaydedilmemiş değişiklikler var. Sayfadan ayrılmak istediğinizden emin misiniz?'; }
     });
 });
 </script>

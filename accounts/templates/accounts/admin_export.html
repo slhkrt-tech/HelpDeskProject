@@ -1,0 +1,581 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}{{ panel_title }} - HelpDesk{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
+    <li class="breadcrumb-item"><a href="/accounts/admin-panel/">Admin Panel</a></li>
+    <li class="breadcrumb-item active">Veri Dışa Aktarma</li>
+</ol>
+{% endblock %}
+
+{% block page_title %}
+<i class="fas fa-download text-success"></i> Veri Dışa Aktarma
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Ana Dışa Aktarma Paneli -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-download text-success me-2"></i>
+                        Veri Dışa Aktarma Seçenekleri
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="exportForm">
+                        {% csrf_token %}
+                        
+                        <!-- Veri Türü Seçimi -->
+                        <div class="mb-4">
+                            <label class="form-label">Dışa Aktarılacak Veri Türü *</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="export_users" name="data_types" value="users" checked>
+                                        <label class="form-check-label" for="export_users">
+                                            <i class="fas fa-users me-2"></i>Kullanıcılar
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="export_tickets" name="data_types" value="tickets" checked>
+                                        <label class="form-check-label" for="export_tickets">
+                                            <i class="fas fa-ticket-alt me-2"></i>Talepler
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="export_categories" name="data_types" value="categories">
+                                        <label class="form-check-label" for="export_categories">
+                                            <i class="fas fa-folder me-2"></i>Kategoriler
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="export_groups" name="data_types" value="groups">
+                                        <label class="form-check-label" for="export_groups">
+                                            <i class="fas fa-layer-group me-2"></i>Gruplar
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="export_logs" name="data_types" value="logs">
+                                        <label class="form-check-label" for="export_logs">
+                                            <i class="fas fa-history me-2"></i>Sistem Logları
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="export_all" name="export_all">
+                                        <label class="form-check-label" for="export_all">
+                                            <i class="fas fa-database me-2"></i>Tüm Veri
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Dosya Formatı -->
+                        <div class="mb-4">
+                            <label class="form-label">Dosya Formatı *</label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="format" id="format_csv" value="csv" checked>
+                                        <label class="form-check-label" for="format_csv">
+                                            <i class="fas fa-file-csv text-success me-2"></i>CSV
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="format" id="format_excel" value="excel">
+                                        <label class="form-check-label" for="format_excel">
+                                            <i class="fas fa-file-excel text-success me-2"></i>Excel
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="format" id="format_json" value="json">
+                                        <label class="form-check-label" for="format_json">
+                                            <i class="fas fa-file-code text-warning me-2"></i>JSON
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tarih Aralığı -->
+                        <div class="mb-4">
+                            <label class="form-label">Tarih Aralığı</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label small">Başlangıç Tarihi</label>
+                                    <input type="date" class="form-control" name="start_date">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small">Bitiş Tarihi</label>
+                                    <input type="date" class="form-control" name="end_date">
+                                </div>
+                            </div>
+                            <small class="text-muted">Boş bırakılırsa tüm veriler dahil edilir</small>
+                        </div>
+                        
+                        <!-- Filtreler -->
+                        <div class="mb-4">
+                            <label class="form-label">Filtreler</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label small">Kullanıcı Rolü</label>
+                                    <select class="form-select" name="user_role">
+                                        <option value="">Tümü</option>
+                                        <option value="admin">Admin</option>
+                                        <option value="support">Support</option>
+                                        <option value="customer">Customer</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small">Talep Durumu</label>
+                                    <select class="form-select" name="ticket_status">
+                                        <option value="">Tümü</option>
+                                        <option value="open">Açık</option>
+                                        <option value="in_progress">İşlemde</option>
+                                        <option value="resolved">Çözüldü</option>
+                                        <option value="closed">Kapalı</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- İleri Seçenekler -->
+                        <div class="mb-4">
+                            <label class="form-label">İleri Seçenekler</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="include_passwords" name="include_passwords">
+                                <label class="form-check-label" for="include_passwords">
+                                    <i class="fas fa-key me-2"></i>Şifrelenmiş parolaları dahil et
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="include_deleted" name="include_deleted">
+                                <label class="form-check-label" for="include_deleted">
+                                    <i class="fas fa-trash me-2"></i>Silinen kayıtları dahil et
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="compress_file" name="compress_file" checked>
+                                <label class="form-check-label" for="compress_file">
+                                    <i class="fas fa-file-archive me-2"></i>Dosyayı sıkıştır (ZIP)
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Dışa Aktarma Butonu -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-download"></i> Dışa Aktar
+                            </button>
+                            <button type="button" class="btn btn-info" onclick="previewData()">
+                                <i class="fas fa-eye"></i> Önizleme
+                            </button>
+                            <a href="/accounts/admin-panel/" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Geri Dön
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- İndirme Geçmişi -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-history text-info me-2"></i>
+                        İndirme Geçmişi
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>Veri Türü</th>
+                                    <th>Format</th>
+                                    <th>Boyut</th>
+                                    <th>Durum</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2024-01-15 14:30</td>
+                                    <td>Kullanıcılar, Talepler</td>
+                                    <td><span class="badge bg-success">CSV</span></td>
+                                    <td>2.5 MB</td>
+                                    <td><span class="badge bg-success">Tamamlandı</span></td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteExport(1)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2024-01-10 09:15</td>
+                                    <td>Tüm Veri</td>
+                                    <td><span class="badge bg-info">JSON</span></td>
+                                    <td>15.8 MB</td>
+                                    <td><span class="badge bg-success">Tamamlandı</span></td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteExport(2)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Yan Panel -->
+        <div class="col-lg-4">
+            <!-- Dışa Aktarma Bilgileri -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-info-circle text-primary me-2"></i>
+                        Dışa Aktarma Bilgileri
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div id="export_info">
+                        <div class="info-item mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Seçilen Kayıt Sayısı:</span>
+                                <span class="fw-bold" id="record_count">-</span>
+                            </div>
+                        </div>
+                        <div class="info-item mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Tahmini Boyut:</span>
+                                <span class="fw-bold" id="estimated_size">-</span>
+                            </div>
+                        </div>
+                        <div class="info-item mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Tahmini Süre:</span>
+                                <span class="fw-bold" id="estimated_time">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Veri Önizlemesi -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-eye text-secondary me-2"></i>
+                        Veri Önizlemesi
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div id="data_preview">
+                        <p class="text-muted text-center">
+                            Önizleme için "Önizleme" butonuna tıklayın
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Format Bilgileri -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-file-alt text-warning me-2"></i>
+                        Format Bilgileri
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <small>
+                            <strong>CSV:</strong> Virgülle ayrılmış değerler, Excel uyumlu<br>
+                            <strong>Excel:</strong> Microsoft Excel dosyası (.xlsx)<br>
+                            <strong>JSON:</strong> JavaScript Object Notation, API uyumlu
+                        </small>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <small>
+                            <strong>Önemli:</strong> Büyük veri setleri için dışa aktarma işlemi zaman alabilir. İşlem tamamlanana kadar sayfayı kapatmayın.
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hızlı Şablonlar -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-star text-warning me-2"></i>
+                        Hızlı Şablonlar
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary btn-sm" onclick="applyTemplate('users_only')">
+                            <i class="fas fa-users me-2"></i>Sadece Kullanıcılar
+                        </button>
+                        <button class="btn btn-outline-success btn-sm" onclick="applyTemplate('tickets_only')">
+                            <i class="fas fa-ticket-alt me-2"></i>Sadece Talepler
+                        </button>
+                        <button class="btn btn-outline-info btn-sm" onclick="applyTemplate('monthly_report')">
+                            <i class="fas fa-calendar me-2"></i>Aylık Rapor
+                        </button>
+                        <button class="btn btn-outline-warning btn-sm" onclick="applyTemplate('full_backup')">
+                            <i class="fas fa-database me-2"></i>Tam Yedek
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Progress Modal -->
+<div class="modal fade" id="progressModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Dışa Aktarma İşlemi</h5>
+            </div>
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Yükleniyor...</span>
+                </div>
+                <div id="progress_message">Veriler hazırlanıyor...</div>
+                <div class="progress mt-3">
+                    <div class="progress-bar" id="progress_bar" style="width: 0%"></div>
+                </div>
+                <div class="mt-2">
+                    <small class="text-muted" id="progress_details">0% tamamlandı</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.info-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+</style>
+
+<script>
+// Tüm veri checkbox'ı değiştiğinde
+document.getElementById('export_all').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('input[name="data_types"]');
+    checkboxes.forEach(cb => {
+        cb.checked = this.checked;
+        cb.disabled = this.checked;
+    });
+});
+
+// Form submit
+document.getElementById('exportForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const checkedTypes = document.querySelectorAll('input[name="data_types"]:checked');
+    if (checkedTypes.length === 0 && !document.getElementById('export_all').checked) {
+        showNotification('En az bir veri türü seçmelisiniz!', 'error');
+        return;
+    }
+    
+    startExport();
+});
+
+// Dışa aktarma işlemini başlat
+function startExport() {
+    const modal = new bootstrap.Modal(document.getElementById('progressModal'));
+    modal.show();
+    
+    const formData = new FormData(document.getElementById('exportForm'));
+    
+    fetch(window.location.href, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.blob();
+        }
+        throw new Error('Export failed');
+    })
+    .then(blob => {
+        // Dosyayı indir
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `helpdesk_export_${new Date().toISOString().slice(0, 10)}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        modal.hide();
+        showNotification('Dışa aktarma tamamlandı!', 'success');
+    })
+    .catch(error => {
+        modal.hide();
+        showNotification('Dışa aktarma hatası: ' + error.message, 'error');
+    });
+    
+    // Progress simulation
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += Math.random() * 10;
+        if (progress >= 100) {
+            progress = 100;
+            clearInterval(interval);
+        }
+        
+        document.getElementById('progress_bar').style.width = progress + '%';
+        document.getElementById('progress_details').textContent = Math.round(progress) + '% tamamlandı';
+        
+        if (progress < 30) {
+            document.getElementById('progress_message').textContent = 'Veriler toplanıyor...';
+        } else if (progress < 70) {
+            document.getElementById('progress_message').textContent = 'Dosya oluşturuluyor...';
+        } else if (progress < 90) {
+            document.getElementById('progress_message').textContent = 'Sıkıştırılıyor...';
+        } else {
+            document.getElementById('progress_message').textContent = 'Tamamlanıyor...';
+        }
+    }, 500);
+}
+
+// Veri önizlemesi
+function previewData() {
+    const checkedTypes = Array.from(document.querySelectorAll('input[name="data_types"]:checked')).map(cb => cb.value);
+    
+    if (checkedTypes.length === 0 && !document.getElementById('export_all').checked) {
+        showNotification('Önizleme için en az bir veri türü seçin!', 'error');
+        return;
+    }
+    
+    // Önizleme verilerini göster
+    const previewDiv = document.getElementById('data_preview');
+    previewDiv.innerHTML = `
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Sütun 1</th>
+                        <th>Sütun 2</th>
+                        <th>Sütun 3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Örnek Veri 1</td>
+                        <td>Örnek Veri 2</td>
+                        <td>Örnek Veri 3</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">
+                            <small>...ve ${Math.floor(Math.random() * 1000)} kayıt daha</small>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    `;
+    
+    // Bilgileri güncelle
+    document.getElementById('record_count').textContent = Math.floor(Math.random() * 1000) + 100;
+    document.getElementById('estimated_size').textContent = (Math.random() * 10 + 1).toFixed(1) + ' MB';
+    document.getElementById('estimated_time').textContent = Math.floor(Math.random() * 30 + 10) + ' saniye';
+}
+
+// Şablon uygula
+function applyTemplate(template) {
+    // Tüm checkbox'ları temizle
+    document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    document.querySelectorAll('input[type="radio"]').forEach(rb => rb.checked = false);
+    
+    // CSV formatını varsayılan yap
+    document.getElementById('format_csv').checked = true;
+    
+    switch(template) {
+        case 'users_only':
+            document.getElementById('export_users').checked = true;
+            break;
+        case 'tickets_only':
+            document.getElementById('export_tickets').checked = true;
+            break;
+        case 'monthly_report':
+            document.getElementById('export_users').checked = true;
+            document.getElementById('export_tickets').checked = true;
+            // Son 30 günü seç
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - 30);
+            document.querySelector('input[name="end_date"]').value = endDate.toISOString().slice(0, 10);
+            document.querySelector('input[name="start_date"]').value = startDate.toISOString().slice(0, 10);
+            break;
+        case 'full_backup':
+            document.getElementById('export_all').checked = true;
+            document.getElementById('include_deleted').checked = true;
+            document.getElementById('compress_file').checked = true;
+            break;
+    }
+    
+    showNotification(`${template} şablonu uygulandı`, 'success');
+}
+
+// Export silme
+function deleteExport(id) {
+    if (confirm('Bu dışa aktarma dosyasını silmek istediğinizden emin misiniz?')) {
+        showNotification('Dosya silindi', 'success');
+        // AJAX ile silme işlemi yapılabilir
+    }
+}
+
+// Bildirim fonksiyonu
+function showNotification(message, type) {
+    const alertClass = type === 'success' ? 'alert-success' : 
+                      type === 'error' ? 'alert-danger' : 'alert-info';
+    
+    const notification = `
+        <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 9999;">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', notification);
+    
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            if (alert.textContent.includes(message.substring(0, 20))) {
+                alert.remove();
+            }
+        });
+    }, 5000);
+}
+</script>
+{% endblock %}

@@ -1,403 +1,191 @@
 {% extends 'tickets/base.html' %}
 
-{% block title %}{{ panel_title }}{% endblock %}
+{% block title %}{{ panel_title }} - HelpDesk{% endblock %}
+
+{% block extra_css %}
+<style>
+  .main-content {
+    background: #f8f9fa;
+  }
+  
+  .admin-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    border: none;
+    transition: all 0.3s ease;
+  }
+  
+  .admin-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  
+  .admin-card .card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    border: none;
+  }
+  
+  .admin-action-card {
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .admin-action-card:hover {
+    border-color: var(--bs-primary);
+    transform: scale(1.02);
+    color: inherit;
+    text-decoration: none;
+  }
+  
+  .quick-stats {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    color: white;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .system-health {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  
+  .health-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  
+  .health-good { background: #28a745; }
+  .health-warning { background: #ffc107; }
+  .health-error { background: #dc3545; }
+</style>
+{% endblock %}
+
+{% block page_title %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/"><i class="bi bi-house"></i> Ana Sayfa</a>
+                </li>
+                <li class="breadcrumb-item active">Admin Panel</li>
+            </ol>
+        </nav>
+        <h1 class="page-title">
+            <i class="bi bi-shield-check text-danger me-3"></i>{{ panel_title|default:"Yönetim Paneli" }}
+            <span class="badge bg-danger ms-2">Admin</span>
+        </h1>
+        <p class="page-subtitle">Sistem yönetimi ve denetim paneli</p>
+    </div>
+    <div class="text-end">
+        <div class="user-info">
+            <span class="badge bg-danger">{{ user_role|default:"Admin" }}</span>
+            <small class="text-muted d-block">{{ user.username }}</small>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
+<!-- Sistem Durumu Özeti -->
+<div class="quick-stats">
     <div class="row">
-        <div class="col-12">
-            <!-- Panel Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h1 class="h3 mb-0">{{ panel_title }}</h1>
-                    <p class="text-muted">Sistem yönetimi ve denetim paneli</p>
-                </div>
-                <div class="text-end">
-                    <span class="badge bg-primary">{{ user_role }}</span>
-                    <small class="text-muted d-block">{{ current_user.username }}</small>
-                </div>
+        <div class="col-md-3 text-center">
+            <h3>{{ total_users|default:0 }}</h3>
+            <p class="mb-0">Toplam Kullanıcı</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <h3>{{ total_tickets|default:0 }}</h3>
+            <p class="mb-0">Toplam Talep</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <h3>{{ open_tickets|default:0 }}</h3>
+            <p class="mb-0">Açık Talepler</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <h3>{{ active_tokens|default:0 }}</h3>
+            <p class="mb-0">Aktif Token</p>
+        </div>
+    </div>
+    <div class="system-health mt-3">
+        <span><span class="health-indicator health-good"></span> Sistem Durumu: Sağlıklı</span>
+        <span><span class="health-indicator health-good"></span> Veritabanı: Bağlı</span>
+        <span><span class="health-indicator health-good"></span> Bellek Kullanımı: Normal</span>
+    </div>
+</div>
+
+<!-- Yönetim Modülleri -->
+<div class="row g-4 mb-4">
+    <!-- Kullanıcı Yönetimi -->
+    <div class="col-lg-6">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-people me-2"></i>Kullanıcı Yönetimi</h5>
             </div>
-
-            <!-- Admin Dashboard Cards -->
-            <div class="row g-4 mb-4">
-                <!-- Kullanıcı Yönetimi -->
-                <div class="col-lg-3 col-md-6">
-                    <div class="card text-white" style="background-color: var(--primary-color);">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <h6 class="card-title mb-0">Kullanıcı Yönetimi</h6>
-                                    <p class="card-text small mb-0">Kullanıcıları yönet</p>
-                                </div>
-                                <div class="ms-3">
-                                    <i class="bi bi-people fs-2"></i>
-                                </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <a href="/accounts/admin/users/" class="admin-action-card card text-center">
+                            <div>
+                                <i class="bi bi-people fs-1 text-primary mb-2"></i>
+                                <h6>Kullanıcılar</h6>
+                                <small class="text-muted">Tüm kullanıcıları yönet</small>
                             </div>
-                        </div>
-                        <div class="card-footer border-0" style="background-color: var(--primary-color);">
-                            <a href="/accounts/admin/users/" class="text-white text-decoration-none small">
-                                Kullanıcı Yönetimine Git <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </div>
+                        </a>
                     </div>
-                </div>
-
-                <!-- Ticket Yönetimi -->
-                <div class="col-lg-3 col-md-6">
-                    <div class="card text-white" style="background-color: var(--success-color);">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <h6 class="card-title mb-0">Ticket Yönetimi</h6>
-                                    <p class="card-text small mb-0">Tüm talepleri yönet</p>
-                                </div>
-                                <div class="ms-3">
-                                    <i class="bi bi-ticket-perforated fs-2"></i>
-                                </div>
+                    <div class="col-6">
+                        <a href="/accounts/admin/users/create/" class="admin-action-card card text-center">
+                            <div>
+                                <i class="bi bi-person-plus fs-1 text-success mb-2"></i>
+                                <h6>Yeni Kullanıcı</h6>
+                                <small class="text-muted">Kullanıcı ekle</small>
                             </div>
-                        </div>
-                        <div class="card-footer border-0" style="background-color: var(--success-color);">
-                            <a href="/tickets/" class="text-white text-decoration-none small">
-                                Ticket'lara Git <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sistem Ayarları -->
-                <div class="col-lg-3 col-md-6">
-                    <div class="card text-white" style="background-color: var(--warning-color);">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <h6 class="card-title mb-0">Sistem Ayarları</h6>
-                                    <p class="card-text small mb-0">Sistem konfigürasyonu</p>
-                                </div>
-                                <div class="ms-3">
-                                    <i class="bi bi-gear fs-2"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer border-0" style="background-color: var(--warning-color);">
-                            <a href="/accounts/admin/settings/" class="text-white text-decoration-none small">
-                                Ayarlara Git <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Raporlar -->
-                <div class="col-lg-3 col-md-6">
-                    <div class="card text-white" style="background-color: var(--info-color);">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <h6 class="card-title mb-0">Raporlar</h6>
-                                    <p class="card-text small mb-0">Analiz ve raporlar</p>
-                                </div>
-                                <div class="ms-3">
-                                    <i class="bi bi-graph-up fs-2"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer border-0" style="background-color: var(--info-color);">
-                            <a href="/accounts/admin/reports/" class="text-white text-decoration-none small">
-                                Raporları Gör <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Grup Yönetimi -->
-                <div class="col-lg-3 col-md-6">
-                    <div class="card text-white" style="background-color: var(--accent-color);">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <h6 class="card-title mb-0">Grup Yönetimi</h6>
-                                    <p class="card-text small mb-0">Kullanıcı grupları</p>
-                                </div>
-                                <div class="ms-3">
-                                    <i class="bi bi-collection fs-2"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer border-0" style="background-color: var(--accent-color);">
-                            <a href="/accounts/admin/groups/" class="text-white text-decoration-none small">
-                                Grupları Yönet <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </div>
-
-            <!-- Admin Content Tabs -->
-            <div class="card">
-                <div class="card-header">
-                    <ul class="nav nav-tabs card-header-tabs" id="adminTabs" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
-                                <i class="bi bi-house me-2"></i>Genel Bakış
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
-                                <i class="bi bi-people me-2"></i>Kullanıcılar
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="tokens-tab" data-bs-toggle="tab" data-bs-target="#tokens" type="button" role="tab">
-                                <i class="bi bi-key me-2"></i>Token'lar
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-                <div class="card-body">
-                    <div class="tab-content" id="adminTabsContent">
-                        <!-- Genel Bakış -->
-                        <div class="tab-pane fade show active" id="overview" role="tabpanel">
-                            <!-- Sistem İstatistikleri -->
-                            <div class="row g-4 mb-4">
-                                <div class="col-12">
-                                    <h5 class="mb-3">
-                                        <i class="bi bi-graph-up text-primary me-2"></i>
-                                        Sistem İstatistikleri
-                                    </h5>
-                                </div>
-                                
-                                <!-- Ticket İstatistikleri -->
-                                <div class="col-lg-8">
-                                    <div class="card border-0 shadow-sm">
-                                        <div class="card-header bg-light">
-                                            <h6 class="mb-0">
-                                                <i class="bi bi-ticket-perforated me-2"></i>
-                                                Talep İstatistikleri
-                                            </h6>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row g-3">
-                                                <div class="col-md-3">
-                                                    <div class="text-center p-3 bg-primary bg-opacity-10 rounded">
-                                                        <i class="bi bi-inbox display-6 text-primary"></i>
-                                                        <h4 class="mt-2 mb-1" id="total-tickets">-</h4>
-                                                        <small class="text-muted">Toplam Talep</small>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="text-center p-3 bg-info bg-opacity-10 rounded">
-                                                        <i class="bi bi-circle display-6 text-info"></i>
-                                                        <h4 class="mt-2 mb-1" id="open-tickets">-</h4>
-                                                        <small class="text-muted">Açık</small>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="text-center p-3 bg-warning bg-opacity-10 rounded">
-                                                        <i class="bi bi-clock display-6 text-warning"></i>
-                                                        <h4 class="mt-2 mb-1" id="in-progress-tickets">-</h4>
-                                                        <small class="text-muted">İşlemde</small>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="text-center p-3 bg-success bg-opacity-10 rounded">
-                                                        <i class="bi bi-check-circle display-6 text-success"></i>
-                                                        <h4 class="mt-2 mb-1" id="resolved-tickets">-</h4>
-                                                        <small class="text-muted">Çözümlendi</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Kullanıcı İstatistikleri -->
-                                <div class="col-lg-4">
-                                    <div class="card border-0 shadow-sm">
-                                        <div class="card-header bg-light">
-                                            <h6 class="mb-0">
-                                                <i class="bi bi-people me-2"></i>
-                                                Kullanıcı İstatistikleri
-                                            </h6>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row g-3">
-                                                <div class="col-6">
-                                                    <div class="text-center p-2">
-                                                        <h5 class="mb-1" id="total-users">-</h5>
-                                                        <small class="text-muted">Toplam</small>
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div class="text-center p-2">
-                                                        <h5 class="mb-1 text-danger" id="admin-users">-</h5>
-                                                        <small class="text-muted">Admin</small>
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div class="text-center p-2">
-                                                        <h5 class="mb-1 text-success" id="support-users">-</h5>
-                                                        <small class="text-muted">Destek</small>
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div class="text-center p-2">
-                                                        <h5 class="mb-1 text-primary" id="customer-users">-</h5>
-                                                        <small class="text-muted">Müşteri</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+        </div>
+    </div>
+    
+    <!-- Grup Yönetimi -->
+    <div class="col-lg-6">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-layers me-2"></i>Grup & Yetki Yönetimi</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <a href="/accounts/admin/groups/" class="admin-action-card card text-center">
+                            <div>
+                                <i class="bi bi-layers fs-1 text-info mb-2"></i>
+                                <h6>Gruplar</h6>
+                                <small class="text-muted">Grup yönetimi</small>
                             </div>
-                            
-                            <!-- Zaman Bazlı İstatistikler -->
-                            <div class="row g-4 mb-4">
-                                <div class="col-12">
-                                    <h5 class="mb-3">
-                                        <i class="bi bi-calendar3 text-primary me-2"></i>
-                                        Zaman Bazlı Analiz
-                                    </h5>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="card border-0 shadow-sm">
-                                        <div class="card-body text-center">
-                                            <i class="bi bi-calendar-week display-5 text-primary mb-2"></i>
-                                            <h4 id="tickets-this-week">-</h4>
-                                            <p class="text-muted mb-0">Bu Hafta</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="card border-0 shadow-sm">
-                                        <div class="card-body text-center">
-                                            <i class="bi bi-calendar-month display-5 text-success mb-2"></i>
-                                            <h4 id="tickets-this-month">-</h4>
-                                            <p class="text-muted mb-0">Bu Ay</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="card border-0 shadow-sm">
-                                        <div class="card-body text-center">
-                                            <i class="bi bi-person-check display-5 text-warning mb-2"></i>
-                                            <h4 id="my-assigned-tickets">-</h4>
-                                            <p class="text-muted mb-0">Bana Atanan</p>
-                                        </div>
-                                    </div>
-                                </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="/accounts/admin/permissions/" class="admin-action-card card text-center">
+                            <div>
+                                <i class="bi bi-key fs-1 text-warning mb-2"></i>
+                                <h6>Yetkiler</h6>
+                                <small class="text-muted">İzin yönetimi</small>
                             </div>
-                            
-                            <!-- Profil Bilgileri -->
-                            <div class="row g-4">
-                                <div class="col-12">
-                                    <h5 class="mb-3">
-                                        <i class="bi bi-person-circle text-primary me-2"></i>
-                                        Profil Bilgileri
-                                    </h5>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="card border-0 shadow-sm">
-                                        <div class="card-header bg-light">
-                                            <h6 class="mb-0">Hesap Detayları</h6>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row g-2">
-                                                <div class="col-4"><strong>Kullanıcı Adı:</strong></div>
-                                                <div class="col-8" id="profile-username">-</div>
-                                                <div class="col-4"><strong>E-posta:</strong></div>
-                                                <div class="col-8" id="profile-email">-</div>
-                                                <div class="col-4"><strong>Rol:</strong></div>
-                                                <div class="col-8" id="profile-role">-</div>
-                                                <div class="col-4"><strong>Gruplar:</strong></div>
-                                                <div class="col-8" id="profile-groups">-</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="card border-0 shadow-sm">
-                                        <div class="card-header bg-light">
-                                            <h6 class="mb-0">Aktivite Bilgileri</h6>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row g-2">
-                                                <div class="col-4"><strong>Hesap Oluşturma:</strong></div>
-                                                <div class="col-8" id="account-created">-</div>
-                                                <div class="col-4"><strong>Son Giriş:</strong></div>
-                                                <div class="col-8" id="last-login">-</div>
-                                                <div class="col-4"><strong>Yorumlarım:</strong></div>
-                                                <div class="col-8" id="my-comments">-</div>
-                                                <div class="col-12 mt-3">
-                                                    <strong>Son Talep:</strong>
-                                                    <div id="latest-ticket" class="mt-1">-</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Kullanıcılar -->
-                        <div class="tab-pane fade" id="users" role="tabpanel">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="mb-0">Kullanıcı Yönetimi</h5>
-                                <button class="btn btn-primary btn-sm">
-                                    <i class="bi bi-plus me-1"></i>Yeni Kullanıcı
-                                </button>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Kullanıcı Adı</th>
-                                            <th>E-posta</th>
-                                            <th>Rol</th>
-                                            <th>Durumu</th>
-                                            <th>İşlemler</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td colspan="5" class="text-center text-muted">
-                                                Kullanıcı listesi yükleniyor...
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- Token'lar -->
-                        <div class="tab-pane fade" id="tokens" role="tabpanel">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="mb-0">Token Yönetimi</h5>
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="bi bi-trash me-1"></i>Süresi Dolmuş Token'ları Temizle
-                                </button>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Kullanıcı</th>
-                                            <th>Token (Son 8 karakter)</th>
-                                            <th>Oluşturulma</th>
-                                            <th>Bitiş</th>
-                                            <th>Son Kullanım</th>
-                                            <th>Durum</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td colspan="6" class="text-center text-muted">
-                                                Token listesi yükleniyor...
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -405,202 +193,194 @@
     </div>
 </div>
 
-<style>
-/* Admin panel özel stilleri */
-.card {
-    border: none;
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-    transition: all 0.3s ease;
-}
+<div class="row g-4 mb-4">
+    <!-- Talep Yönetimi -->
+    <div class="col-lg-6">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-ticket-perforated me-2"></i>Talep Yönetimi</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <a href="/tickets/admin/" class="admin-action-card card text-center">
+                            <div>
+                                <i class="bi bi-ticket-perforated fs-1 text-primary mb-2"></i>
+                                <h6>Tüm Talepler</h6>
+                                <small class="text-muted">Talep yönetimi</small>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="/tickets/categories/" class="admin-action-card card text-center">
+                            <div>
+                                <i class="bi bi-tags fs-1 text-success mb-2"></i>
+                                <h6>Kategoriler</h6>
+                                <small class="text-muted">Kategori yönetimi</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Raporlar -->
+    <div class="col-lg-6">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-bar-chart me-2"></i>Raporlar & Analiz</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <a href="/accounts/admin/reports/" class="admin-action-card card text-center">
+                            <div>
+                                <i class="bi bi-graph-up fs-1 text-info mb-2"></i>
+                                <h6>Genel Raporlar</h6>
+                                <small class="text-muted">Sistem raporları</small>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="/accounts/admin/analytics/" class="admin-action-card card text-center">
+                            <div>
+                                <i class="bi bi-pie-chart fs-1 text-warning mb-2"></i>
+                                <h6>Analitik</h6>
+                                <small class="text-muted">Performans analizi</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-.card:hover {
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
-}
+<div class="row g-4 mb-4">
+    <!-- Sistem Yönetimi -->
+    <div class="col-lg-6">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-gear-fill me-2"></i>Sistem Yönetimi</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <a href="/accounts/admin/settings/" class="admin-action-card card text-center">
+                            <div>
+                                <i class="bi bi-gear fs-1 text-primary mb-2"></i>
+                                <h6>Sistem Ayarları</h6>
+                                <small class="text-muted">Genel ayarlar</small>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="/accounts/admin/backup/" class="admin-action-card card text-center">
+                            <div>
+                                <i class="bi bi-database fs-1 text-success mb-2"></i>
+                                <h6>Yedekleme</h6>
+                                <small class="text-muted">Veri yedekleme</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Güvenlik -->
+    <div class="col-lg-6">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-shield-check me-2"></i>Güvenlik</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <a href="/accounts/admin/logs/" class="admin-action-card card text-center">
+                            <div>
+                                <i class="bi bi-file-text fs-1 text-info mb-2"></i>
+                                <h6>Sistem Logları</h6>
+                                <small class="text-muted">Aktivite kayıtları</small>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="/accounts/admin/tokens/" class="admin-action-card card text-center">
+                            <div>
+                                <i class="bi bi-key-fill fs-1 text-warning mb-2"></i>
+                                <h6>API Tokenları</h6>
+                                <small class="text-muted">Token yönetimi</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-.nav-tabs .nav-link {
-    border: none;
-    color: var(--bs-gray-600);
-    transition: all 0.3s ease;
-}
-
-.nav-tabs .nav-link.active {
-    background-color: transparent;
-    border-bottom: 3px solid var(--bs-primary);
-    color: var(--bs-primary);
-}
-
-.nav-tabs .nav-link:hover {
-    border-color: transparent;
-    color: var(--bs-primary);
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Bootstrap tabs'ları manuel olarak initialize et
-    const tabLinks = document.querySelectorAll('#adminTabs button[data-bs-toggle="tab"]');
-    
-    tabLinks.forEach(function(tabLink) {
-        tabLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Tüm tab'ları inaktif yap
-            tabLinks.forEach(link => {
-                link.classList.remove('active');
-                link.setAttribute('aria-selected', 'false');
-            });
-            
-            // Tüm tab content'lerini gizle
-            const tabPanes = document.querySelectorAll('#adminTabsContent .tab-pane');
-            tabPanes.forEach(pane => {
-                pane.classList.remove('show', 'active');
-            });
-            
-            // Tıklanan tab'ı aktif yap
-            this.classList.add('active');
-            this.setAttribute('aria-selected', 'true');
-            
-            // İlgili content'i göster
-            const targetId = this.getAttribute('data-bs-target');
-            const targetPane = document.querySelector(targetId);
-            if (targetPane) {
-                targetPane.classList.add('show', 'active');
-            }
-        });
-    });
-    
-    // İlk tab'ı manuel olarak aktif yap
-    const firstTab = document.querySelector('#overview-tab');
-    const firstPane = document.querySelector('#overview');
-    if (firstTab && firstPane) {
-        firstTab.classList.add('active');
-        firstTab.setAttribute('aria-selected', 'true');
-        firstPane.classList.add('show', 'active');
-    }
-    
-    // Card hover efekti
-    const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-2px)';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-        });
-    });
-    
-    // URL'deki tab parametresini kontrol et
-    const urlParams = new URLSearchParams(window.location.search);
-    const activeTab = urlParams.get('tab');
-    
-    if (activeTab) {
-        const tabButton = document.querySelector(`#adminTabs button[data-bs-target="#${activeTab}"]`);
-        if (tabButton) {
-            tabButton.click();
-        }
-    }
-    
-    // Profil ve istatistik bilgilerini yükle
-    loadProfileStatistics();
-});
-
-async function loadProfileStatistics() {
-    try {
-        const response = await fetch('/accounts/api/profile/');
-        const data = await response.json();
-        
-        if (data.user && data.statistics) {
-            updateStatisticsCards(data.statistics);
-            updateProfileInfo(data.user, data.activity);
-        }
-    } catch (error) {
-        // İstatistikler yüklenirken hata oluştu
-    }
-}
-
-function updateStatisticsCards(stats) {
-    // İstatistik kartlarını güncelle
-    const statElements = {
-        'total-tickets': stats.total_tickets,
-        'open-tickets': stats.open_tickets,
-        'in-progress-tickets': stats.in_progress_tickets,
-        'resolved-tickets': stats.resolved_tickets,
-        'closed-tickets': stats.closed_tickets,
-        'total-users': stats.total_users,
-        'admin-users': stats.admin_users,
-        'support-users': stats.support_users,
-        'customer-users': stats.customer_users,
-        'tickets-this-week': stats.tickets_this_week,
-        'tickets-this-month': stats.tickets_this_month,
-        'my-assigned-tickets': stats.my_assigned_tickets,
-        'my-comments': stats.my_comments
-    };
-    
-    Object.keys(statElements).forEach(key => {
-        const element = document.getElementById(key);
-        if (element && statElements[key] !== undefined) {
-            element.textContent = statElements[key];
-        }
-    });
-}
-
-function updateProfileInfo(user, activity) {
-    // Profil bilgilerini güncelle
-    const profileElements = {
-        'profile-username': user.username,
-        'profile-email': user.email,
-        'profile-role': user.role,
-        'profile-groups': user.groups ? user.groups.join(', ') : 'Grup yok'
-    };
-    
-    Object.keys(profileElements).forEach(key => {
-        const element = document.getElementById(key);
-        if (element) {
-            element.textContent = profileElements[key];
-        }
-    });
-    
-    // Aktivite bilgilerini güncelle
-    if (activity) {
-        if (activity.latest_ticket) {
-            const latestTicketElement = document.getElementById('latest-ticket');
-            if (latestTicketElement) {
-                latestTicketElement.innerHTML = `
-                    <strong>#${activity.latest_ticket.id}</strong> - ${activity.latest_ticket.title}<br>
-                    <small class="text-muted">${formatDate(activity.latest_ticket.created_at)} - ${activity.latest_ticket.status}</small>
-                `;
-            }
-        }
-        
-        if (activity.account_created) {
-            const accountCreatedElement = document.getElementById('account-created');
-            if (accountCreatedElement) {
-                accountCreatedElement.textContent = formatDate(activity.account_created);
-            }
-        }
-        
-        if (activity.last_login) {
-            const lastLoginElement = document.getElementById('last-login');
-            if (lastLoginElement) {
-                lastLoginElement.textContent = formatDate(activity.last_login);
-            }
-        }
-    }
-}
-
-function formatDate(dateString) {
-    if (!dateString) return 'Bilinmiyor';
-    
-    const date = new Date(dateString);
-    return date.toLocaleDateString('tr-TR', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-}
-</script>
+<!-- Hızlı İşlemler -->
+<div class="row g-4">
+    <div class="col-12">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-lightning me-2"></i>Hızlı İşlemler</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <a href="/accounts/admin/users/bulk-import/" class="admin-action-card card text-center">
+                            <div>
+                                <i class="bi bi-upload fs-3 text-primary mb-1"></i>
+                                <h6 class="small">Toplu İçe Aktar</h6>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <a href="/accounts/admin/notifications/" class="admin-action-card card text-center">
+                            <div>
+                                <i class="bi bi-bell fs-3 text-warning mb-1"></i>
+                                <h6 class="small">Bildirim Gönder</h6>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <a href="/accounts/admin/maintenance/" class="admin-action-card card text-center">
+                            <div>
+                                <i class="bi bi-tools fs-3 text-danger mb-1"></i>
+                                <h6 class="small">Bakım Modu</h6>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <a href="/accounts/admin/cache/" class="admin-action-card card text-center">
+                            <div>
+                                <i class="bi bi-trash fs-3 text-info mb-1"></i>
+                                <h6 class="small">Cache Temizle</h6>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <a href="/accounts/admin/export/" class="admin-action-card card text-center">
+                            <div>
+                                <i class="bi bi-download fs-3 text-success mb-1"></i>
+                                <h6 class="small">Veri Dışa Aktar</h6>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6">
+                        <a href="/admin/" class="admin-action-card card text-center">
+                            <div>
+                                <i class="bi bi-hdd fs-3 text-dark mb-1"></i>
+                                <h6 class="small">Django Admin</h6>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

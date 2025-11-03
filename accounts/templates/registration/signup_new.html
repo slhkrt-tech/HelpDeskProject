@@ -1,0 +1,160 @@
+{% extends "tickets/base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}Kayıt Ol - HelpDesk{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4><i class="fas fa-user-plus"></i> Kayıt Ol</h4>
+                </div>
+                <div class="card-body">
+                    
+                    <form id="signupForm">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="username" class="form-label"><i class="fas fa-user"></i> Kullanıcı Adı</label>
+                            <input type="text" class="form-control" id="username" name="username" required maxlength="150"
+                                   pattern="[a-zA-Z0-9_-]+" title="Sadece harf, rakam, alt çizgi (_) ve tire (-) kullanabilirsiniz">
+                            <small class="form-text text-muted">Sadece harf, rakam, alt çizgi (_) ve tire (-) kullanabilirsiniz</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label"><i class="fas fa-envelope"></i> E-posta</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label"><i class="fas fa-lock"></i> Şifre</label>
+                            <input type="password" class="form-control" id="password" name="password1" required minlength="6">
+                            <small class="form-text text-muted">En az 6 karakter olmalıdır</small>
+                            <div id="passwordStrength" class="mt-1"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password2" class="form-label"><i class="fas fa-lock"></i> Şifre Tekrar</label>
+                            <input type="password" class="form-control" id="password2" name="password2" required minlength="6">
+                            <small class="form-text text-muted">Şifrenizi tekrar girin</small>
+                            <div id="passwordMatch" class="mt-1"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="first_name" class="form-label"><i class="fas fa-id-card"></i> Ad</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="last_name" class="form-label"><i class="fas fa-id-card"></i> Soyad</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name">
+                        </div>
+
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-user-plus"></i> Kayıt Ol</button>
+                        </div>
+                    </form>
+
+                    <div id="alertArea"></div>
+
+                    <div class="text-center">
+                        <p class="mb-0">
+                            Zaten hesabın var mı? 
+                            <a href="{% url 'login' %}" class="text-primary"><i class="fas fa-sign-in-alt"></i> Giriş Yap</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const passwordInput = document.getElementById('password');
+const password2Input = document.getElementById('password2');
+const passwordStrength = document.getElementById('passwordStrength');
+const passwordMatch = document.getElementById('passwordMatch');
+
+// Şifre gücü göstergesi
+passwordInput.addEventListener('input', () => {
+    const val = passwordInput.value;
+    let strength = '';
+    let color = 'text-danger';
+
+    if (val.length >= 6 && /[a-z]/.test(val) && /[A-Z]/.test(val) && /\d/.test(val) && /[\W_]/.test(val)) {
+        strength = 'Çok güçlü'; color = 'text-success';
+    } else if (val.length >= 6 && ((/[a-zA-Z]/.test(val) && /\d/.test(val)) || (/[a-zA-Z]/.test(val) && /[\W_]/.test(val)))) {
+        strength = 'Orta'; color = 'text-warning';
+    } else if (val.length >= 6) {
+        strength = 'Zayıf'; color = 'text-danger';
+    } else {
+        strength = 'Çok kısa'; color = 'text-danger';
+    }
+
+    passwordStrength.textContent = `Güç: ${strength}`;
+    passwordStrength.className = `mt-1 ${color}`;
+});
+
+// Şifre eşleşme kontrolü
+function checkPasswordMatch() {
+    if (!password2Input.value) { passwordMatch.textContent = ''; return; }
+    if (passwordInput.value === password2Input.value) {
+        passwordMatch.textContent = 'Şifreler eşleşiyor';
+        passwordMatch.className = 'mt-1 text-success';
+        password2Input.setCustomValidity('');
+    } else {
+        passwordMatch.textContent = 'Şifreler eşleşmiyor';
+        passwordMatch.className = 'mt-1 text-danger';
+        password2Input.setCustomValidity('Şifreler eşleşmiyor');
+    }
+}
+
+passwordInput.addEventListener('input', checkPasswordMatch);
+password2Input.addEventListener('input', checkPasswordMatch);
+
+// Username validasyonu
+document.getElementById('username').addEventListener('input', function(e) {
+    const pattern = /^[a-zA-Z0-9_-]+$/;
+    if (e.target.value && !pattern.test(e.target.value)) {
+        e.target.setCustomValidity('Sadece harf, rakam, alt çizgi (_) ve tire (-) kullanabilirsiniz');
+        e.target.classList.add('is-invalid');
+    } else {
+        e.target.setCustomValidity('');
+        e.target.classList.remove('is-invalid');
+    }
+});
+
+// Form submit
+document.getElementById('signupForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(this));
+
+    document.getElementById('alertArea').innerHTML = '';
+    try {
+        const response = await fetch('/accounts/api/signup/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            document.getElementById('alertArea').innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i> ${result.message || 'Kayıt başarılı! Otomatik giriş yapılıyor...'}</div>`;
+            setTimeout(() => { window.location.href = result.redirect_url || '/accounts/customer-panel/'; }, 2000);
+        } else {
+            let errorMessage = result.error || (result.errors ? Object.values(result.errors).flat().join(', ') : 'Bir hata oluştu.');
+            document.getElementById('alertArea').innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> ${errorMessage}</div>`;
+        }
+
+    } catch (err) {
+        document.getElementById('alertArea').innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Bağlantı hatası oluştu.</div>`;
+    }
+});
+</script>
+{% endblock %}

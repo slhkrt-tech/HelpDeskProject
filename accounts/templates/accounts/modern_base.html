@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Yardım Masası{% endblock %}</title>
+
+    <!-- Bootstrap 5.3.2 & Font Awesome 6 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="modern-sidebar" id="sidebar">
+        <div class="sidebar-brand bg-gradient-primary text-white p-3">
+            <h4><i class="fas fa-headset me-2"></i>Yardım Masası</h4>
+        </div>
+        <div class="sidebar-nav p-2">
+            {% block sidebar_nav %}
+            <div class="nav-section mb-4">
+                <div class="nav-section-title small text-uppercase text-tertiary mb-2">Ana Menü</div>
+                <div class="nav-item">
+                    <a href="/" class="nav-link d-flex align-items-center">
+                        <i class="fas fa-home me-2"></i>Ana Sayfa
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/tickets/" class="nav-link d-flex align-items-center">
+                        <i class="fas fa-ticket-alt me-2"></i>Talepler
+                    </a>
+                </div>
+            </div>
+            {% endblock %}
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent" style="margin-left:280px;">
+        <!-- Header -->
+        <header class="modern-header d-flex justify-content-between align-items-center p-3 shadow-sm">
+            <div class="d-flex align-items-center">
+                <button class="sidebar-toggle btn btn-light me-2" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <nav class="modern-breadcrumb">
+                    {% block breadcrumb %}
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
+                        <li class="breadcrumb-item active">Ana Sayfa</li>
+                    </ol>
+                    {% endblock %}
+                </nav>
+            </div>
+            <div class="d-flex align-items-center">
+                <button class="btn btn-outline-secondary btn-sm me-2" id="themeToggle">
+                    <i class="fas fa-sun"></i>
+                    <span class="d-none d-sm-inline ms-1">Karanlık Tema</span>
+                </button>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle me-1"></i>{{ user.username|default:"Kullanıcı" }}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        {% if user.is_authenticated %}
+                        <li><a class="dropdown-item" href="/accounts/customer-panel/"><i class="fas fa-user me-2"></i>Profil</a></li>
+                        <li><a class="dropdown-item" href="/accounts/customer/profile-edit/"><i class="fas fa-cog me-2"></i>Ayarlar</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/accounts/logout/"><i class="fas fa-sign-out-alt me-2"></i>Çıkış</a></li>
+                        {% else %}
+                        <li><a class="dropdown-item" href="/accounts/login/"><i class="fas fa-sign-in-alt me-2"></i>Giriş Yap</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Header -->
+        <div class="container-fluid p-4">
+            <div class="page-header mb-4">
+                {% block page_title %}
+                <h1 class="page-title d-flex align-items-center">
+                    <i class="fas fa-home text-primary me-3"></i>Ana Sayfa
+                </h1>
+                <p class="page-subtitle text-muted">Yardım Masası Yönetim Paneli</p>
+                {% endblock %}
+            </div>
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar toggle
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            sidebarToggle?.addEventListener('click', () => sidebar.classList.toggle('show'));
+
+            // Theme toggle
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle?.addEventListener('click', function() {
+                const html = document.documentElement;
+                const current = html.getAttribute('data-theme');
+                const newTheme = current === 'dark' ? 'light' : 'dark';
+                html.setAttribute('data-theme', newTheme);
+                this.querySelector('i').className = newTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+                localStorage.setItem('theme', newTheme);
+            });
+
+            // Load saved theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+
+            // Auto-active nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if(link.getAttribute('href') === window.location.pathname) link.classList.add('active');
+            });
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

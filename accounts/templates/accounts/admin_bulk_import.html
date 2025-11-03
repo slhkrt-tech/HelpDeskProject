@@ -1,0 +1,299 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}{{ panel_title }} - HelpDesk{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
+    <li class="breadcrumb-item"><a href="/accounts/admin-panel/">Admin Panel</a></li>
+    <li class="breadcrumb-item active">Toplu İçe Aktarma</li>
+</ol>
+{% endblock %}
+
+{% block page_title %}
+<i class="fas fa-upload text-primary"></i> Toplu Kullanıcı İçe Aktarma
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-upload text-primary me-2"></i>
+                        Dosya Yükleme
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="file" class="form-label">CSV/Excel Dosyası *</label>
+                            <input type="file" class="form-control" id="file" name="file" 
+                                   accept=".csv,.xlsx,.xls" required>
+                            <div class="form-text">
+                                Desteklenen formatlar: CSV, Excel (.xlsx, .xls)
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">İçe Aktarma Seçenekleri</label>
+                            
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="skip_duplicates" name="skip_duplicates" checked>
+                                <label class="form-check-label" for="skip_duplicates">
+                                    Mevcut kullanıcıları atla
+                                </label>
+                            </div>
+                            
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="send_emails" name="send_emails">
+                                <label class="form-check-label" for="send_emails">
+                                    Kullanıcılara karşılama e-postası gönder
+                                </label>
+                            </div>
+                            
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="auto_generate_passwords" name="auto_generate_passwords" checked>
+                                <label class="form-check-label" for="auto_generate_passwords">
+                                    Otomatik şifre oluştur
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Dosyayı Yükle ve İşle
+                            </button>
+                            <a href="/accounts/admin-panel/" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Geri Dön
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- İşlem Geçmişi -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-history text-info me-2"></i>
+                        Son İçe Aktarma İşlemleri
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>Dosya</th>
+                                    <th>Başarılı</th>
+                                    <th>Hatalı</th>
+                                    <th>Durum</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">
+                                        Henüz içe aktarma işlemi yapılmamış
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Dosya Formatı -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-file-csv text-success me-2"></i>
+                        Dosya Formatı
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-3">CSV/Excel dosyanız aşağıdaki sütunları içermelidir:</p>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Sütun</th>
+                                    <th>Zorunlu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>username</code></td>
+                                    <td><span class="badge bg-danger">Evet</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>email</code></td>
+                                    <td><span class="badge bg-danger">Evet</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>first_name</code></td>
+                                    <td><span class="badge bg-secondary">Hayır</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>last_name</code></td>
+                                    <td><span class="badge bg-secondary">Hayır</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>role</code></td>
+                                    <td><span class="badge bg-secondary">Hayır</span></td>
+                                </tr>
+                                <tr>
+                                    <td><code>password</code></td>
+                                    <td><span class="badge bg-secondary">Hayır</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <small>
+                            <strong>Role</strong> değerleri: admin, support, customer<br>
+                            Boş bırakılırsa varsayılan olarak "customer" atanır.
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Örnek Dosya -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-download text-warning me-2"></i>
+                        Örnek Dosya
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p>Doğru format için örnek dosyayı indirin:</p>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="#" class="btn btn-outline-success btn-sm" onclick="downloadSample('csv')">
+                            <i class="fas fa-file-csv"></i> Örnek CSV İndir
+                        </a>
+                        <a href="#" class="btn btn-outline-primary btn-sm" onclick="downloadSample('excel')">
+                            <i class="fas fa-file-excel"></i> Örnek Excel İndir
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Yardım -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-question-circle text-info me-2"></i>
+                        Yardım
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="text-primary">💡 İpuçları</h6>
+                        <ul class="list-unstyled small">
+                            <li class="mb-1">
+                                <i class="fas fa-check text-success me-2"></i>
+                                İlk satır başlık olmalı
+                            </li>
+                            <li class="mb-1">
+                                <i class="fas fa-check text-success me-2"></i>
+                                UTF-8 kodlama kullanın
+                            </li>
+                            <li class="mb-1">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Maksimum 1000 kullanıcı
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function downloadSample(type) {
+    if (type === 'csv') {
+        // CSV örnek dosya oluştur
+        const csvContent = `username,email,first_name,last_name,role,password
+johndoe,john@example.com,John,Doe,customer,
+janesmth,jane@example.com,Jane,Smith,support,mypassword123
+adminuser,admin@example.com,Admin,User,admin,`;
+        
+        downloadFile(csvContent, 'ornek_kullanicilar.csv', 'text/csv');
+    } else if (type === 'excel') {
+        showNotification('Excel örnek dosyası yakında eklenecek!', 'info');
+    }
+}
+
+function downloadFile(content, fileName, contentType) {
+    const blob = new Blob([content], { type: contentType });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    
+    showNotification('Örnek dosya indirildi!', 'success');
+}
+
+function showNotification(message, type) {
+    const alertClass = type === 'success' ? 'alert-success' : 
+                      type === 'error' ? 'alert-danger' : 'alert-info';
+    
+    const notification = `
+        <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 9999;">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', notification);
+    
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            if (alert.textContent.includes(message.substring(0, 20))) {
+                alert.remove();
+            }
+        });
+    }, 5000);
+}
+
+// Form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const fileInput = document.getElementById('file');
+    
+    if (!fileInput.files.length) {
+        e.preventDefault();
+        showNotification('Lütfen bir dosya seçin!', 'error');
+        return;
+    }
+    
+    const file = fileInput.files[0];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    
+    if (file.size > maxSize) {
+        e.preventDefault();
+        showNotification('Dosya boyutu 5MB\'dan büyük olamaz!', 'error');
+        return;
+    }
+    
+    showNotification('Dosya yükleniyor...', 'info');
+});
+</script>
+{% endblock %}

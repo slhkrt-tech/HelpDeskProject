@@ -15,20 +15,9 @@ urlpatterns = [
     # ================================
     
     # Temel giriş/çıkış sistemi
-    path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('login/', views.custom_login_view, name='login'),
+    path('logout/', views.custom_logout_view, name='logout'),
     path('signup/', views.signup_view, name='signup'),
-    
-    # ================================
-    # API Endpoints (Token-based)
-    # ================================
-    
-    path('api/login/', views.api_login, name='api_login'),
-    path('api/logout/', views.api_logout, name='api_logout'),
-    path('api/safe-logout/', views.api_safe_logout, name='api_safe_logout'),
-    path('api/signup/', views.api_signup, name='api_signup'),
-    path('api/profile/', views.api_user_profile, name='api_user_profile'),
-    path('api/debug-tokens/', views.api_debug_tokens, name='api_debug_tokens'),
     
     # ================================
     # Role-Based Dashboard Panels
@@ -48,23 +37,43 @@ urlpatterns = [
     path('admin/users/<int:user_id>/edit/', views.admin_user_edit_view, name='admin_user_edit'),
     path('admin/users/<int:user_id>/delete/', views.admin_user_delete_view, name='admin_user_delete'),
     
-    # Grup yönetimi
+    # Grup ve yetki yönetimi
     path('admin/groups/', views.admin_groups_view, name='admin_groups'),
     path('admin/groups/create/', views.admin_group_create_view, name='admin_group_create'),
+    path('admin/groups/<int:group_id>/edit/', views.admin_group_edit_view, name='admin_group_edit'),
     path('admin/groups/<int:group_id>/delete/', views.admin_group_delete_view, name='admin_group_delete'),
-    path('admin/users/<int:user_id>/assign-groups/', views.admin_user_assign_groups_view, name='admin_user_assign_groups'),
+    path('admin/permissions/', views.admin_permissions_view, name='admin_permissions'),
     
-    # Sistem ayarları
-    path('admin/settings/', views.admin_settings_view, name='admin_settings'),
+    # Raporlar ve analitik
     path('admin/reports/', views.admin_reports_view, name='admin_reports'),
-    path('admin/reports/export/', views.export_report, name='export_report'),
+    path('admin/analytics/', views.admin_analytics_view, name='admin_analytics'),
+    
+    # Sistem yönetimi
+    path('admin/settings/', views.admin_settings_view, name='admin_settings'),
+    path('admin/logs/', views.admin_logs_view, name='admin_logs'),
+    path('admin/tokens/', views.admin_tokens_view, name='admin_tokens'),
+    path('admin/backup/', views.admin_backup_view, name='admin_backup'),
+    path('admin/maintenance/', views.admin_maintenance_view, name='admin_maintenance'),
+    
+    # Hızlı işlemler
+    path('admin/users/bulk-import/', views.admin_bulk_import_view, name='admin_bulk_import'),
+    path('admin/notifications/', views.admin_notifications_view, name='admin_notifications'),
+    path('admin/cache/', views.admin_cache_view, name='admin_cache'),
+    path('admin/export/', views.admin_export_view, name='admin_export'),
     
     # ================================
     # Customer Management Pages
     # ================================
     
-    # Müşteri profil yönetimi
+    # Müşteri profil yönetimi - Ana profile URL'i
+    path('profile/', views.customer_profile_view, name='profile'),
     path('customer/profile/', views.customer_profile_view, name='customer_profile'),
     path('customer/profile-edit/', views.customer_profile_edit_view, name='customer_profile_edit'),
     path('customer/change-password/', views.customer_change_password_view, name='customer_change_password'),
+    
+    # ================================
+    # API Endpoints
+    # ================================
+    
+    path('api/signup/', views.signup_api_view, name='signup_api'),
 ]
