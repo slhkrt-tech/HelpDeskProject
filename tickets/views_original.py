@@ -1,6 +1,6 @@
 # tickets/views.py
 """
-HelpDesk Ticket Yönetimi - Ana View'lar
+Yardım Masası Ticket Yönetimi - Ana View'lar
 ========================================
 
 Bu modül ticket CRUD işlemleri, yetkilendirme ve durum yönetimi içerir.

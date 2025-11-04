@@ -1,6 +1,6 @@
 # accounts/models.py
 """
-HelpDesk Kullanıcı Modelleri
+Yardım Masası Kullanıcı Modelleri
 ===========================
 
 - CustomUser: Rol tabanlı kullanıcı modeli (admin, support, customer)
