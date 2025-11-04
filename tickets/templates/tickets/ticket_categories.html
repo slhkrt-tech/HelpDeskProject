@@ -54,14 +54,19 @@
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group">
                                                 <button class="btn btn-outline-info" title="Detay" onclick="viewCategory({{ category.id }})">
-                                                    <i class="fas fa-eye"></i>
+                                                    <i class="bi bi-eye"></i>
                                                 </button>
-                                                <button class="btn btn-outline-warning" title="Düzenle" onclick="editCategory({{ category.id }}, '{{ category.name }}', '{{ category.description }}')">
-                                                    <i class="fas fa-edit"></i>
+                                                <button class="btn btn-outline-warning" title="Düzenle" onclick="editCategory({{ category.id }}, '{{ category.name|escapejs }}', '{{ category.description|escapejs }}')">
+                                                    <i class="bi bi-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-outline-danger" title="Sil" onclick="deleteCategory({{ category.id }}, '{{ category.name }}')">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                                <form method="post" style="display: inline;" onsubmit="return confirm('{{ category.name }} kategorisini silmek istediğinizden emin misiniz?')">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="action" value="delete">
+                                                    <input type="hidden" name="category_id" value="{{ category.id }}">
+                                                    <button type="submit" class="btn btn-outline-danger" title="Sil">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
                                             </div>
                                         </td>
                                     </tr>
@@ -161,21 +166,23 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form id="addCategoryForm">
+                <form method="post" id="addCategoryForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add">
                     <div class="mb-3">
                         <label for="categoryName" class="form-label">Kategori Adı *</label>
-                        <input type="text" class="form-control" id="categoryName" required>
+                        <input type="text" class="form-control" id="categoryName" name="name" required>
                     </div>
                     <div class="mb-3">
                         <label for="categoryDescription" class="form-label">Açıklama</label>
-                        <textarea class="form-control" id="categoryDescription" rows="3" placeholder="Kategori açıklamasını yazın..."></textarea>
+                        <textarea class="form-control" id="categoryDescription" name="description" rows="3" placeholder="Kategori açıklamasını yazın..."></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                <button type="button" class="btn btn-primary" onclick="saveCategory()">
-                    <i class="fas fa-save"></i> Kaydet
+                <button type="submit" form="addCategoryForm" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Kaydet
                 </button>
             </div>
         </div>
@@ -194,23 +201,26 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form id="editCategoryForm">
-                    <input type="hidden" id="editCategoryId">
+                <form method="post" id="editCategoryForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="edit">
+                    <input type="hidden" name="category_id" id="editCategoryId">
                     <div class="mb-3">
                         <label for="editCategoryName" class="form-label">Kategori Adı *</label>
-                        <input type="text" class="form-control" id="editCategoryName" required>
+                        <input type="text" class="form-control" id="editCategoryName" name="name" required>
                     </div>
                     <div class="mb-3">
                         <label for="editCategoryDescription" class="form-label">Açıklama</label>
-                        <textarea class="form-control" id="editCategoryDescription" rows="3"></textarea>
+                        <textarea class="form-control" id="editCategoryDescription" name="description" rows="3"></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                <button type="button" class="btn btn-warning" onclick="updateCategory()">
-                    <i class="fas fa-save"></i> Güncelle
+                <button type="submit" form="editCategoryForm" class="btn btn-warning">
+                    <i class="bi bi-pencil"></i> Güncelle
                 </button>
+            </div>
             </div>
         </div>
     </div>
@@ -318,7 +328,7 @@ function showNotification(message, type) {
                 alert.remove();
             }
         });
-    }, 5000);
+    }, 3000);
 }
 </script>
 {% endblock %}

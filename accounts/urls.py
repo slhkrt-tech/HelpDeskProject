@@ -19,6 +19,12 @@ urlpatterns = [
     path('logout/', views.custom_logout_view, name='logout'),
     path('signup/', views.signup_view, name='signup'),
     
+    # Şifre sıfırlama sistemi
+    path('password-reset/', views.password_reset_view, name='password_reset'),
+    path('password-reset/done/', views.password_reset_done_view, name='password_reset_done'),
+    path('password-reset/confirm/<uidb64>/<token>/', views.password_reset_confirm_view, name='password_reset_confirm'),
+    path('password-reset/complete/', views.password_reset_complete_view, name='password_reset_complete'),
+    
     # ================================
     # Role-Based Dashboard Panels
     # ================================
@@ -36,6 +42,7 @@ urlpatterns = [
     path('admin/users/create/', views.admin_user_create_view, name='admin_user_create'),
     path('admin/users/<int:user_id>/edit/', views.admin_user_edit_view, name='admin_user_edit'),
     path('admin/users/<int:user_id>/delete/', views.admin_user_delete_view, name='admin_user_delete'),
+    path('admin/users/<int:user_id>/assign-groups/', views.admin_user_assign_groups_view, name='admin_user_assign_groups'),
     
     # Grup ve yetki yönetimi
     path('admin/groups/', views.admin_groups_view, name='admin_groups'),

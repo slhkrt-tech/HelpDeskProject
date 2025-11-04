@@ -92,7 +92,7 @@
   </div>
 
   <!-- Durum Güncelleme -->
-  {% if user.is_staff %}
+  {% if user_role == 'admin' or user_role == 'support' %}
   <div class="card mb-4">
     <div class="card-body">
       <h5 class="card-title">Durumu Güncelle</h5>
@@ -110,7 +110,7 @@
       <h5 class="card-title">Atanan Kullanıcıyı Güncelle</h5>
       <select id="assignedToSelect" class="form-select">
         <option value="">Seçim yap...</option>
-        {% for user_obj in staff_users %}
+        {% for user_obj in assignable_users %}
           <option value="{{ user_obj.id }}" {% if ticket.assigned_to == user_obj %}selected{% endif %}>
             {{ user_obj.username }}
           </option>
@@ -122,33 +122,88 @@
 
   <!-- Yorumlar -->
   <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">
+        <i class="bi bi-chat-left-text me-2"></i>
+        Yorumlar
+        <span class="badge bg-secondary ms-2">{{ comments|length }}</span>
+      </h5>
+    </div>
     <div class="card-body">
-      <h5 class="card-title">Yorumlar</h5>
       {% for comment in comments %}
-        <div class="comment mb-3 p-3 border rounded">
-          <p><strong>{{ comment.user.username }}</strong> <small class="text-muted">{{ comment.created_at|naturaltime }}</small></p>
-          <p>{{ comment.content|linebreaksbr }}</p>
-          {% if comment.updated_at != comment.created_at %}
-            <small class="text-muted">(Düzenlendi)</small>
-          {% endif %}
+        <div class="comment mb-3 p-3 border rounded bg-light">
+          <div class="d-flex align-items-start">
+            <div class="me-3">
+              <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                {% if comment.user.role == 'admin' %}
+                  <i class="bi bi-shield-fill"></i>
+                {% elif comment.user.role == 'support' %}
+                  <i class="bi bi-headset"></i>
+                {% else %}
+                  <i class="bi bi-person-fill"></i>
+                {% endif %}
+              </div>
+            </div>
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <strong class="text-primary">{{ comment.user.username }}</strong>
+                  {% if comment.user.role == 'admin' %}
+                    <span class="badge bg-danger ms-1">Admin</span>
+                  {% elif comment.user.role == 'support' %}
+                    <span class="badge bg-success ms-1">Support</span>
+                  {% endif %}
+                </div>
+                <small class="text-muted">{{ comment.created_at|naturaltime }}</small>
+              </div>
+              <p class="mb-0">{{ comment.message|linebreaksbr }}</p>
+            </div>
+          </div>
         </div>
       {% empty %}
-        <p class="text-muted">Henüz yorum yapılmamış.</p>
+        <div class="text-center py-4">
+          <i class="bi bi-chat-left-text text-muted" style="font-size: 2rem;"></i>
+          <p class="text-muted mt-2 mb-0">Henüz yorum yapılmamış.</p>
+          <small class="text-muted">İlk yorumu siz yazabilirsiniz!</small>
+        </div>
       {% endfor %}
     </div>
   </div>
 
   <!-- Yorum Formu -->
   <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">
+        <i class="bi bi-plus-circle me-2"></i>
+        Yeni Yorum Ekle
+      </h5>
+    </div>
     <div class="card-body">
-      <h5 class="card-title">Yeni Yorum Ekle</h5>
       <form method="post" id="commentForm">
         {% csrf_token %}
-        <div class="mb-3">
-          <textarea id="commentContent" name="content" class="form-control" rows="3" placeholder="Yorumunuzu yazın..." required></textarea>
-          <small id="characterCounter" class="text-muted float-end">0/1000 karakter</small>
+        <div class="d-flex align-items-start">
+          <div class="me-3">
+            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+              {% if user.role == 'admin' %}
+                <i class="bi bi-shield-fill"></i>
+              {% elif user.role == 'support' %}
+                <i class="bi bi-headset"></i>
+              {% else %}
+                <i class="bi bi-person-fill"></i>
+              {% endif %}
+            </div>
+          </div>
+          <div class="flex-grow-1">
+            <div class="mb-3">
+              <textarea id="commentContent" name="comment" class="form-control" rows="3" placeholder="Yorumunuzu yazın..." required></textarea>
+              <small id="characterCounter" class="text-muted float-end">0/1000 karakter</small>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-send me-2"></i>
+              Yorum Gönder
+            </button>
+          </div>
         </div>
-        <button type="submit" class="btn btn-primary">Gönder</button>
       </form>
     </div>
   </div>

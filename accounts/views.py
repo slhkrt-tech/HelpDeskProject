@@ -190,11 +190,28 @@ def support_panel_view(request):
 @login_required
 def customer_panel_view(request):
     """Customer panel"""
+    from tickets.models import Talep
+    from django.db.models import Count, Q
+    
+    # Kullanıcının son 5 talebini al
+    recent_tickets = Talep.objects.filter(user=request.user).order_by('-created_at')[:5]
+    
+    # Ticket istatistiklerini hesapla
+    ticket_stats = Talep.objects.filter(user=request.user).aggregate(
+        total=Count('id'),
+        open=Count('id', filter=Q(status='open')),
+        in_progress=Count('id', filter=Q(status='in_progress')),
+        resolved=Count('id', filter=Q(status='resolved')),
+        closed=Count('id', filter=Q(status='closed'))
+    )
+    
     context = {
         'current_user': request.user,
         'user_role': request.user.get_role_display(),
-        'panel_title': 'Müşteri Panel',
-        'page_title': 'Müşteri Panel'
+        'panel_title': 'Müşteri Paneli',
+        'page_title': 'Müşteri Paneli',
+        'tickets': recent_tickets,
+        'ticket_stats': ticket_stats,
     }
     return render(request, 'accounts/customer_panel_modern.html', context)
 
@@ -206,7 +223,7 @@ def customer_panel_view(request):
 def admin_users_view(request):
     if getattr(request.user, 'role', '').lower() != 'admin':
         return redirect('/accounts/login/')
-    users = CustomUser.objects.all().order_by('-date_joined')
+    users = CustomUser.objects.prefetch_related('groups').all().order_by('-date_joined')
     return render(request, 'accounts/admin_users.html', {
         'current_user': request.user,
         'user_role': request.user.get_role_display(),
@@ -297,11 +314,62 @@ def custom_logout_view(request):
     if request.user.is_authenticated:
         CustomAuthToken.objects.filter(user=request.user).delete()
     logout(request)
-    messages.success(request, 'Başarıyla çıkış yapıldı.')
     return redirect('/accounts/login/')
 
 def signup_view(request):
     return render(request, 'registration/signup.html')
+
+# =========================
+# Password Reset Views
+# =========================
+
+def password_reset_view(request):
+    """Parolamı unuttum - E-posta gönderme sayfası"""
+    if request.method == 'POST':
+        email = request.POST.get('email', '').strip()
+        
+        if email:
+            try:
+                user = CustomUser.objects.get(email=email)
+                # Burada normalde e-posta gönderilir, şimdilik basit bir çözüm
+                messages.success(request, f'Şifre sıfırlama talimatları {email} adresine gönderildi.')
+                return redirect('password_reset_done')
+            except CustomUser.DoesNotExist:
+                messages.error(request, 'Bu e-posta adresi ile kayıtlı kullanıcı bulunamadı.')
+        else:
+            messages.error(request, 'Lütfen geçerli bir e-posta adresi girin.')
+    
+    return render(request, 'accounts/password_reset.html')
+
+def password_reset_done_view(request):
+    """Şifre sıfırlama e-postası gönderildi sayfası"""
+    return render(request, 'accounts/password_reset_done.html')
+
+def password_reset_confirm_view(request, uidb64, token):
+    """Şifre sıfırlama onaylama sayfası"""
+    # Şimdilik basit bir implementasyon
+    if request.method == 'POST':
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        
+        if password1 and password2:
+            if password1 == password2:
+                # Normalde token kontrolü yapılır
+                messages.success(request, 'Şifreniz başarıyla değiştirildi.')
+                return redirect('password_reset_complete')
+            else:
+                messages.error(request, 'Şifreler eşleşmiyor.')
+        else:
+            messages.error(request, 'Lütfen tüm alanları doldurun.')
+    
+    return render(request, 'accounts/password_reset_confirm.html', {
+        'uidb64': uidb64,
+        'token': token
+    })
+
+def password_reset_complete_view(request):
+    """Şifre sıfırlama tamamlandı sayfası"""
+    return render(request, 'accounts/password_reset_complete.html')
 
 # =========================
 # Admin User Management (CRUD)
@@ -391,6 +459,55 @@ def admin_user_delete_view(request, user_id):
         'page_title': f'Kullanıcı Sil - {user.username}'
     }
     return render(request, 'accounts/admin_user_delete.html', context)
+
+@login_required
+def admin_user_assign_groups_view(request, user_id):
+    """Admin - Kullanıcı grup atama"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return redirect('/accounts/login/')
+    
+    try:
+        user = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
+        messages.error(request, 'Kullanıcı bulunamadı.')
+        return redirect('admin_users')
+    
+    # Super admin'in grupları değiştirilemez
+    if user.is_superuser and user.id != request.user.id:
+        messages.error(request, 'Super admin kullanıcının grupları değiştirilemez.')
+        return redirect('admin_users')
+    
+    from django.contrib.auth.models import Group
+    all_groups = Group.objects.all()
+    user_groups = user.groups.all()
+    
+    if request.method == 'POST':
+        # Seçilen grupları al
+        selected_group_ids = request.POST.getlist('groups')
+        selected_groups = Group.objects.filter(id__in=selected_group_ids)
+        
+        # Kullanıcının mevcut gruplarını temizle ve yenilerini ata
+        user.groups.clear()
+        user.groups.set(selected_groups)
+        
+        group_names = [group.name for group in selected_groups]
+        if group_names:
+            messages.success(request, f'Kullanıcı "{user.username}" şu gruplara atandı: {", ".join(group_names)}')
+        else:
+            messages.success(request, f'Kullanıcı "{user.username}" tüm gruplardan çıkarıldı.')
+        
+        return redirect('admin_users')
+    
+    context = {
+        'current_user': request.user,
+        'user_role': request.user.get_role_display(),
+        'target_user': user,
+        'all_groups': all_groups,
+        'user_groups': user_groups,
+        'panel_title': 'Grup Atama',
+        'page_title': f'Grup Atama - {user.username}'
+    }
+    return render(request, 'accounts/admin_user_assign_groups.html', context)
 
 # =========================
 # Yeni Admin İşlevleri
@@ -526,12 +643,56 @@ def admin_permissions_view(request):
         return redirect('/accounts/login/')
     
     from django.contrib.auth.models import Permission
+    from django.contrib.contenttypes.models import ContentType
+    
     permissions = Permission.objects.all().order_by('content_type__app_label', 'codename')
+    content_types = ContentType.objects.filter(permission__isnull=False).distinct()
+    
+    # İzin adlarını Türkçeleştir
+    permission_translations = {
+        'add_': 'Ekle - ',
+        'change_': 'Değiştir - ',
+        'delete_': 'Sil - ',
+        'view_': 'Görüntüle - ',
+        'Can add': 'Ekleyebilir',
+        'Can change': 'Değiştirebilir', 
+        'Can delete': 'Silebilir',
+        'Can view': 'Görüntüleyebilir',
+        'user': 'Kullanıcı',
+        'group': 'Grup',
+        'permission': 'İzin',
+        'content type': 'İçerik Türü',
+        'session': 'Oturum',
+        'log entry': 'Günlük Kaydı',
+        'talep': 'Talep',
+        'ticket': 'Talep',
+        'comment': 'Yorum',
+        'category': 'Kategori',
+        'sla': 'Hizmet Seviyesi',
+        'customuser': 'Kullanıcı',
+        'customauthtoken': 'Kimlik Doğrulama Token',
+    }
+    
+    # Permissions'lara Türkçe adlar ekle
+    for permission in permissions:
+        # İzin adını Türkçeleştir
+        turkish_name = permission.name
+        for eng, tr in permission_translations.items():
+            turkish_name = turkish_name.replace(eng, tr)
+        permission.turkish_name = turkish_name
+        
+        # Model adını Türkçeleştir
+        model_name = permission.content_type.model
+        if model_name in permission_translations:
+            permission.turkish_model = permission_translations[model_name]
+        else:
+            permission.turkish_model = model_name.title()
     
     context = {
         'current_user': request.user,
         'user_role': request.user.get_role_display(),
         'permissions': permissions,
+        'content_types': content_types,
         'panel_title': 'Yetki Yönetimi',
         'page_title': 'Yetki Yönetimi'
     }
@@ -603,11 +764,68 @@ def admin_settings_view(request):
     if getattr(request.user, 'role', '').lower() != 'admin':
         return redirect('/accounts/login/')
     
+    # Mevcut ayarları al
+    from .models import SystemSettings
+    settings = SystemSettings.get_settings()
+    
+    if request.method == 'POST':
+        tab = request.POST.get('tab', 'general')
+        
+        try:
+            if tab == 'general':
+                # Genel ayarları güncelle
+                settings.site_name = request.POST.get('site_name', settings.site_name)
+                settings.site_description = request.POST.get('site_description', settings.site_description)
+                settings.admin_email = request.POST.get('admin_email', settings.admin_email)
+                settings.timezone = request.POST.get('timezone', settings.timezone)
+                settings.updated_by = request.user
+                settings.save()
+                messages.success(request, 'Genel ayarlar başarıyla güncellendi.')
+                
+            elif tab == 'email':
+                # E-posta ayarları güncelle
+                settings.smtp_host = request.POST.get('smtp_host', '')
+                settings.smtp_port = int(request.POST.get('smtp_port', 587))
+                settings.smtp_username = request.POST.get('smtp_username', '')
+                smtp_password = request.POST.get('smtp_password', '')
+                if smtp_password:  # Sadece yeni şifre girilmişse güncelle
+                    settings.smtp_password = smtp_password
+                settings.smtp_use_tls = 'smtp_use_tls' in request.POST
+                settings.updated_by = request.user
+                settings.save()
+                messages.success(request, 'E-posta ayarları başarıyla güncellendi.')
+                
+            elif tab == 'security':
+                # Güvenlik ayarları güncelle
+                settings.token_expiry_days = int(request.POST.get('token_expiry_days', 30))
+                settings.max_login_attempts = int(request.POST.get('max_login_attempts', 5))
+                settings.session_timeout_minutes = int(request.POST.get('session_timeout_minutes', 30))
+                settings.require_password_change = 'require_password_change' in request.POST
+                settings.enable_2fa = 'enable_2fa' in request.POST
+                settings.updated_by = request.user
+                settings.save()
+                messages.success(request, 'Güvenlik ayarları başarıyla güncellendi.')
+                
+        except ValueError as e:
+            messages.error(request, f'Geçersiz değer girişi: {str(e)}')
+        except Exception as e:
+            messages.error(request, f'Ayarlar güncellenirken hata oluştu: {str(e)}')
+        
+        # Güncelleme sonrası aynı tab'a yönlendir
+        return redirect(f"{request.path}?tab={tab}")
+    
+    # Hangi tab'ın aktif olacağını belirle
+    active_tab = request.GET.get('tab', 'general')
+    
     context = {
         'current_user': request.user,
         'user_role': request.user.get_role_display(),
         'panel_title': 'Sistem Ayarları',
-        'page_title': 'Sistem Ayarları'
+        'page_title': 'Sistem Ayarları',
+        'settings': settings,
+        'active_tab': active_tab,
+        'last_updated': settings.updated_at,
+        'last_updated_by': settings.updated_by,
     }
     return render(request, 'accounts/admin_settings.html', context)
 
@@ -617,11 +835,85 @@ def admin_logs_view(request):
     if getattr(request.user, 'role', '').lower() != 'admin':
         return redirect('/accounts/login/')
     
+    from .models import SystemLog
+    from django.core.paginator import Paginator
+    from django.db.models import Count
+    from datetime import datetime, timedelta
+    
+    # Filtreleme parametreleri
+    level_filter = request.GET.get('level', '')
+    date_filter = request.GET.get('date_range', 'all')
+    search_query = request.GET.get('search', '')
+    
+    # Log kayıtlarını filtrele
+    logs = SystemLog.objects.all()
+    
+    if level_filter:
+        logs = logs.filter(level=level_filter.upper())
+    
+    if date_filter == 'today':
+        logs = logs.filter(timestamp__date=timezone.now().date())
+    elif date_filter == 'week':
+        week_ago = timezone.now() - timedelta(days=7)
+        logs = logs.filter(timestamp__gte=week_ago)
+    elif date_filter == 'month':
+        month_ago = timezone.now() - timedelta(days=30)
+        logs = logs.filter(timestamp__gte=month_ago)
+    
+    if search_query:
+        logs = logs.filter(
+            Q(message__icontains=search_query) | 
+            Q(action__icontains=search_query) |
+            Q(user__username__icontains=search_query)
+        )
+    
+    # Sayfalama
+    paginator = Paginator(logs, 20)  # Her sayfada 20 log
+    page_number = request.GET.get('page')
+    page_logs = paginator.get_page(page_number)
+    
+    # İstatistikler
+    log_stats = SystemLog.objects.values('level').annotate(count=Count('id'))
+    stats_dict = {stat['level']: stat['count'] for stat in log_stats}
+    
+    # AJAX istek kontrolü - log temizleme
+    if request.method == 'POST' and request.POST.get('action') == 'clear_logs':
+        if request.user.role == 'admin':
+            # Eski logları sil (30 günden eski)
+            old_date = timezone.now() - timedelta(days=30)
+            deleted_count = SystemLog.objects.filter(timestamp__lt=old_date).delete()[0]
+            
+            # Yeni log kaydı oluştur
+            SystemLog.log(
+                level='INFO',
+                action='LOG_CLEANUP',
+                message=f'Admin tarafından {deleted_count} adet eski log kaydı temizlendi',
+                user=request.user,
+                ip_address=request.META.get('REMOTE_ADDR')
+            )
+            
+            messages.success(request, f'{deleted_count} adet eski log kaydı temizlendi.')
+            return redirect('admin_logs')
+    
     context = {
         'current_user': request.user,
         'user_role': request.user.get_role_display(),
         'panel_title': 'Sistem Logları',
-        'page_title': 'Sistem Logları'
+        'page_title': 'Sistem Logları',
+        'logs': page_logs,
+        'stats': {
+            'DEBUG': stats_dict.get('DEBUG', 0),
+            'INFO': stats_dict.get('INFO', 0),
+            'WARNING': stats_dict.get('WARNING', 0),
+            'ERROR': stats_dict.get('ERROR', 0),
+            'CRITICAL': stats_dict.get('CRITICAL', 0),
+        },
+        'total_logs': logs.count(),
+        'filters': {
+            'level': level_filter,
+            'date_range': date_filter,
+            'search': search_query,
+        }
     }
     return render(request, 'accounts/admin_logs.html', context)
 

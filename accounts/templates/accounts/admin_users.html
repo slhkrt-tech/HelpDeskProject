@@ -96,6 +96,7 @@
                         <th>Kullanıcı</th>
                         <th>E-posta</th>
                         <th>Rol</th>
+                        <th>Gruplar</th>
                         <th>Durum</th>
                         <th>Kayıt Tarihi</th>
                         <th>İşlemler</th>
@@ -141,6 +142,21 @@
                                 <span class="badge bg-success">Support</span>
                             {% else %}
                                 <span class="badge bg-primary">Customer</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.groups.all %}
+                                <div class="d-flex flex-wrap gap-1">
+                                    {% for group in user.groups.all %}
+                                        <span class="badge bg-info text-dark">
+                                            <i class="bi bi-people-fill me-1"></i>{{ group.name }}
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <span class="text-muted small">
+                                    <i class="bi bi-dash-circle me-1"></i>Grup yok
+                                </span>
                             {% endif %}
                         </td>
                         <td>

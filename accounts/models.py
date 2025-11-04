@@ -180,6 +180,7 @@ class SystemSettings(models.Model):
     max_login_attempts = models.PositiveIntegerField(default=5, help_text="Maks giriş denemesi")
     session_timeout_minutes = models.PositiveIntegerField(default=30, help_text="Oturum zaman aşımı")
     require_password_change = models.BooleanField(default=False, help_text="İlk girişte şifre değişimi zorunlu mu?")
+    enable_2fa = models.BooleanField(default=False, help_text="İki faktörlü kimlik doğrulama aktif mi?")
 
     created_at = models.DateTimeField(auto_now_add=True, help_text="Oluşturulma tarihi")
     updated_at = models.DateTimeField(auto_now=True, help_text="Son güncelleme tarihi")
@@ -202,3 +203,51 @@ class SystemSettings(models.Model):
     def get_settings(cls):
         settings, created = cls.objects.get_or_create(pk=1)
         return settings
+
+# ================================================================================
+# Sistem Log Modeli
+# ================================================================================
+
+class SystemLog(models.Model):
+    """
+    Sistem aktivite logları
+    """
+    
+    LOG_LEVELS = [
+        ('DEBUG', 'Debug'),
+        ('INFO', 'Bilgi'),
+        ('WARNING', 'Uyarı'),
+        ('ERROR', 'Hata'),
+        ('CRITICAL', 'Kritik'),
+    ]
+    
+    timestamp = models.DateTimeField(auto_now_add=True, verbose_name="Zaman")
+    level = models.CharField(max_length=10, choices=LOG_LEVELS, default='INFO', verbose_name="Seviye")
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Kullanıcı")
+    ip_address = models.GenericIPAddressField(null=True, blank=True, verbose_name="IP Adresi")
+    action = models.CharField(max_length=100, verbose_name="İşlem")
+    message = models.TextField(verbose_name="Mesaj")
+    extra_data = models.JSONField(null=True, blank=True, verbose_name="Ek Veri")
+    
+    class Meta:
+        verbose_name = 'Sistem Logu'
+        verbose_name_plural = 'Sistem Logları'
+        ordering = ['-timestamp']
+        db_table = 'accounts_systemlog'
+    
+    def __str__(self):
+        return f"[{self.level}] {self.action} - {self.timestamp.strftime('%Y-%m-%d %H:%M:%S')}"
+    
+    @classmethod
+    def log(cls, level, action, message, user=None, ip_address=None, extra_data=None):
+        """
+        Log kaydı oluşturma yardımcı metodu
+        """
+        return cls.objects.create(
+            level=level,
+            action=action,
+            message=message,
+            user=user,
+            ip_address=ip_address,
+            extra_data=extra_data
+        )

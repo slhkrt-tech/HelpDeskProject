@@ -1,61 +1,452 @@
 {% extends 'tickets/base.html' %}
 
-{% block title %}Müşteri Paneli - HelpDesk{% endblock %}
+{% block title %}{{ panel_title }} - HelpDesk{% endblock %}
+
+{% block extra_css %}
+<style>
+  .main-content {
+    background: #f8f9fa;
+  }
+  
+  /* Customer Header Styling */
+  .customer-header-wrapper {
+    background: linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%);
+    border-radius: 16px;
+    padding: 2rem;
+    color: white;
+    box-shadow: 0 4px 20px rgba(54, 209, 220, 0.3);
+    margin-bottom: 2rem;
+  }
+  
+  .customer-header-wrapper .breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 0.5rem;
+  }
+  
+  .customer-header-wrapper .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+  }
+  
+  .customer-header-wrapper .breadcrumb-item a:hover {
+    color: white;
+  }
+  
+  .customer-header-wrapper .breadcrumb-item.active {
+    color: rgba(255, 255, 255, 0.9);
+  }
+  
+  .customer-icon-wrapper {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+  }
+  
+  .customer-icon-wrapper i {
+    color: white;
+  }
+  
+  .customer-stats {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .customer-stats .stat-item {
+    text-align: center;
+    color: white;
+  }
+  
+  .customer-stats .stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+  
+  .customer-stats .stat-label {
+    font-size: 0.8rem;
+    opacity: 0.8;
+  }
+  
+  /* Modern Cards */
+  .modern-card {
+    background: white;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+  
+  .modern-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+  
+  .modern-card .card-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    padding: 1.25rem 1.5rem;
+    border-radius: 12px 12px 0 0;
+  }
+  
+  .modern-card .card-title {
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .modern-card .card-title i {
+    margin-right: 0.5rem;
+  }
+  
+  .modern-card .card-body {
+    padding: 1.5rem;
+  }
+  
+  /* Gradient Cards for Actions */
+  .gradient-card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: none;
+  }
+  
+  .gradient-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  }
+  
+  .gradient-info {
+    background: linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%);
+  }
+  
+  .gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  
+  .gradient-warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  }
+  
+  .gradient-success {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  }
+  
+  .gradient-danger {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  }
+  
+  /* Profile Avatar */
+  .profile-avatar {
+    background: linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%);
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+  
+  /* Stats Items */
+  .stat-item {
+    padding: 1rem;
+    border-radius: 8px;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+  }
+  
+  .stat-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+  }
+  
+  .stat-label {
+    font-size: 0.75rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+  }
+  
+  /* Form Controls */
+  .form-control[readonly] {
+    border: 1px solid #e2e8f0;
+    background-color: #f8fafc !important;
+    color: #2c3e50;
+  }
+  
+  /* Quick Actions Grid */
+  .quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .customer-header-wrapper {
+      padding: 1.5rem;
+    }
+    
+    .customer-icon-wrapper {
+      width: 50px;
+      height: 50px;
+      font-size: 1.5rem;
+    }
+    
+    .quick-actions-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .customer-stats {
+      margin-top: 1rem;
+    }
+    
+    .customer-header-wrapper .row {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .customer-header-wrapper .col-auto {
+      margin-bottom: 1rem;
+    }
+    
+    .stat-item {
+      padding: 0.75rem;
+    }
+    
+    .stat-number {
+      font-size: 1.25rem;
+    }
+    
+    .profile-avatar {
+      width: 60px !important;
+      height: 60px !important;
+      font-size: 1.5rem !important;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .customer-header-wrapper {
+      padding: 1rem;
+    }
+    
+    .quick-actions-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+    
+    .gradient-card .card-body {
+      padding: 1.5rem 1rem;
+    }
+    
+    .gradient-card .fs-1 {
+      font-size: 2rem !important;
+    }
+    
+    .modern-card .card-body {
+      padding: 1rem;
+    }
+    
+    .modern-card .card-header {
+      padding: 1rem;
+    }
+  }
+</style>
+{% endblock %}
 
 {% block page_title %}
-<div class="d-flex justify-content-between align-items-center">
-    <div>
-        <h1 class="page-title">
-            <i class="fas fa-user-circle text-primary me-3"></i>{{ user.username }}
-        </h1>
-        <p class="page-subtitle">Profil Bilgileriniz ve Hesap Detayları</p>
+<!-- Customer Panel Header -->
+<div class="customer-header-wrapper">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Ana Sayfa</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Müşteri Paneli</li>
+    </ol>
+  </nav>
+  
+  <div class="row align-items-center">
+    <div class="col-auto">
+      <div class="customer-icon-wrapper">
+        <i class="bi bi-person-circle"></i>
+      </div>
     </div>
-    <div class="text-end">
-        <div class="user-info">
-            <span class="badge bg-success">Müşteri</span>
-            <small class="text-muted d-block">
-                Son güncelleme: {{ user.last_login|date:"d M Y H:i"|default:"Henüz giriş yapılmamış" }}
-            </small>
+    <div class="col">
+      <h1 class="h3 mb-1 text-white">Hoş Geldiniz, {{ user.username }}</h1>
+      <p class="mb-0 opacity-75">Müşteri paneline hoş geldiniz. Hesap bilgilerinizi görüntüleyebilir ve taleplerinizi yönetebilirsiniz.</p>
+    </div>
+    <div class="col-auto">
+      <div class="customer-stats">
+        <div class="row g-0">
+          <div class="col text-center">
+            <div class="stat-item">
+              <div class="stat-number">{{ user.date_joined|timesince }}</div>
+              <div class="stat-label">Hesap Yaşı</div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}
 
 {% block content %}
-<!-- Profil Kartı ve Hesap Detayları -->
+<!-- Ticket İstatistikleri -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="modern-card">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="bi bi-graph-up-arrow text-primary"></i>Talep İstatistiklerim
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-item text-center">
+                            <div class="stat-number text-primary">{{ ticket_stats.total|default:0 }}</div>
+                            <div class="stat-label">Toplam Talep</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-item text-center">
+                            <div class="stat-number text-info">{{ ticket_stats.open|default:0 }}</div>
+                            <div class="stat-label">Açık Talepler</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-item text-center">
+                            <div class="stat-number text-warning">{{ ticket_stats.in_progress|default:0 }}</div>
+                            <div class="stat-label">İşlemde</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-item text-center">
+                            <div class="stat-number text-success">{{ ticket_stats.resolved|default:0 }}</div>
+                            <div class="stat-label">Çözüldü</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hızlı İşlemler -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="modern-card">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="bi bi-lightning-charge text-warning"></i>Hızlı İşlemler
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="quick-actions-grid">
+                    <a href="/tickets/create/" class="text-decoration-none">
+                        <div class="gradient-card gradient-info text-white h-100">
+                            <div class="card-body text-center p-3">
+                                <i class="bi bi-plus-circle fs-1 mb-3"></i>
+                                <h6 class="mb-2">Yeni Talep</h6>
+                                <p class="small mb-0 opacity-75">Yeni destek talebi oluşturun</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="/tickets/" class="text-decoration-none">
+                        <div class="gradient-card gradient-primary text-white h-100">
+                            <div class="card-body text-center p-3">
+                                <i class="bi bi-list-task fs-1 mb-3"></i>
+                                <h6 class="mb-2">Taleplerim</h6>
+                                <p class="small mb-0 opacity-75">Mevcut taleplerinizi görüntüleyin</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="/accounts/customer/profile-edit/" class="text-decoration-none">
+                        <div class="gradient-card gradient-warning text-white h-100">
+                            <div class="card-body text-center p-3">
+                                <i class="bi bi-person-gear fs-1 mb-3"></i>
+                                <h6 class="mb-2">Profil Düzenle</h6>
+                                <p class="small mb-0 opacity-75">Bilgilerinizi güncelleyin</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="/accounts/customer/change-password/" class="text-decoration-none">
+                        <div class="gradient-card gradient-danger text-white h-100">
+                            <div class="card-body text-center p-3">
+                                <i class="bi bi-shield-lock fs-1 mb-3"></i>
+                                <h6 class="mb-2">Güvenlik</h6>
+                                <p class="small mb-0 opacity-75">Şifre ve güvenlik ayarları</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Profil Bilgileri ve Hesap Özeti -->
 <div class="row g-4 mb-4">
     <!-- Profil Kartı -->
     <div class="col-lg-4">
         <div class="modern-card">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="bi bi-person-badge text-primary"></i>Profil Bilgileri
+                </h6>
+            </div>
             <div class="card-body text-center">
-                <div class="profile-avatar mx-auto mb-3" style="background: var(--gradient-primary); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
-                    <i class="fas fa-user"></i>
+                <div class="profile-avatar mx-auto mb-3" style="width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+                    <i class="bi bi-person"></i>
                 </div>
-                <h5 class="mb-2">{{ user.username }}</h5>
-                <p class="text-muted">@{{ user.username }}</p>
-                <div class="row g-2 mt-3">
+                <h5 class="mb-2 text-dark">{{ user.username }}</h5>
+                <p class="text-muted mb-3">Müşteri Hesabı</p>
+                
+                <div class="row g-2 text-start">
                     <div class="col-12">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>Hesap Oluşturma:</span>
-                            <span class="text-muted">{{ user.date_joined|date:"d M Y" }}</span>
+                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <span class="text-muted">Ad Soyad:</span>
+                            <span class="fw-medium">
+                                {% if user.first_name or user.last_name %}
+                                    {{ user.first_name }} {{ user.last_name }}
+                                {% else %}
+                                    Belirtilmemiş
+                                {% endif %}
+                            </span>
                         </div>
                     </div>
                     <div class="col-12">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>Son Giriş:</span>
-                            <span class="text-muted">{{ user.last_login|date:"d M Y H:i"|default:"Henüz giriş yapılmamış" }}</span>
+                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <span class="text-muted">E-posta:</span>
+                            <span class="fw-medium">{{ user.email|default:"Belirtilmemiş" }}</span>
                         </div>
                     </div>
                     <div class="col-12">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>Grup Üyelikleri:</span>
-                            <span class="badge bg-info">{{ user.groups.count }}</span>
+                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <span class="text-muted">Hesap Oluşturma:</span>
+                            <span class="fw-medium">{{ user.date_joined|date:"d.m.Y" }}</span>
                         </div>
                     </div>
                     <div class="col-12">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>Yetki Seviyesi:</span>
-                            <span class="badge bg-success">Müşteri</span>
+                        <div class="d-flex justify-content-between align-items-center py-2">
+                            <span class="text-muted">Son Giriş:</span>
+                            <span class="fw-medium">
+                                {% if user.last_login %}
+                                    {{ user.last_login|date:"d.m.Y H:i" }}
+                                {% else %}
+                                    Henüz giriş yapılmamış
+                                {% endif %}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -63,10 +454,10 @@
                 <div class="mt-4">
                     <div class="d-grid gap-2">
                         <a href="/accounts/customer/profile-edit/" class="btn btn-primary">
-                            <i class="fas fa-edit me-2"></i>Profili Düzenle
+                            <i class="bi bi-pencil-square me-2"></i>Profili Düzenle
                         </a>
                         <a href="/accounts/customer/change-password/" class="btn btn-outline-warning">
-                            <i class="fas fa-key me-2"></i>Şifre Değiştir
+                            <i class="bi bi-key me-2"></i>Şifre Değiştir
                         </a>
                     </div>
                 </div>
@@ -79,51 +470,55 @@
         <div class="modern-card">
             <div class="card-header">
                 <h6 class="card-title mb-0">
-                    <i class="fas fa-address-card me-2 text-primary"></i>Hesap Detayları
+                    <i class="bi bi-card-text text-info"></i>Hesap Detayları
                 </h6>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label text-muted">Kullanıcı Adı</label>
-                        <div class="form-control bg-light" readonly>
-                            <i class="fas fa-user me-2 text-primary"></i>{{ user.username }}
+                        <label class="form-label text-muted fw-medium">Kullanıcı Adı</label>
+                        <div class="form-control" readonly>
+                            <i class="bi bi-person me-2 text-primary"></i>{{ user.username }}
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label text-muted">E-posta Adresi</label>
-                        <div class="form-control bg-light" readonly>
-                            <i class="fas fa-envelope me-2 text-primary"></i>{{ user.email|default:"Belirtilmemiş" }}
+                        <label class="form-label text-muted fw-medium">E-posta Adresi</label>
+                        <div class="form-control" readonly>
+                            <i class="bi bi-envelope me-2 text-primary"></i>{{ user.email|default:"Belirtilmemiş" }}
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label text-muted">Ad</label>
-                        <div class="form-control bg-light" readonly>
-                            <i class="fas fa-id-card me-2 text-primary"></i>{{ user.first_name|default:"Belirtilmemiş" }}
+                        <label class="form-label text-muted fw-medium">Ad</label>
+                        <div class="form-control" readonly>
+                            <i class="bi bi-card-text me-2 text-primary"></i>{{ user.first_name|default:"Belirtilmemiş" }}
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label text-muted">Soyad</label>
-                        <div class="form-control bg-light" readonly>
-                            <i class="fas fa-id-card me-2 text-primary"></i>{{ user.last_name|default:"Belirtilmemiş" }}
+                        <label class="form-label text-muted fw-medium">Soyad</label>
+                        <div class="form-control" readonly>
+                            <i class="bi bi-card-text me-2 text-primary"></i>{{ user.last_name|default:"Belirtilmemiş" }}
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label text-muted">Kullanıcı Rolü</label>
-                        <div class="form-control bg-light" readonly>
+                        <label class="form-label text-muted fw-medium">Kullanıcı Rolü</label>
+                        <div class="form-control d-flex align-items-center" readonly>
                             <span class="badge bg-success me-2">Müşteri</span>
-                            E-posta adresiniz hesap bildirimetleriniz için kullanılır
+                            <small class="text-muted">Talep oluşturma ve görüntüleme yetkisi</small>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label text-muted">Hesap Durumu</label>
-                        <div class="form-control bg-light" readonly>
+                        <label class="form-label text-muted fw-medium">Hesap Durumu</label>
+                        <div class="form-control d-flex align-items-center" readonly>
                             {% if user.is_active %}
-                            <span class="badge bg-success me-2">Aktif</span>
+                                <span class="badge bg-success me-2">
+                                    <i class="bi bi-check-circle me-1"></i>Aktif
+                                </span>
                             {% else %}
-                            <span class="badge bg-danger me-2">Pasif</span>
+                                <span class="badge bg-danger me-2">
+                                    <i class="bi bi-x-circle me-1"></i>Pasif
+                                </span>
                             {% endif %}
-                            Hesap normal kullanımda
+                            <small class="text-muted">Hesap normal kullanımda</small>
                         </div>
                     </div>
                 </div>
@@ -132,89 +527,28 @@
     </div>
 </div>
 
-<!-- Hızlı İşlemler -->
-<div class="row g-4 mb-4">
-    <div class="col-12">
-        <div class="modern-card">
-            <div class="card-header">
-                <h6 class="card-title mb-0">
-                    <i class="fas fa-bolt me-2 text-warning"></i>Hızlı İşlemler
-                </h6>
-            </div>
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-lg-3 col-md-6">
-                        <a href="/tickets/create/" class="text-decoration-none">
-                            <div class="gradient-card gradient-info text-white h-100">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-plus-circle fs-1 mb-3"></i>
-                                    <h6>Yeni Talep</h6>
-                                    <p class="small mb-0 opacity-75">Yeni destek talebi oluştur</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <a href="/tickets/" class="text-decoration-none">
-                            <div class="gradient-card gradient-primary text-white h-100">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-list fs-1 mb-3"></i>
-                                    <h6>Taleplerim</h6>
-                                    <p class="small mb-0 opacity-75">Mevcut taleplerinizi görün</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <a href="/accounts/customer/profile-edit/" class="text-decoration-none">
-                            <div class="gradient-card gradient-warning text-white h-100">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-user-edit fs-1 mb-3"></i>
-                                    <h6>Profil Düzenle</h6>
-                                    <p class="small mb-0 opacity-75">Bilgilerinizi güncelleyin</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <a href="/accounts/customer/change-password/" class="text-decoration-none">
-                            <div class="gradient-card gradient-danger text-white h-100">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-shield-alt fs-1 mb-3"></i>
-                                    <h6>Güvenlik</h6>
-                                    <p class="small mb-0 opacity-75">Şifre ve güvenlik ayarları</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Aktivite Bilgileri ve Son Talepler -->
+<!-- İstatistikler ve Son Talepler -->
 <div class="row g-4">
     <div class="col-md-6">
         <div class="modern-card">
             <div class="card-header">
                 <h6 class="card-title mb-0">
-                    <i class="fas fa-chart-line me-2 text-primary"></i>Aktivite Bilgileri
+                    <i class="bi bi-graph-up text-success"></i>Hesap İstatistikleri
                 </h6>
             </div>
             <div class="card-body">
                 <div class="row g-3">
-                    <div class="col-6 text-center">
-                        <div class="stat-item">
-                            <div class="stat-number text-primary">{{ user.date_joined|timesince }} önce</div>
+                    <div class="col-6">
+                        <div class="stat-item text-center">
+                            <div class="stat-number text-primary">{{ user.date_joined|timesince }}</div>
                             <div class="stat-label">Hesap Yaşı</div>
                         </div>
                     </div>
-                    <div class="col-6 text-center">
-                        <div class="stat-item">
+                    <div class="col-6">
+                        <div class="stat-item text-center">
                             <div class="stat-number text-success">
                                 {% if user.last_login %}
-                                    {{ user.last_login|timesince }} önce
+                                    {{ user.last_login|timesince }}
                                 {% else %}
                                     Henüz giriş yapılmamış
                                 {% endif %}
@@ -226,27 +560,39 @@
                 
                 <hr class="my-3">
                 
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span>Hesap Oluşturma</span>
-                    <span class="text-muted">{{ user.date_joined|date:"d M Y" }}</span>
-                </div>
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span>Son Giriş</span>
-                    <span class="text-muted">
-                        {% if user.last_login %}
-                            {{ user.last_login|date:"d M Y H:i" }}
-                        {% else %}
-                            Henüz giriş yapılmamış
-                        {% endif %}
-                    </span>
-                </div>
-                <div class="d-flex justify-content-between align-items-center">
-                    <span>Hesap Durumu</span>
-                    {% if user.is_active %}
-                        <span class="badge bg-success">Aktif</span>
-                    {% else %}
-                        <span class="badge bg-danger">Pasif</span>
-                    {% endif %}
+                <div class="row g-2">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted">Hesap Oluşturma:</span>
+                            <span class="fw-medium">{{ user.date_joined|date:"d.m.Y" }}</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted">Son Giriş:</span>
+                            <span class="fw-medium">
+                                {% if user.last_login %}
+                                    {{ user.last_login|date:"d.m.Y H:i" }}
+                                {% else %}
+                                    Henüz giriş yapılmamış
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Hesap Durumu:</span>
+                            {% if user.is_active %}
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle me-1"></i>Aktif
+                                </span>
+                            {% else %}
+                                <span class="badge bg-danger">
+                                    <i class="bi bi-x-circle me-1"></i>Pasif
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -256,69 +602,50 @@
         <div class="modern-card">
             <div class="card-header">
                 <h6 class="card-title mb-0">
-                    <i class="fas fa-history me-2 text-info"></i>Son Talepler
+                    <i class="bi bi-clock-history text-info"></i>Son Talepler
                 </h6>
             </div>
             <div class="card-body">
                 {% if tickets %}
-                <ul class="list-group">
-                    {% for ticket in tickets %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{ ticket.title }}
-                        <span class="badge bg-primary">{{ ticket.status }}</span>
-                    </li>
-                    {% endfor %}
-                </ul>
+                    <div class="list-group list-group-flush">
+                        {% for ticket in tickets %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <h6 class="mb-1">{{ ticket.title }}</h6>
+                                <small class="text-muted">{{ ticket.created_at|date:"d.m.Y H:i" }}</small>
+                            </div>
+                            <span class="badge 
+                                {% if ticket.status == 'open' %}bg-primary
+                                {% elif ticket.status == 'in_progress' %}bg-warning
+                                {% elif ticket.status == 'resolved' %}bg-success
+                                {% elif ticket.status == 'closed' %}bg-secondary
+                                {% else %}bg-info
+                                {% endif %}">
+                                {{ ticket.get_status_display }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <a href="/tickets/" class="btn btn-outline-primary">
+                            <i class="bi bi-list-task me-2"></i>Tüm Talepleri Görüntüle
+                        </a>
+                    </div>
                 {% else %}
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    Henüz hiç destek talebi oluşturmamışsınız.
-                </div>
-                
-                <div class="text-center">
-                    <p class="text-muted mb-3">İlk destek talebinizi oluşturmak için aşağıdaki butona tıklayın.</p>
-                    <a href="/tickets/create/" class="btn btn-primary">
-                        <i class="fas fa-plus-circle me-2"></i>İlk Talep Oluştur
-                    </a>
-                </div>
+                    <div class="text-center py-4">
+                        <div class="mb-3">
+                            <i class="bi bi-ticket-detailed display-1 text-muted opacity-25"></i>
+                        </div>
+                        <h6 class="text-muted mb-3">Henüz Talep Oluşturmamışsınız</h6>
+                        <p class="text-muted mb-4">İlk destek talebinizi oluşturmak için aşağıdaki butona tıklayın.</p>
+                        <a href="/tickets/create/" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>İlk Talebi Oluştur
+                        </a>
+                    </div>
                 {% endif %}
             </div>
         </div>
     </div>
 </div>
-
-<style>
-.stat-item {
-    padding: 1rem;
-}
-
-.stat-number {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-}
-
-.stat-label {
-    font-size: 0.75rem;
-    color: var(--bs-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.form-control[readonly] {
-    border: 1px solid #e2e8f0;
-    background-color: #f8fafc !important;
-}
-
-.gradient-card:hover {
-    transform: translateY(-2px);
-    transition: all 0.3s ease;
-}
-
-.modern-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
-    transition: all 0.3s ease;
-}
-</style>
 {% endblock %}

@@ -3747,3 +3747,1296 @@ INFO 2025-11-03 16:39:46,267 basehttp 5048 15948 "GET /tickets/1/ HTTP/1.1" 200 
 INFO 2025-11-03 16:39:54,997 basehttp 5048 15948 "GET /tickets/1/ HTTP/1.1" 200 25251
 INFO 2025-11-03 16:41:02,494 autoreload 8264 12388 Watching for file changes with StatReloader
 INFO 2025-11-03 16:41:13,775 basehttp 8264 6428 "GET /?id=75ee59c9-96b9-41e2-bf9c-347699f1b847&vscodeBrowserReqId=1762177273735 HTTP/1.1" 200 24023
+INFO 2025-11-04 02:45:03,880 autoreload 2512 9112 Watching for file changes with StatReloader
+INFO 2025-11-04 02:45:15,419 basehttp 2512 21216 "GET / HTTP/1.1" 200 24023
+INFO 2025-11-04 02:45:15,451 basehttp 2512 21216 "GET /static/css/theme.css HTTP/1.1" 200 8298
+WARNING 2025-11-04 02:45:15,822 log 2512 21216 Not Found: /favicon.ico
+WARNING 2025-11-04 02:45:15,822 basehttp 2512 21216 "GET /favicon.ico HTTP/1.1" 404 3456
+INFO 2025-11-04 02:45:18,552 basehttp 2512 21216 "GET /accounts/login/ HTTP/1.1" 200 24582
+INFO 2025-11-04 02:45:22,866 basehttp 2512 21216 "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-04 02:45:22,911 basehttp 2512 21216 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 02:45:32,342 basehttp 2512 21216 "GET /accounts/admin/users/ HTTP/1.1" 200 29635
+INFO 2025-11-04 02:45:34,337 basehttp 2512 21216 "GET /accounts/admin/users/1/edit/ HTTP/1.1" 200 30802
+INFO 2025-11-04 02:45:41,708 basehttp 2512 21216 "GET /accounts/admin/users/create/ HTTP/1.1" 200 28321
+INFO 2025-11-04 02:46:37,122 basehttp 2512 21216 "POST /accounts/admin/users/create/ HTTP/1.1" 302 0
+INFO 2025-11-04 02:46:37,159 basehttp 2512 21216 "GET /accounts/admin/users/ HTTP/1.1" 200 32054
+INFO 2025-11-04 02:46:44,140 basehttp 2512 21216 "GET /accounts/admin/users/2/edit/ HTTP/1.1" 200 30802
+INFO 2025-11-04 02:46:55,095 basehttp 2512 21216 "GET / HTTP/1.1" 302 0
+INFO 2025-11-04 02:46:55,136 basehttp 2512 21216 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 02:46:56,592 basehttp 2512 21216 "GET /accounts/admin/groups/ HTTP/1.1" 200 30691
+INFO 2025-11-04 02:46:58,097 basehttp 2512 21216 "GET /accounts/admin/groups/create/ HTTP/1.1" 200 29273
+INFO 2025-11-04 02:47:04,905 basehttp 2512 21216 "POST /accounts/admin/groups/create/ HTTP/1.1" 302 0
+INFO 2025-11-04 02:47:04,946 basehttp 2512 21216 "GET /accounts/admin/groups/ HTTP/1.1" 200 32305
+INFO 2025-11-04 02:47:12,011 basehttp 2512 21216 "GET / HTTP/1.1" 302 0
+INFO 2025-11-04 02:47:12,161 basehttp 2512 21216 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 02:47:13,856 basehttp 2512 21216 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 02:47:19,605 basehttp 2512 21216 "GET /accounts/admin/groups/ HTTP/1.1" 200 31850
+INFO 2025-11-04 02:47:22,048 basehttp 2512 21216 "GET /accounts/admin/permissions/ HTTP/1.1" 200 103195
+INFO 2025-11-04 02:47:49,433 basehttp 2512 21216 "GET /accounts/admin/users/ HTTP/1.1" 200 31604
+INFO 2025-11-04 02:47:52,104 basehttp 2512 21216 "GET /accounts/admin/users/2/edit/ HTTP/1.1" 200 30802
+WARNING 2025-11-04 02:47:54,206 log 2512 21216 Not Found: /accounts/admin/users//assign-groups/
+WARNING 2025-11-04 02:47:54,207 basehttp 2512 21216 "GET /accounts/admin/users//assign-groups/ HTTP/1.1" 404 12137
+INFO 2025-11-04 02:50:20,461 autoreload 6160 12184 Watching for file changes with StatReloader
+WARNING 2025-11-04 02:50:26,214 log 6160 12316 Not Found: /accounts/admin/users//assign-groups/
+WARNING 2025-11-04 02:50:26,214 basehttp 6160 12316 "GET /accounts/admin/users//assign-groups/ HTTP/1.1" 404 12458
+INFO 2025-11-04 02:50:30,673 basehttp 6160 12316 "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-04 02:50:30,682 basehttp 6160 12316 "GET /accounts/login/ HTTP/1.1" 200 25365
+INFO 2025-11-04 02:50:38,591 basehttp 6160 12316 "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-04 02:50:38,635 basehttp 6160 12316 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 02:50:41,139 basehttp 6160 12316 "GET /accounts/admin/groups/ HTTP/1.1" 200 31850
+INFO 2025-11-04 02:50:46,737 basehttp 6160 12316 "GET /accounts/admin/users/ HTTP/1.1" 200 31604
+ERROR 2025-11-04 02:50:50,783 log 6160 12316 Internal Server Error: /accounts/admin/users/2/edit/
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py", line 356, in admin_user_edit_view
+    return render(request, 'accounts/admin_user_edit.html', context)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'admin_user_assign_groups' with arguments '('',)' not found. 1 pattern(s) tried: ['accounts/admin/users/(?P<user_id>[0-9]+)/assign\\-groups/\\Z']
+ERROR 2025-11-04 02:50:50,788 basehttp 6160 12316 "GET /accounts/admin/users/2/edit/ HTTP/1.1" 500 178947
+ERROR 2025-11-04 02:50:56,208 log 6160 12316 Internal Server Error: /accounts/admin/users/1/edit/
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py", line 356, in admin_user_edit_view
+    return render(request, 'accounts/admin_user_edit.html', context)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'admin_user_assign_groups' with arguments '('',)' not found. 1 pattern(s) tried: ['accounts/admin/users/(?P<user_id>[0-9]+)/assign\\-groups/\\Z']
+ERROR 2025-11-04 02:50:56,211 basehttp 6160 12316 "GET /accounts/admin/users/1/edit/ HTTP/1.1" 500 178797
+INFO 2025-11-04 02:52:02,884 basehttp 6160 10808 "GET /accounts/admin/users/?id=0f268ddb-a608-45a1-8fcf-0d77f95b7c36&vscodeBrowserReqId=1762213922879 HTTP/1.1" 302 0
+INFO 2025-11-04 02:52:02,888 basehttp 6160 10808 "GET /accounts/login/?next=/accounts/admin/users/%3Fid%3D0f268ddb-a608-45a1-8fcf-0d77f95b7c36%26vscodeBrowserReqId%3D1762213922879 HTTP/1.1" 200 24582
+INFO 2025-11-04 02:52:14,082 basehttp 6160 12316 "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-04 02:52:14,085 basehttp 6160 12316 "GET /accounts/login/ HTTP/1.1" 200 25365
+INFO 2025-11-04 02:52:20,184 basehttp 6160 12316 "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-04 02:52:20,226 basehttp 6160 12316 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 02:52:24,286 basehttp 6160 12316 "GET /accounts/admin/users/ HTTP/1.1" 200 31604
+INFO 2025-11-04 02:52:25,655 basehttp 6160 12316 "GET /accounts/admin/users/2/edit/ HTTP/1.1" 200 30880
+INFO 2025-11-04 02:52:27,823 basehttp 6160 12316 "GET /accounts/admin/users/2/assign-groups/ HTTP/1.1" 200 28940
+INFO 2025-11-04 02:52:31,864 basehttp 6160 12316 "POST /accounts/admin/users/2/assign-groups/ HTTP/1.1" 302 0
+INFO 2025-11-04 02:52:31,900 basehttp 6160 12316 "GET /accounts/admin/users/ HTTP/1.1" 200 32070
+INFO 2025-11-04 02:52:37,884 basehttp 6160 12316 "GET /accounts/admin/users/2/edit/ HTTP/1.1" 200 30880
+INFO 2025-11-04 02:52:40,428 basehttp 6160 12316 "GET /accounts/admin/users/2/assign-groups/ HTTP/1.1" 200 29143
+INFO 2025-11-04 02:52:41,917 basehttp 6160 12316 "POST /accounts/admin/users/2/assign-groups/ HTTP/1.1" 302 0
+INFO 2025-11-04 02:52:41,953 basehttp 6160 12316 "GET /accounts/admin/users/ HTTP/1.1" 200 32070
+INFO 2025-11-04 02:52:57,654 basehttp 6160 12316 "GET /accounts/admin/users/1/edit/ HTTP/1.1" 200 30958
+INFO 2025-11-04 02:54:36,161 basehttp 6160 12316 "GET / HTTP/1.1" 302 0
+INFO 2025-11-04 02:54:36,203 basehttp 6160 12316 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 02:54:38,143 basehttp 6160 12316 "GET /tickets/admin/ HTTP/1.1" 200 30717
+INFO 2025-11-04 02:55:08,426 autoreload 6160 12184 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py changed, reloading.
+INFO 2025-11-04 02:55:08,931 autoreload 13936 15160 Watching for file changes with StatReloader
+INFO 2025-11-04 02:55:21,440 basehttp 13936 3600 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 02:55:23,311 basehttp 13936 3600 "GET /tickets/categories/ HTTP/1.1" 200 32946
+INFO 2025-11-04 02:55:39,132 basehttp 13936 3600 "GET /tickets/categories/ HTTP/1.1" 200 32946
+INFO 2025-11-04 02:55:41,359 basehttp 13936 3600 "GET /tickets/categories/ HTTP/1.1" 200 32946
+INFO 2025-11-04 02:55:43,901 basehttp 13936 3600 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 02:55:44,804 basehttp 13936 3600 "GET /tickets/categories/ HTTP/1.1" 200 32946
+INFO 2025-11-04 02:55:46,128 basehttp 13936 3600 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 02:55:47,013 basehttp 13936 3600 "GET /accounts/admin/reports/ HTTP/1.1" 200 29048
+INFO 2025-11-04 02:55:53,969 basehttp 13936 3600 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 02:55:55,251 basehttp 13936 3600 "GET /accounts/admin/analytics/ HTTP/1.1" 200 37731
+INFO 2025-11-04 02:56:05,464 basehttp 13936 3600 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 02:56:07,627 basehttp 13936 3600 "GET /accounts/admin/settings/ HTTP/1.1" 200 30788
+INFO 2025-11-04 02:56:26,117 basehttp 13936 3600 "POST /accounts/admin/settings/ HTTP/1.1" 200 30788
+INFO 2025-11-04 02:56:36,054 basehttp 13936 3600 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 02:56:39,610 basehttp 13936 3600 "GET /accounts/admin/backup/ HTTP/1.1" 200 36733
+INFO 2025-11-04 02:56:50,378 basehttp 13936 3600 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 02:56:52,459 basehttp 13936 3600 "GET /accounts/admin/logs/ HTTP/1.1" 200 34995
+INFO 2025-11-04 02:56:57,505 basehttp 13936 3600 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 02:56:59,071 basehttp 13936 3600 "GET /accounts/admin/tokens/ HTTP/1.1" 200 29641
+INFO 2025-11-04 02:57:13,905 basehttp 13936 3600 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 02:57:24,729 autoreload 13160 636 Watching for file changes with StatReloader
+INFO 2025-11-04 02:57:35,328 basehttp 13160 10680 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 02:57:37,778 basehttp 13160 10680 "GET /accounts/admin/users/ HTTP/1.1" 200 32465
+INFO 2025-11-04 02:57:39,317 basehttp 13160 5380 "GET /accounts/admin/users/?id=0f268ddb-a608-45a1-8fcf-0d77f95b7c36&vscodeBrowserReqId=1762214259313 HTTP/1.1" 302 0
+INFO 2025-11-04 02:57:39,319 basehttp 13160 5380 "GET /accounts/login/?next=/accounts/admin/users/%3Fid%3D0f268ddb-a608-45a1-8fcf-0d77f95b7c36%26vscodeBrowserReqId%3D1762214259313 HTTP/1.1" 200 24582
+INFO 2025-11-04 02:57:54,331 basehttp 13160 10680 "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-04 02:57:54,335 basehttp 13160 10680 "GET /accounts/login/ HTTP/1.1" 200 25365
+INFO 2025-11-04 02:58:06,680 basehttp 13160 10680 "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-04 02:58:06,818 basehttp 13160 10680 "GET /accounts/customer-panel/ HTTP/1.1" 200 34137
+INFO 2025-11-04 02:58:22,955 basehttp 13160 10680 "GET /tickets/create/ HTTP/1.1" 200 30101
+INFO 2025-11-04 02:58:22,985 basehttp 13160 10680 "GET /static/tickets/css/ticket_create.css HTTP/1.1" 200 1870
+INFO 2025-11-04 02:58:46,104 basehttp 13160 10680 "POST /tickets/create/ HTTP/1.1" 302 0
+INFO 2025-11-04 02:58:46,146 basehttp 13160 10680 "GET /tickets/1/ HTTP/1.1" 200 25918
+INFO 2025-11-04 02:58:46,154 basehttp 13160 10680 "GET /static/tickets/js/ticket_detail.js HTTP/1.1" 200 2729
+INFO 2025-11-04 02:58:59,764 basehttp 13160 10680 "POST /tickets/1/ HTTP/1.1" 200 25471
+INFO 2025-11-04 02:59:08,222 basehttp 13160 10680 "GET /tickets/ HTTP/1.1" 200 30047
+INFO 2025-11-04 02:59:09,997 basehttp 13160 10680 "GET /tickets/1/ HTTP/1.1" 200 25471
+INFO 2025-11-04 02:59:15,396 basehttp 13160 10680 "POST /tickets/1/ HTTP/1.1" 200 25471
+INFO 2025-11-04 02:59:19,470 basehttp 13160 10680 "GET /tickets/ HTTP/1.1" 200 30047
+INFO 2025-11-04 02:59:21,315 basehttp 13160 10680 "GET /accounts/customer-panel/ HTTP/1.1" 200 34137
+INFO 2025-11-04 02:59:23,109 basehttp 13160 10680 "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-04 02:59:23,112 basehttp 13160 10680 "GET /accounts/login/ HTTP/1.1" 200 25365
+INFO 2025-11-04 02:59:30,203 basehttp 13160 10680 "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-04 02:59:30,245 basehttp 13160 10680 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 02:59:35,820 basehttp 13160 10680 "GET /tickets/ HTTP/1.1" 200 31515
+INFO 2025-11-04 02:59:40,475 basehttp 13160 10680 "GET /tickets/1/ HTTP/1.1" 200 27970
+INFO 2025-11-04 02:59:47,991 basehttp 13160 10680 "POST /tickets/1/ HTTP/1.1" 200 27970
+INFO 2025-11-04 02:59:55,163 basehttp 13160 10680 "POST /tickets/1/change-status/ HTTP/1.1" 200 115
+INFO 2025-11-04 02:59:56,208 basehttp 13160 10680 "POST /tickets/1/ HTTP/1.1" 200 28165
+INFO 2025-11-04 03:00:29,225 basehttp 13160 10680 "GET / HTTP/1.1" 302 0
+INFO 2025-11-04 03:00:29,269 basehttp 13160 10680 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:00:33,452 basehttp 13160 10680 "GET /accounts/admin/groups/ HTTP/1.1" 200 31966
+INFO 2025-11-04 03:00:39,776 basehttp 13160 10680 "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:00:39,779 basehttp 13160 10680 "GET /accounts/login/ HTTP/1.1" 200 25365
+INFO 2025-11-04 03:00:48,936 basehttp 13160 10680 "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:00:48,973 basehttp 13160 10680 "GET /accounts/customer-panel/ HTTP/1.1" 200 34137
+INFO 2025-11-04 03:00:51,291 basehttp 13160 10680 "GET /tickets/ HTTP/1.1" 200 30044
+INFO 2025-11-04 03:00:57,848 basehttp 13160 10680 "GET /tickets/1/ HTTP/1.1" 200 25666
+INFO 2025-11-04 03:01:28,059 autoreload 19388 17148 Watching for file changes with StatReloader
+INFO 2025-11-04 03:01:42,913 basehttp 13160 5380 "GET /tickets/?id=445937ab-66bb-4d33-bc1a-6464885d410e&vscodeBrowserReqId=1762214502909 HTTP/1.1" 302 0
+INFO 2025-11-04 03:01:42,916 basehttp 13160 5380 "GET /accounts/login/?next=/tickets/%3Fid%3D445937ab-66bb-4d33-bc1a-6464885d410e%26vscodeBrowserReqId%3D1762214502909 HTTP/1.1" 200 24582
+INFO 2025-11-04 03:01:57,190 autoreload 19388 17148 C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\views.py changed, reloading.
+INFO 2025-11-04 03:01:57,716 autoreload 12284 15888 Watching for file changes with StatReloader
+INFO 2025-11-04 03:02:01,198 autoreload 12284 15888 C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\views.py changed, reloading.
+INFO 2025-11-04 03:02:01,633 autoreload 17856 23032 Watching for file changes with StatReloader
+INFO 2025-11-04 03:02:07,128 autoreload 17856 23032 C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\views.py changed, reloading.
+INFO 2025-11-04 03:02:07,639 autoreload 23924 6160 Watching for file changes with StatReloader
+INFO 2025-11-04 03:02:34,776 autoreload 23924 6160 C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\views.py changed, reloading.
+INFO 2025-11-04 03:02:35,208 autoreload 2952 6628 Watching for file changes with StatReloader
+INFO 2025-11-04 03:02:52,214 basehttp 2952 5372 "GET /tickets/?id=445937ab-66bb-4d33-bc1a-6464885d410e&vscodeBrowserReqId=1762214572202 HTTP/1.1" 302 0
+INFO 2025-11-04 03:02:52,221 basehttp 2952 5372 "GET /accounts/login/?next=/tickets/%3Fid%3D445937ab-66bb-4d33-bc1a-6464885d410e%26vscodeBrowserReqId%3D1762214572202 HTTP/1.1" 200 24582
+INFO 2025-11-04 03:03:04,867 basehttp 2952 1724 "POST /tickets/1/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:03:04,915 basehttp 2952 1724 "GET /tickets/1/ HTTP/1.1" 200 28416
+INFO 2025-11-04 03:03:24,183 basehttp 2952 1724 "GET / HTTP/1.1" 302 0
+INFO 2025-11-04 03:03:24,220 basehttp 2952 1724 "GET /accounts/customer-panel/ HTTP/1.1" 200 34137
+INFO 2025-11-04 03:03:28,696 basehttp 2952 1724 "GET /tickets/ HTTP/1.1" 200 30044
+INFO 2025-11-04 03:03:30,171 basehttp 2952 1724 "GET /tickets/1/ HTTP/1.1" 200 27991
+INFO 2025-11-04 03:03:45,080 basehttp 2952 1724 "GET /tickets/ HTTP/1.1" 200 30044
+INFO 2025-11-04 03:03:49,707 basehttp 2952 1724 "GET /tickets/1/ HTTP/1.1" 200 27991
+INFO 2025-11-04 03:04:10,229 basehttp 2952 1724 "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:04:10,233 basehttp 2952 1724 "GET /accounts/login/ HTTP/1.1" 200 25365
+INFO 2025-11-04 03:04:19,544 basehttp 2952 1724 "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:04:19,586 basehttp 2952 1724 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:04:21,542 basehttp 2952 1724 "GET /tickets/ HTTP/1.1" 200 31512
+INFO 2025-11-04 03:04:22,809 basehttp 2952 1724 "GET /tickets/1/ HTTP/1.1" 200 30568
+INFO 2025-11-04 03:04:27,019 basehttp 2952 1724 "POST /tickets/1/change-status/ HTTP/1.1" 200 117
+INFO 2025-11-04 03:04:28,067 basehttp 2952 1724 "GET /tickets/1/ HTTP/1.1" 200 31550
+INFO 2025-11-04 03:04:30,824 basehttp 2952 1724 "GET /tickets/1/ HTTP/1.1" 200 31548
+INFO 2025-11-04 03:04:37,959 basehttp 2952 1724 "POST /tickets/1/change-status/ HTTP/1.1" 200 114
+INFO 2025-11-04 03:04:39,006 basehttp 2952 1724 "GET /tickets/1/ HTTP/1.1" 200 32535
+INFO 2025-11-04 03:04:47,828 basehttp 2952 1724 "POST /tickets/1/change-status/ HTTP/1.1" 200 124
+INFO 2025-11-04 03:04:48,875 basehttp 2952 1724 "GET /tickets/1/ HTTP/1.1" 200 33529
+INFO 2025-11-04 03:04:57,771 basehttp 2952 1724 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:04:59,238 basehttp 2952 1724 "GET /accounts/admin/users/create/ HTTP/1.1" 200 28321
+INFO 2025-11-04 03:05:01,273 basehttp 2952 1724 "GET /accounts/admin/users/ HTTP/1.1" 200 32465
+INFO 2025-11-04 03:05:08,395 basehttp 2952 1724 "GET /accounts/admin/groups/ HTTP/1.1" 200 31966
+INFO 2025-11-04 03:05:22,771 basehttp 2952 1724 "GET /accounts/admin/users/create/ HTTP/1.1" 200 28321
+INFO 2025-11-04 03:05:24,588 basehttp 2952 1724 "GET /accounts/admin/users/ HTTP/1.1" 200 32465
+INFO 2025-11-04 03:05:27,792 basehttp 2952 1724 "GET /accounts/admin/users/ HTTP/1.1" 200 32465
+INFO 2025-11-04 03:05:30,586 basehttp 2952 1724 "GET /accounts/admin/permissions/ HTTP/1.1" 200 103195
+INFO 2025-11-04 03:07:16,572 autoreload 2952 6628 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py changed, reloading.
+INFO 2025-11-04 03:07:17,084 autoreload 23540 13692 Watching for file changes with StatReloader
+INFO 2025-11-04 03:07:19,557 autoreload 23540 13692 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py changed, reloading.
+INFO 2025-11-04 03:07:19,986 autoreload 17028 17640 Watching for file changes with StatReloader
+INFO 2025-11-04 03:08:58,572 autoreload 2000 19816 Watching for file changes with StatReloader
+INFO 2025-11-04 03:09:03,592 basehttp 2000 20836 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:09:04,985 basehttp 2000 20836 "GET /accounts/admin/permissions/ HTTP/1.1" 200 137456
+INFO 2025-11-04 03:09:27,068 basehttp 2000 3328 "GET /accounts/admin/permissions/?id=445937ab-66bb-4d33-bc1a-6464885d410e&vscodeBrowserReqId=1762214967064 HTTP/1.1" 302 0
+INFO 2025-11-04 03:09:27,071 basehttp 2000 3328 "GET /accounts/login/?next=/accounts/admin/permissions/%3Fid%3D445937ab-66bb-4d33-bc1a-6464885d410e%26vscodeBrowserReqId%3D1762214967064 HTTP/1.1" 200 24582
+INFO 2025-11-04 03:09:57,057 basehttp 2000 20836 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:09:58,286 basehttp 2000 20836 "GET /accounts/admin/permissions/ HTTP/1.1" 200 137456
+INFO 2025-11-04 03:10:20,957 basehttp 2000 20836 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:10:24,065 basehttp 2000 20836 "GET /accounts/admin/users/ HTTP/1.1" 200 32465
+INFO 2025-11-04 03:10:25,550 basehttp 2000 20836 "GET /accounts/admin/users/create/ HTTP/1.1" 200 28321
+INFO 2025-11-04 03:10:27,026 basehttp 2000 20836 "GET /accounts/admin/groups/ HTTP/1.1" 200 31966
+INFO 2025-11-04 03:10:29,324 basehttp 2000 20836 "GET /accounts/admin/permissions/ HTTP/1.1" 200 137456
+INFO 2025-11-04 03:10:30,846 basehttp 2000 20836 "GET /tickets/admin/ HTTP/1.1" 200 33163
+INFO 2025-11-04 03:10:39,005 basehttp 2000 20836 "GET /tickets/categories/ HTTP/1.1" 200 32946
+INFO 2025-11-04 03:10:49,326 basehttp 2000 20836 "GET /tickets/categories/ HTTP/1.1" 200 32946
+INFO 2025-11-04 03:10:51,416 basehttp 2000 20836 "GET /tickets/categories/ HTTP/1.1" 200 32946
+INFO 2025-11-04 03:11:11,331 basehttp 2000 3328 "GET /tickets/categories/?id=d97e52ca-b028-4f6d-8e23-7330a30eebe6&vscodeBrowserReqId=1762215071328 HTTP/1.1" 302 0
+INFO 2025-11-04 03:11:11,333 basehttp 2000 3328 "GET /accounts/login/?next=/tickets/categories/%3Fid%3Dd97e52ca-b028-4f6d-8e23-7330a30eebe6%26vscodeBrowserReqId%3D1762215071328 HTTP/1.1" 200 24582
+INFO 2025-11-04 03:11:45,641 autoreload 2000 19816 C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\views.py changed, reloading.
+INFO 2025-11-04 03:11:46,143 autoreload 12396 21080 Watching for file changes with StatReloader
+INFO 2025-11-04 03:12:09,248 autoreload 12396 21080 C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\views.py changed, reloading.
+INFO 2025-11-04 03:12:09,715 autoreload 5840 2828 Watching for file changes with StatReloader
+INFO 2025-11-04 03:13:47,714 basehttp 5840 23260 "GET /tickets/categories/?id=48dee274-1330-45f9-8c04-728b638ad167&vscodeBrowserReqId=1762215227698 HTTP/1.1" 302 0
+INFO 2025-11-04 03:13:47,720 basehttp 5840 23260 "GET /accounts/login/?next=/tickets/categories/%3Fid%3D48dee274-1330-45f9-8c04-728b638ad167%26vscodeBrowserReqId%3D1762215227698 HTTP/1.1" 200 24582
+INFO 2025-11-04 03:13:53,150 basehttp 5840 7536 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:13:54,810 basehttp 5840 7536 "GET /tickets/categories/ HTTP/1.1" 200 33498
+ERROR 2025-11-04 03:14:01,789 log 5840 7536 Internal Server Error: /tickets/categories/
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\views.py", line 399, in ticket_categories_view
+    Category.objects.create(name=name, description=description)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 661, in create
+    obj = self.model(**kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\base.py", line 569, in __init__
+    raise TypeError(
+    ...<2 lines>...
+    )
+TypeError: Category() got unexpected keyword arguments: 'description'
+ERROR 2025-11-04 03:14:01,793 basehttp 5840 7536 "POST /tickets/categories/ HTTP/1.1" 500 96044
+INFO 2025-11-04 03:14:39,515 autoreload 5840 2828 C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\views.py changed, reloading.
+INFO 2025-11-04 03:14:40,048 autoreload 11136 16812 Watching for file changes with StatReloader
+INFO 2025-11-04 03:14:41,528 autoreload 11136 16812 C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\views.py changed, reloading.
+INFO 2025-11-04 03:14:41,963 autoreload 21592 23920 Watching for file changes with StatReloader
+INFO 2025-11-04 03:14:47,044 basehttp 21592 8868 "POST /tickets/categories/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:14:47,089 basehttp 21592 8868 "GET /tickets/categories/ HTTP/1.1" 200 36744
+INFO 2025-11-04 03:14:56,949 basehttp 21592 8868 "POST /tickets/categories/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:14:56,989 basehttp 21592 8868 "GET /tickets/categories/ HTTP/1.1" 200 33950
+INFO 2025-11-04 03:14:58,903 autoreload 21592 23920 C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\models.py changed, reloading.
+INFO 2025-11-04 03:14:59,422 autoreload 21936 11672 Watching for file changes with StatReloader
+ERROR 2025-11-04 03:15:04,067 log 21936 2432 Internal Server Error: /tickets/categories/
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column "description" of relation "tickets_category" does not exist
+LINE 1: INSERT INTO "tickets_category" ("name", "description") VALUE...
+                                                ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\views.py", line 398, in ticket_categories_view
+    Category.objects.create(name=name)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 663, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 1868, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: column "description" of relation "tickets_category" does not exist
+LINE 1: INSERT INTO "tickets_category" ("name", "description") VALUE...
+                                                ^
+
+ERROR 2025-11-04 03:15:04,073 basehttp 21936 2432 "POST /tickets/categories/ HTTP/1.1" 500 162326
+INFO 2025-11-04 03:15:09,205 autoreload 21936 11672 C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\models.py changed, reloading.
+INFO 2025-11-04 03:15:09,678 autoreload 16512 12436 Watching for file changes with StatReloader
+ERROR 2025-11-04 03:15:11,842 log 16512 11860 Internal Server Error: /tickets/categories/
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column tickets_category.description does not exist
+LINE 1: ...ickets_category"."id", "tickets_category"."name", "tickets_c...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\views.py", line 439, in ticket_categories_view
+    total_tickets = sum(category.ticket_count for category in categories)
+                                                              ^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 384, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: column tickets_category.description does not exist
+LINE 1: ...ickets_category"."id", "tickets_category"."name", "tickets_c...
+                                                             ^
+
+ERROR 2025-11-04 03:15:11,846 basehttp 16512 11860 "GET /tickets/categories/ HTTP/1.1" 500 135894
+INFO 2025-11-04 03:15:13,260 autoreload 16512 12436 C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\views.py changed, reloading.
+INFO 2025-11-04 03:15:13,742 autoreload 20448 8756 Watching for file changes with StatReloader
+ERROR 2025-11-04 03:15:14,260 log 20448 23452 Internal Server Error: /tickets/categories/
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column tickets_category.description does not exist
+LINE 1: ...ickets_category"."id", "tickets_category"."name", "tickets_c...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\views.py", line 442, in ticket_categories_view
+    total_tickets = sum(category.ticket_count for category in categories)
+                                                              ^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 384, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: column tickets_category.description does not exist
+LINE 1: ...ickets_category"."id", "tickets_category"."name", "tickets_c...
+                                                             ^
+
+ERROR 2025-11-04 03:15:14,264 basehttp 20448 23452 "GET /tickets/categories/ HTTP/1.1" 500 136162
+INFO 2025-11-04 03:15:19,251 basehttp 20448 23452 "GET / HTTP/1.1" 302 0
+INFO 2025-11-04 03:15:19,298 basehttp 20448 23452 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+ERROR 2025-11-04 03:15:22,468 log 20448 23452 Internal Server Error: /tickets/categories/
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column tickets_category.description does not exist
+LINE 1: ...ickets_category"."id", "tickets_category"."name", "tickets_c...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\views.py", line 442, in ticket_categories_view
+    total_tickets = sum(category.ticket_count for category in categories)
+                                                              ^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 384, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: column tickets_category.description does not exist
+LINE 1: ...ickets_category"."id", "tickets_category"."name", "tickets_c...
+                                                             ^
+
+ERROR 2025-11-04 03:15:22,470 basehttp 20448 23452 "GET /tickets/categories/ HTTP/1.1" 500 136027
+INFO 2025-11-04 03:15:25,594 autoreload 20448 8756 C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\views.py changed, reloading.
+INFO 2025-11-04 03:15:26,057 autoreload 13832 8552 Watching for file changes with StatReloader
+INFO 2025-11-04 03:17:07,904 autoreload 10272 22988 Watching for file changes with StatReloader
+INFO 2025-11-04 03:17:10,626 basehttp 10272 22812 "GET /tickets/categories/ HTTP/1.1" 200 33498
+INFO 2025-11-04 03:17:16,440 basehttp 10272 22812 "POST /tickets/categories/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:17:16,480 basehttp 10272 22812 "GET /tickets/categories/ HTTP/1.1" 200 36742
+INFO 2025-11-04 03:17:23,337 basehttp 10272 22812 "POST /tickets/categories/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:17:23,374 basehttp 10272 22812 "GET /tickets/categories/ HTTP/1.1" 200 33950
+INFO 2025-11-04 03:17:29,643 basehttp 10272 22812 "POST /tickets/categories/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:17:29,684 basehttp 10272 22812 "GET /tickets/categories/ HTTP/1.1" 200 36742
+INFO 2025-11-04 03:17:37,262 basehttp 10272 22812 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:17:39,504 basehttp 10272 22812 "GET /tickets/admin/ HTTP/1.1" 200 33163
+INFO 2025-11-04 03:17:42,265 basehttp 10272 22812 "GET /accounts/admin/reports/ HTTP/1.1" 200 29048
+INFO 2025-11-04 03:17:49,600 basehttp 10272 22812 "GET /accounts/admin/analytics/ HTTP/1.1" 200 37731
+INFO 2025-11-04 03:17:54,287 basehttp 10272 22812 "GET /accounts/admin/settings/ HTTP/1.1" 200 30788
+INFO 2025-11-04 03:18:53,820 basehttp 10272 16652 "GET /accounts/admin/settings/?id=452b6742-7504-43c6-86b2-e88de9256043&vscodeBrowserReqId=1762215533816 HTTP/1.1" 302 0
+INFO 2025-11-04 03:18:53,823 basehttp 10272 16652 "GET /accounts/login/?next=/accounts/admin/settings/%3Fid%3D452b6742-7504-43c6-86b2-e88de9256043%26vscodeBrowserReqId%3D1762215533816 HTTP/1.1" 200 24582
+INFO 2025-11-04 03:19:50,993 basehttp 10272 16652 "GET /accounts/admin/settings/?id=452b6742-7504-43c6-86b2-e88de9256043&vscodeBrowserReqId=1762215590989 HTTP/1.1" 302 0
+INFO 2025-11-04 03:19:50,996 basehttp 10272 16652 "GET /accounts/login/?next=/accounts/admin/settings/%3Fid%3D452b6742-7504-43c6-86b2-e88de9256043%26vscodeBrowserReqId%3D1762215590989 HTTP/1.1" 200 24582
+INFO 2025-11-04 03:20:03,577 basehttp 10272 22812 "GET / HTTP/1.1" 302 0
+INFO 2025-11-04 03:20:03,622 basehttp 10272 22812 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:20:05,563 basehttp 10272 22812 "GET /accounts/admin/settings/ HTTP/1.1" 200 33312
+INFO 2025-11-04 03:20:18,399 basehttp 10272 22812 "POST /accounts/admin/settings/ HTTP/1.1" 200 33312
+INFO 2025-11-04 03:21:31,573 autoreload 10272 22988 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\models.py changed, reloading.
+INFO 2025-11-04 03:21:32,112 autoreload 20968 21952 Watching for file changes with StatReloader
+INFO 2025-11-04 03:21:34,605 autoreload 20968 21952 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\models.py changed, reloading.
+INFO 2025-11-04 03:21:35,038 autoreload 5376 4152 Watching for file changes with StatReloader
+INFO 2025-11-04 03:21:40,958 basehttp 5376 9100 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:21:43,264 basehttp 5376 9100 "GET /accounts/admin/settings/ HTTP/1.1" 200 33312
+INFO 2025-11-04 03:21:48,882 autoreload 5376 4152 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py changed, reloading.
+INFO 2025-11-04 03:21:49,424 autoreload 18940 8300 Watching for file changes with StatReloader
+ERROR 2025-11-04 03:21:58,821 log 18940 4352 Internal Server Error: /accounts/admin/settings/
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column accounts_systemsettings.enable_2fa does not exist
+LINE 1: ...counts_systemsettings"."require_password_change", "accounts_...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py", line 701, in admin_settings_view
+    settings = SystemSettings.get_settings()
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\models.py", line 204, in get_settings
+    settings, created = cls.objects.get_or_create(pk=1)
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 946, in get_or_create
+    return self.get(**kwargs), False
+           ~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 629, in get
+    num = len(clone)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 366, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: column accounts_systemsettings.enable_2fa does not exist
+LINE 1: ...counts_systemsettings"."require_password_change", "accounts_...
+                                                             ^
+
+ERROR 2025-11-04 03:21:58,825 basehttp 18940 4352 "POST /accounts/admin/settings/ HTTP/1.1" 500 159472
+INFO 2025-11-04 03:22:04,344 autoreload 18940 8300 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py changed, reloading.
+INFO 2025-11-04 03:22:04,800 autoreload 7156 2092 Watching for file changes with StatReloader
+INFO 2025-11-04 03:22:12,047 basehttp 7156 13304 "GET / HTTP/1.1" 302 0
+INFO 2025-11-04 03:22:12,097 basehttp 7156 13304 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+ERROR 2025-11-04 03:22:13,899 log 7156 13304 Internal Server Error: /accounts/admin/settings/
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column accounts_systemsettings.enable_2fa does not exist
+LINE 1: ...counts_systemsettings"."require_password_change", "accounts_...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py", line 701, in admin_settings_view
+    settings = SystemSettings.get_settings()
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\models.py", line 204, in get_settings
+    settings, created = cls.objects.get_or_create(pk=1)
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 946, in get_or_create
+    return self.get(**kwargs), False
+           ~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 629, in get
+    num = len(clone)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 366, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: column accounts_systemsettings.enable_2fa does not exist
+LINE 1: ...counts_systemsettings"."require_password_change", "accounts_...
+                                                             ^
+
+ERROR 2025-11-04 03:22:13,903 basehttp 7156 13304 "GET /accounts/admin/settings/ HTTP/1.1" 500 158086
+ERROR 2025-11-04 03:22:16,664 log 7156 13304 Internal Server Error: /accounts/admin/settings/
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column accounts_systemsettings.enable_2fa does not exist
+LINE 1: ...counts_systemsettings"."require_password_change", "accounts_...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py", line 701, in admin_settings_view
+    settings = SystemSettings.get_settings()
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\models.py", line 204, in get_settings
+    settings, created = cls.objects.get_or_create(pk=1)
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 946, in get_or_create
+    return self.get(**kwargs), False
+           ~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 629, in get
+    num = len(clone)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 366, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: column accounts_systemsettings.enable_2fa does not exist
+LINE 1: ...counts_systemsettings"."require_password_change", "accounts_...
+                                                             ^
+
+ERROR 2025-11-04 03:22:16,667 basehttp 7156 13304 "GET /accounts/admin/settings/ HTTP/1.1" 500 158086
+INFO 2025-11-04 03:22:17,735 basehttp 7156 13304 "GET /accounts/admin/backup/ HTTP/1.1" 200 36733
+INFO 2025-11-04 03:22:19,128 basehttp 7156 13304 "GET /accounts/admin/logs/ HTTP/1.1" 200 34995
+INFO 2025-11-04 03:22:20,595 basehttp 7156 13304 "GET /accounts/admin/tokens/ HTTP/1.1" 200 29641
+INFO 2025-11-04 03:24:19,941 autoreload 13704 1680 Watching for file changes with StatReloader
+INFO 2025-11-04 03:24:22,364 basehttp 13704 17392 "GET /accounts/admin/settings/ HTTP/1.1" 200 38118
+INFO 2025-11-04 03:24:31,101 basehttp 13704 17392 "GET / HTTP/1.1" 302 0
+INFO 2025-11-04 03:24:31,250 basehttp 13704 17392 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:24:32,805 basehttp 13704 17392 "GET /accounts/admin/settings/ HTTP/1.1" 200 38118
+INFO 2025-11-04 03:24:45,800 basehttp 13704 17392 "POST /accounts/admin/settings/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:24:45,838 basehttp 13704 17392 "GET /accounts/admin/settings/?tab=security HTTP/1.1" 200 38626
+INFO 2025-11-04 03:25:05,843 basehttp 13704 17392 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:25:07,145 basehttp 13704 17392 "GET /tickets/categories/ HTTP/1.1" 200 36290
+INFO 2025-11-04 03:25:09,311 basehttp 13704 17392 "GET /accounts/admin/reports/ HTTP/1.1" 200 29048
+INFO 2025-11-04 03:25:12,979 basehttp 13704 17392 "GET /accounts/admin/settings/ HTTP/1.1" 200 38177
+INFO 2025-11-04 03:25:14,562 basehttp 13704 17392 "GET /accounts/admin/backup/ HTTP/1.1" 200 36733
+INFO 2025-11-04 03:25:45,085 basehttp 13704 17392 "GET /accounts/admin/logs/ HTTP/1.1" 200 34995
+INFO 2025-11-04 03:25:50,980 basehttp 13704 17392 "GET /accounts/admin/tokens/ HTTP/1.1" 200 29641
+INFO 2025-11-04 03:26:00,306 basehttp 13704 17392 "GET /accounts/admin/users/bulk-import/ HTTP/1.1" 200 35323
+INFO 2025-11-04 03:26:05,201 basehttp 13704 17392 "GET /accounts/admin/notifications/ HTTP/1.1" 200 38304
+INFO 2025-11-04 03:26:32,550 basehttp 13704 17392 "POST /accounts/admin/notifications/ HTTP/1.1" 200 38304
+INFO 2025-11-04 03:26:41,773 basehttp 13704 17392 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:26:44,411 basehttp 13704 17392 "GET /accounts/admin/maintenance/ HTTP/1.1" 200 41292
+INFO 2025-11-04 03:26:56,210 basehttp 13704 17392 "GET /accounts/admin/export/ HTTP/1.1" 200 50189
+INFO 2025-11-04 03:27:52,114 basehttp 13704 17392 "GET /accounts/admin/logs/ HTTP/1.1" 200 34995
+INFO 2025-11-04 03:28:12,203 basehttp 13704 10036 "GET /accounts/admin/logs/?id=7214f3ac-d226-4c17-9e2e-f6eba0ca165f&vscodeBrowserReqId=1762216092200 HTTP/1.1" 302 0
+INFO 2025-11-04 03:28:12,206 basehttp 13704 10036 "GET /accounts/login/?next=/accounts/admin/logs/%3Fid%3D7214f3ac-d226-4c17-9e2e-f6eba0ca165f%26vscodeBrowserReqId%3D1762216092200 HTTP/1.1" 200 24582
+INFO 2025-11-04 03:28:28,919 basehttp 13704 17392 "GET /accounts/admin/users/ HTTP/1.1" 200 32465
+INFO 2025-11-04 03:28:29,269 autoreload 13704 1680 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\models.py changed, reloading.
+INFO 2025-11-04 03:28:29,798 autoreload 4256 8604 Watching for file changes with StatReloader
+INFO 2025-11-04 03:28:31,061 basehttp 4256 1284 "GET /accounts/admin/users/create/ HTTP/1.1" 200 28321
+INFO 2025-11-04 03:28:34,721 basehttp 4256 1284 "GET /accounts/admin/groups/ HTTP/1.1" 200 31966
+INFO 2025-11-04 03:28:37,791 basehttp 4256 1284 "GET /accounts/admin/permissions/ HTTP/1.1" 200 137456
+INFO 2025-11-04 03:28:43,725 basehttp 4256 1284 "GET /tickets/admin/ HTTP/1.1" 200 33163
+INFO 2025-11-04 03:28:46,580 basehttp 4256 1284 "GET /tickets/categories/ HTTP/1.1" 200 36290
+INFO 2025-11-04 03:28:48,336 basehttp 4256 1284 "GET /admin/ HTTP/1.1" 200 11563
+INFO 2025-11-04 03:28:48,426 basehttp 4256 13924 "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+INFO 2025-11-04 03:28:48,428 basehttp 4256 17460 "GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+INFO 2025-11-04 03:28:48,428 basehttp 4256 18900 "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+INFO 2025-11-04 03:28:48,429 basehttp 4256 21244 "GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+INFO 2025-11-04 03:28:48,433 basehttp 4256 1284 "GET /static/admin/css/base.css HTTP/1.1" 200 22120
+INFO 2025-11-04 03:28:48,435 basehttp 4256 8552 "GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+INFO 2025-11-04 03:28:48,439 basehttp 4256 8552 "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+INFO 2025-11-04 03:28:48,444 basehttp 4256 21244 "GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+INFO 2025-11-04 03:28:48,450 basehttp 4256 1284 "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+INFO 2025-11-04 03:28:50,018 autoreload 4256 8604 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py changed, reloading.
+INFO 2025-11-04 03:28:50,550 autoreload 22112 17484 Watching for file changes with StatReloader
+INFO 2025-11-04 03:29:13,244 basehttp 22112 22384 "GET /tickets/admin/ HTTP/1.1" 200 33163
+INFO 2025-11-04 03:29:15,030 basehttp 22112 22384 "GET /tickets/1/ HTTP/1.1" 200 33528
+INFO 2025-11-04 03:29:17,416 basehttp 22112 22384 "POST /tickets/1/change-status/ HTTP/1.1" 200 107
+INFO 2025-11-04 03:29:18,471 basehttp 22112 22384 "GET /tickets/1/ HTTP/1.1" 200 34504
+INFO 2025-11-04 03:29:18,806 basehttp 22112 22384 "GET / HTTP/1.1" 302 0
+INFO 2025-11-04 03:29:18,847 basehttp 22112 22384 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:29:29,304 autoreload 22112 17484 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\models.py changed, reloading.
+INFO 2025-11-04 03:29:29,745 autoreload 17708 20592 Watching for file changes with StatReloader
+ERROR 2025-11-04 03:29:34,175 log 17708 1280 Internal Server Error: /accounts/admin/logs/
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedTable: relation "accounts_systemlog" does not exist
+LINE 1: SELECT COUNT(*) AS "__count" FROM "accounts_systemlog"
+                                          ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py", line 805, in admin_logs_view
+    page_logs = paginator.get_page(page_number)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\paginator.py", line 85, in get_page
+    return self.page(number)
+           ~~~~~~~~~^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\paginator.py", line 89, in page
+    number = self.validate_number(number)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\paginator.py", line 70, in validate_number
+    if number > self.num_pages:
+                ^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\utils\functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\paginator.py", line 116, in num_pages
+    if self.count == 0 and not self.allow_empty_first_page:
+       ^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\utils\functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\paginator.py", line 110, in count
+    return c()
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\query.py", line 604, in count
+    return self.query.get_count(using=self.db)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\sql\query.py", line 644, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\sql\query.py", line 626, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: relation "accounts_systemlog" does not exist
+LINE 1: SELECT COUNT(*) AS "__count" FROM "accounts_systemlog"
+                                          ^
+
+ERROR 2025-11-04 03:29:34,180 basehttp 17708 1280 "GET /accounts/admin/logs/ HTTP/1.1" 500 165172
+INFO 2025-11-04 03:33:34,456 autoreload 21928 12880 Watching for file changes with StatReloader
+INFO 2025-11-04 03:33:36,797 basehttp 21928 21600 "GET /accounts/admin/logs/ HTTP/1.1" 200 31375
+INFO 2025-11-04 03:33:42,351 basehttp 21928 21600 "GET /accounts/admin/logs/ HTTP/1.1" 200 31375
+INFO 2025-11-04 03:33:42,833 basehttp 21928 21600 "GET /accounts/admin/logs/ HTTP/1.1" 200 31375
+INFO 2025-11-04 03:33:47,647 basehttp 21928 21600 "GET /accounts/admin/tokens/ HTTP/1.1" 200 29641
+INFO 2025-11-04 03:33:51,856 basehttp 21928 21600 "GET /accounts/admin/analytics/ HTTP/1.1" 200 37731
+INFO 2025-11-04 03:34:02,805 basehttp 21928 21600 "GET /accounts/admin/reports/ HTTP/1.1" 200 29048
+INFO 2025-11-04 03:34:11,873 basehttp 21928 21600 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:34:14,375 basehttp 21928 21600 "GET / HTTP/1.1" 302 0
+INFO 2025-11-04 03:34:14,416 basehttp 21928 21600 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:34:55,344 autoreload 9400 22012 Watching for file changes with StatReloader
+INFO 2025-11-04 03:34:58,344 basehttp 9400 24564 "GET / HTTP/1.1" 302 0
+INFO 2025-11-04 03:34:58,393 basehttp 9400 24564 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:34:59,285 basehttp 9400 24564 "GET /tickets/ HTTP/1.1" 200 31517
+INFO 2025-11-04 03:35:01,244 basehttp 9400 24564 "GET /tickets/create/ HTTP/1.1" 200 31631
+INFO 2025-11-04 03:35:07,218 basehttp 9400 24564 "GET /accounts/customer-panel/ HTTP/1.1" 200 35591
+INFO 2025-11-04 03:35:16,202 basehttp 9400 24564 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:35:20,283 basehttp 9400 24564 "GET /accounts/admin/users/ HTTP/1.1" 200 32465
+INFO 2025-11-04 03:35:22,711 basehttp 9400 24564 "GET /accounts/admin/users/create/ HTTP/1.1" 200 28321
+INFO 2025-11-04 03:35:24,257 basehttp 9400 24564 "GET /accounts/admin/groups/ HTTP/1.1" 200 31966
+INFO 2025-11-04 03:35:30,382 basehttp 9400 24564 "GET /accounts/admin/users/ HTTP/1.1" 200 32465
+INFO 2025-11-04 03:35:31,380 basehttp 9400 24564 "GET /accounts/admin/users/2/edit/ HTTP/1.1" 200 30874
+INFO 2025-11-04 03:35:40,322 basehttp 9400 24564 "GET /accounts/admin/permissions/ HTTP/1.1" 200 145280
+INFO 2025-11-04 03:35:42,046 basehttp 9400 24564 "GET /tickets/admin/ HTTP/1.1" 200 33161
+INFO 2025-11-04 03:35:45,308 basehttp 9400 24564 "GET /tickets/categories/ HTTP/1.1" 200 36290
+INFO 2025-11-04 03:35:47,412 basehttp 9400 24564 "GET /accounts/admin/reports/ HTTP/1.1" 200 29048
+INFO 2025-11-04 03:35:54,857 basehttp 9400 24564 "GET /accounts/admin/analytics/ HTTP/1.1" 200 37731
+INFO 2025-11-04 03:35:57,169 basehttp 9400 24564 "GET /accounts/admin/reports/ HTTP/1.1" 200 29048
+INFO 2025-11-04 03:35:58,399 basehttp 9400 24564 "GET /accounts/admin/settings/ HTTP/1.1" 200 38177
+INFO 2025-11-04 03:36:01,844 basehttp 9400 24564 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:36:03,893 basehttp 9400 24564 "GET /accounts/admin/backup/ HTTP/1.1" 200 36733
+INFO 2025-11-04 03:36:05,231 basehttp 9400 24564 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:36:06,329 basehttp 9400 24564 "GET /accounts/admin/logs/ HTTP/1.1" 200 31375
+INFO 2025-11-04 03:36:10,549 basehttp 9400 24564 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:36:11,970 basehttp 9400 24564 "GET /accounts/admin/analytics/ HTTP/1.1" 200 37731
+INFO 2025-11-04 03:36:13,563 basehttp 9400 24564 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:36:18,140 basehttp 9400 24564 "GET /accounts/admin/users/bulk-import/ HTTP/1.1" 200 35323
+INFO 2025-11-04 03:36:20,685 basehttp 9400 24564 "GET /accounts/admin-panel/ HTTP/1.1" 200 37589
+INFO 2025-11-04 03:36:38,443 basehttp 9400 24564 "GET /accounts/admin/users/ HTTP/1.1" 200 32465
+INFO 2025-11-04 03:39:29,939 basehttp 9400 24564 "GET / HTTP/1.1" 302 0
+INFO 2025-11-04 03:39:29,990 basehttp 9400 24564 "GET /accounts/admin-panel/ HTTP/1.1" 200 40837
+INFO 2025-11-04 03:39:43,491 basehttp 9400 24564 "GET /tickets/ HTTP/1.1" 200 31517
+INFO 2025-11-04 03:39:48,232 basehttp 9400 24564 "GET /tickets/create/ HTTP/1.1" 200 31631
+INFO 2025-11-04 03:39:50,031 basehttp 9400 24564 "GET /accounts/customer-panel/ HTTP/1.1" 200 35591
+INFO 2025-11-04 03:39:54,514 basehttp 9400 15316 "GET /accounts/admin-panel/?id=ebfa04c1-5564-47da-9bc1-746ac6b572fa&vscodeBrowserReqId=1762216794510 HTTP/1.1" 302 0
+INFO 2025-11-04 03:39:54,517 basehttp 9400 15316 "GET /accounts/login/?next=/accounts/admin-panel/%3Fid%3Debfa04c1-5564-47da-9bc1-746ac6b572fa%26vscodeBrowserReqId%3D1762216794510 HTTP/1.1" 200 24582
+INFO 2025-11-04 03:39:58,907 basehttp 9400 24564 "GET /tickets/ HTTP/1.1" 200 31517
+INFO 2025-11-04 03:40:00,334 basehttp 9400 24564 "GET /tickets/create/ HTTP/1.1" 200 31631
+INFO 2025-11-04 03:40:01,757 basehttp 9400 15316 "GET /accounts/admin/settings/?id=ebfa04c1-5564-47da-9bc1-746ac6b572fa&vscodeBrowserReqId=1762216801754 HTTP/1.1" 302 0
+INFO 2025-11-04 03:40:01,762 basehttp 9400 15316 "GET /accounts/login/?next=/accounts/admin/settings/%3Fid%3Debfa04c1-5564-47da-9bc1-746ac6b572fa%26vscodeBrowserReqId%3D1762216801754 HTTP/1.1" 200 24582
+INFO 2025-11-04 03:40:01,817 basehttp 9400 24564 "GET /accounts/customer/profile-edit/ HTTP/1.1" 200 28435
+INFO 2025-11-04 03:40:05,031 basehttp 9400 15316 "GET /accounts/admin/logs/?id=ebfa04c1-5564-47da-9bc1-746ac6b572fa&vscodeBrowserReqId=1762216805027 HTTP/1.1" 302 0
+INFO 2025-11-04 03:40:05,034 basehttp 9400 15316 "GET /accounts/login/?next=/accounts/admin/logs/%3Fid%3Debfa04c1-5564-47da-9bc1-746ac6b572fa%26vscodeBrowserReqId%3D1762216805027 HTTP/1.1" 200 24582
+INFO 2025-11-04 03:40:07,018 basehttp 9400 24564 "GET /accounts/admin-panel/ HTTP/1.1" 200 40837
+INFO 2025-11-04 03:40:09,166 basehttp 9400 24564 "GET /accounts/admin/users/ HTTP/1.1" 200 32465
+INFO 2025-11-04 03:40:13,109 basehttp 9400 24564 "GET /accounts/admin/users/create/ HTTP/1.1" 200 28321
+INFO 2025-11-04 03:40:14,141 basehttp 9400 24564 "GET /accounts/admin/groups/ HTTP/1.1" 200 31966
+INFO 2025-11-04 03:40:19,305 basehttp 9400 24564 "GET /accounts/admin/permissions/ HTTP/1.1" 200 145280
+INFO 2025-11-04 03:40:21,198 basehttp 9400 24564 "GET /tickets/admin/ HTTP/1.1" 200 33161
+INFO 2025-11-04 03:40:23,037 basehttp 9400 24564 "GET /tickets/categories/ HTTP/1.1" 200 36290
+INFO 2025-11-04 03:40:24,873 basehttp 9400 24564 "GET /accounts/admin/reports/ HTTP/1.1" 200 29048
+INFO 2025-11-04 03:40:27,806 basehttp 9400 24564 "GET /accounts/admin/analytics/ HTTP/1.1" 200 37731
+INFO 2025-11-04 03:40:30,741 basehttp 9400 24564 "GET /accounts/admin/settings/ HTTP/1.1" 200 41943
+INFO 2025-11-04 03:40:36,723 basehttp 9400 24564 "GET /accounts/admin-panel/ HTTP/1.1" 200 40837
+INFO 2025-11-04 03:40:37,478 basehttp 9400 24564 "GET / HTTP/1.1" 302 0
+INFO 2025-11-04 03:40:37,630 basehttp 9400 24564 "GET /accounts/admin-panel/ HTTP/1.1" 200 40837
+INFO 2025-11-04 03:40:39,524 basehttp 9400 24564 "GET /accounts/admin/backup/ HTTP/1.1" 200 36733
+INFO 2025-11-04 03:40:41,181 basehttp 9400 24564 "GET /accounts/admin/logs/ HTTP/1.1" 200 34764
+INFO 2025-11-04 03:40:43,071 basehttp 9400 24564 "GET /accounts/admin/tokens/ HTTP/1.1" 200 29641
+INFO 2025-11-04 03:40:53,356 basehttp 9400 24564 "GET /accounts/customer-panel/ HTTP/1.1" 200 35591
+INFO 2025-11-04 03:41:18,941 basehttp 9400 24564 "GET /tickets/admin/ HTTP/1.1" 200 33161
+INFO 2025-11-04 03:41:21,012 basehttp 9400 24564 "GET /accounts/admin/permissions/ HTTP/1.1" 200 145280
+INFO 2025-11-04 03:41:22,324 basehttp 9400 24564 "GET /tickets/categories/ HTTP/1.1" 200 36290
+INFO 2025-11-04 03:41:25,474 basehttp 9400 15316 "GET /accounts/customer-panel/?id=0bdcb9d7-75db-42e3-aa66-439566f69b98&vscodeBrowserReqId=1762216885471 HTTP/1.1" 302 0
+INFO 2025-11-04 03:41:25,477 basehttp 9400 15316 "GET /accounts/login/?next=/accounts/customer-panel/%3Fid%3D0bdcb9d7-75db-42e3-aa66-439566f69b98%26vscodeBrowserReqId%3D1762216885471 HTTP/1.1" 200 24582
+INFO 2025-11-04 03:41:28,183 basehttp 9400 24564 "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:41:28,186 basehttp 9400 24564 "GET /accounts/login/ HTTP/1.1" 200 25365
+INFO 2025-11-04 03:41:44,463 basehttp 9400 24564 "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:41:44,502 basehttp 9400 24564 "GET /accounts/customer-panel/ HTTP/1.1" 200 34137
+INFO 2025-11-04 03:41:47,379 basehttp 9400 24564 "GET /accounts/customer-panel/ HTTP/1.1" 200 34137
+INFO 2025-11-04 03:41:48,101 basehttp 9400 24564 "GET /accounts/customer/profile-edit/ HTTP/1.1" 200 26973
+INFO 2025-11-04 03:41:49,438 basehttp 9400 24564 "GET /accounts/customer-panel/ HTTP/1.1" 200 34137
+INFO 2025-11-04 03:41:50,142 basehttp 9400 24564 "GET /accounts/customer/profile-edit/ HTTP/1.1" 200 26973
+INFO 2025-11-04 03:41:56,886 basehttp 9400 24564 "GET / HTTP/1.1" 302 0
+INFO 2025-11-04 03:41:56,922 basehttp 9400 24564 "GET /accounts/customer-panel/ HTTP/1.1" 200 34137
+INFO 2025-11-04 03:42:03,686 basehttp 9400 24564 "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:42:03,689 basehttp 9400 24564 "GET /accounts/login/ HTTP/1.1" 200 25365
+INFO 2025-11-04 03:42:07,745 basehttp 9400 24564 "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:42:07,788 basehttp 9400 24564 "GET /accounts/admin-panel/ HTTP/1.1" 200 40837
+INFO 2025-11-04 03:43:57,656 basehttp 9400 24564 "GET /accounts/customer-panel/ HTTP/1.1" 200 40319
+INFO 2025-11-04 03:44:25,047 basehttp 9400 24564 "GET /accounts/admin-panel/ HTTP/1.1" 200 40837
+INFO 2025-11-04 03:44:32,848 basehttp 9400 24564 "GET /accounts/admin/users/ HTTP/1.1" 200 32465
+INFO 2025-11-04 03:44:58,136 autoreload 9400 22012 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py changed, reloading.
+INFO 2025-11-04 03:44:58,658 autoreload 23508 2988 Watching for file changes with StatReloader
+INFO 2025-11-04 03:45:01,156 autoreload 23508 2988 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py changed, reloading.
+INFO 2025-11-04 03:45:01,604 autoreload 19656 5520 Watching for file changes with StatReloader
+INFO 2025-11-04 03:45:02,618 basehttp 19656 8040 "GET /accounts/customer-panel/?id=0bdcb9d7-75db-42e3-aa66-439566f69b98&vscodeBrowserReqId=1762217102607 HTTP/1.1" 302 0
+INFO 2025-11-04 03:45:02,624 basehttp 19656 8040 "GET /accounts/login/?next=/accounts/customer-panel/%3Fid%3D0bdcb9d7-75db-42e3-aa66-439566f69b98%26vscodeBrowserReqId%3D1762217102607 HTTP/1.1" 200 24582
+ERROR 2025-11-04 03:45:14,291 log 19656 16448 Internal Server Error: /accounts/customer-panel/
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py", line 193, in customer_panel_view
+    from tickets.models import Ticket
+ImportError: cannot import name 'Ticket' from 'tickets.models' (C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\models.py)
+ERROR 2025-11-04 03:45:14,293 basehttp 19656 16448 "GET /accounts/customer-panel/ HTTP/1.1" 500 78961
+INFO 2025-11-04 03:45:16,281 basehttp 19656 16448 "GET /accounts/customer/profile-edit/ HTTP/1.1" 200 28435
+ERROR 2025-11-04 03:45:17,409 log 19656 16448 Internal Server Error: /accounts/customer-panel/
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py", line 193, in customer_panel_view
+    from tickets.models import Ticket
+ImportError: cannot import name 'Ticket' from 'tickets.models' (C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\models.py)
+ERROR 2025-11-04 03:45:17,410 basehttp 19656 16448 "GET /accounts/customer-panel/ HTTP/1.1" 500 78971
+INFO 2025-11-04 03:45:19,023 basehttp 19656 16448 "GET / HTTP/1.1" 302 0
+INFO 2025-11-04 03:45:19,065 basehttp 19656 16448 "GET /accounts/admin-panel/ HTTP/1.1" 200 40837
+ERROR 2025-11-04 03:45:20,598 log 19656 16448 Internal Server Error: /accounts/customer-panel/
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py", line 193, in customer_panel_view
+    from tickets.models import Ticket
+ImportError: cannot import name 'Ticket' from 'tickets.models' (C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\models.py)
+ERROR 2025-11-04 03:45:20,600 basehttp 19656 16448 "GET /accounts/customer-panel/ HTTP/1.1" 500 78977
+INFO 2025-11-04 03:45:20,623 autoreload 19656 5520 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py changed, reloading.
+INFO 2025-11-04 03:45:21,127 autoreload 24556 23092 Watching for file changes with StatReloader
+INFO 2025-11-04 03:45:26,278 basehttp 24556 23596 "GET /accounts/admin/users/ HTTP/1.1" 200 32465
+INFO 2025-11-04 03:45:27,316 basehttp 24556 23596 "GET /accounts/admin/users/create/ HTTP/1.1" 200 28321
+INFO 2025-11-04 03:45:28,341 basehttp 24556 23596 "GET /accounts/admin/groups/ HTTP/1.1" 200 31966
+INFO 2025-11-04 03:45:29,560 basehttp 24556 23596 "GET /accounts/admin/permissions/ HTTP/1.1" 200 145280
+INFO 2025-11-04 03:45:30,809 basehttp 24556 23596 "GET /tickets/admin/ HTTP/1.1" 200 33161
+INFO 2025-11-04 03:45:32,683 basehttp 24556 23596 "GET /tickets/categories/ HTTP/1.1" 200 36290
+INFO 2025-11-04 03:45:33,961 basehttp 24556 23596 "GET /accounts/admin/reports/ HTTP/1.1" 200 29048
+INFO 2025-11-04 03:45:35,698 basehttp 24556 23596 "GET /accounts/admin/analytics/ HTTP/1.1" 200 37731
+INFO 2025-11-04 03:45:36,918 basehttp 24556 23596 "GET /accounts/admin/reports/ HTTP/1.1" 200 29048
+INFO 2025-11-04 03:45:39,129 basehttp 24556 23596 "GET /accounts/admin/settings/ HTTP/1.1" 200 41943
+INFO 2025-11-04 03:45:42,382 basehttp 24556 23596 "GET /accounts/admin/backup/ HTTP/1.1" 200 36733
+INFO 2025-11-04 03:45:44,670 basehttp 24556 23596 "GET /accounts/admin/logs/ HTTP/1.1" 200 34764
+INFO 2025-11-04 03:45:46,684 basehttp 24556 23596 "GET /accounts/admin-panel/ HTTP/1.1" 200 40837
+INFO 2025-11-04 03:45:48,596 basehttp 24556 23596 "GET /accounts/admin/tokens/ HTTP/1.1" 200 29641
+INFO 2025-11-04 03:45:50,405 basehttp 24556 10952 "GET /accounts/customer-panel/?id=0bdcb9d7-75db-42e3-aa66-439566f69b98&vscodeBrowserReqId=1762217150401 HTTP/1.1" 302 0
+INFO 2025-11-04 03:45:50,408 basehttp 24556 10952 "GET /accounts/login/?next=/accounts/customer-panel/%3Fid%3D0bdcb9d7-75db-42e3-aa66-439566f69b98%26vscodeBrowserReqId%3D1762217150401 HTTP/1.1" 200 24582
+INFO 2025-11-04 03:45:51,108 basehttp 24556 23596 "GET /accounts/admin-panel/ HTTP/1.1" 200 40837
+INFO 2025-11-04 03:45:55,652 autoreload 24556 23092 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py changed, reloading.
+INFO 2025-11-04 03:45:56,109 autoreload 3376 23400 Watching for file changes with StatReloader
+ERROR 2025-11-04 03:45:59,272 log 3376 3168 Internal Server Error: /accounts/customer-panel/
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py", line 193, in customer_panel_view
+    from tickets.models import Ticket
+ImportError: cannot import name 'Ticket' from 'tickets.models' (C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\models.py)
+ERROR 2025-11-04 03:45:59,274 basehttp 3376 3168 "GET /accounts/customer-panel/ HTTP/1.1" 500 78977
+INFO 2025-11-04 03:46:07,017 basehttp 3376 16924 "GET /accounts/customer-panel/?id=5a24a16c-59c6-4b24-abab-2177cc0425cf&vscodeBrowserReqId=1762217167007 HTTP/1.1" 302 0
+INFO 2025-11-04 03:46:07,022 basehttp 3376 16924 "GET /accounts/login/?next=/accounts/customer-panel/%3Fid%3D5a24a16c-59c6-4b24-abab-2177cc0425cf%26vscodeBrowserReqId%3D1762217167007 HTTP/1.1" 200 24582
+INFO 2025-11-04 03:46:24,122 basehttp 3376 3168 "GET /accounts/customer/profile-edit/ HTTP/1.1" 200 28435
+ERROR 2025-11-04 03:46:24,776 log 3376 3168 Internal Server Error: /accounts/customer-panel/
+Traceback (most recent call last):
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\Kurt Ailesi\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py", line 193, in customer_panel_view
+    from tickets.models import Ticket
+ImportError: cannot import name 'Ticket' from 'tickets.models' (C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\models.py)
+ERROR 2025-11-04 03:46:24,777 basehttp 3376 3168 "GET /accounts/customer-panel/ HTTP/1.1" 500 78987
+INFO 2025-11-04 03:46:53,240 autoreload 3376 23400 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py changed, reloading.
+INFO 2025-11-04 03:46:53,772 autoreload 8592 22468 Watching for file changes with StatReloader
+INFO 2025-11-04 03:46:55,246 autoreload 8592 22468 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py changed, reloading.
+INFO 2025-11-04 03:46:55,682 autoreload 4660 17296 Watching for file changes with StatReloader
+INFO 2025-11-04 03:46:57,996 basehttp 4660 4504 "GET /accounts/customer-panel/?id=78cdec77-57a3-48b5-8337-38d793a5b80a&vscodeBrowserReqId=1762217217982 HTTP/1.1" 302 0
+INFO 2025-11-04 03:46:58,003 basehttp 4660 4504 "GET /accounts/login/?next=/accounts/customer-panel/%3Fid%3D78cdec77-57a3-48b5-8337-38d793a5b80a%26vscodeBrowserReqId%3D1762217217982 HTTP/1.1" 200 24582
+INFO 2025-11-04 03:47:05,768 basehttp 4660 21856 "GET /accounts/admin-panel/ HTTP/1.1" 200 40837
+INFO 2025-11-04 03:47:06,779 basehttp 4660 21856 "GET /accounts/customer-panel/ HTTP/1.1" 200 43509
+INFO 2025-11-04 03:47:20,030 autoreload 4660 17296 C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\views.py changed, reloading.
+INFO 2025-11-04 03:47:20,559 autoreload 19416 5944 Watching for file changes with StatReloader
+INFO 2025-11-04 03:47:29,645 basehttp 19416 7604 "GET /accounts/customer-panel/?id=caeaae06-a891-4d31-b662-2b9409d365ab&vscodeBrowserReqId=1762217249629 HTTP/1.1" 302 0
+INFO 2025-11-04 03:47:29,654 basehttp 19416 7604 "GET /accounts/login/?next=/accounts/customer-panel/%3Fid%3Dcaeaae06-a891-4d31-b662-2b9409d365ab%26vscodeBrowserReqId%3D1762217249629 HTTP/1.1" 200 24582
+INFO 2025-11-04 03:47:47,948 autoreload 19416 5944 C:\Users\Kurt Ailesi\Desktop\helpDesk\tickets\views.py changed, reloading.
+INFO 2025-11-04 03:47:48,415 autoreload 11032 13708 Watching for file changes with StatReloader
+INFO 2025-11-04 03:47:52,833 basehttp 11032 15248 "GET / HTTP/1.1" 302 0
+INFO 2025-11-04 03:47:52,880 basehttp 11032 15248 "GET /accounts/admin-panel/ HTTP/1.1" 200 40837
+INFO 2025-11-04 03:47:54,136 basehttp 11032 15248 "GET /accounts/admin/users/ HTTP/1.1" 200 32465
+INFO 2025-11-04 03:47:55,773 basehttp 11032 15248 "GET /accounts/admin/users/2/edit/ HTTP/1.1" 200 30874
+INFO 2025-11-04 03:48:00,721 basehttp 11032 15248 "POST /accounts/admin/users/2/edit/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:48:00,762 basehttp 11032 15248 "GET /accounts/admin/users/ HTTP/1.1" 200 33040
+INFO 2025-11-04 03:48:06,877 basehttp 11032 15248 "GET /accounts/admin/users/1/edit/ HTTP/1.1" 200 30958
+INFO 2025-11-04 03:48:19,503 basehttp 11032 15248 "POST /accounts/admin/users/1/edit/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:48:19,542 basehttp 11032 15248 "GET /accounts/admin/users/ HTTP/1.1" 200 33163
+INFO 2025-11-04 03:48:26,924 basehttp 11032 15248 "GET /accounts/admin-panel/ HTTP/1.1" 200 40837
+INFO 2025-11-04 03:48:28,390 basehttp 11032 15248 "GET /accounts/admin/users/create/ HTTP/1.1" 200 28321
+INFO 2025-11-04 03:48:34,434 basehttp 11032 15248 "GET /accounts/admin/groups/ HTTP/1.1" 200 31966
+INFO 2025-11-04 03:48:38,832 basehttp 11032 15248 "GET /accounts/admin/permissions/ HTTP/1.1" 200 145280
+INFO 2025-11-04 03:48:41,784 basehttp 11032 15248 "GET /tickets/admin/ HTTP/1.1" 200 33162
+INFO 2025-11-04 03:48:43,467 basehttp 11032 15248 "GET /tickets/categories/ HTTP/1.1" 200 36290
+INFO 2025-11-04 03:48:45,367 basehttp 11032 15248 "GET /accounts/admin/users/create/ HTTP/1.1" 200 28321
+INFO 2025-11-04 03:48:49,254 basehttp 11032 15248 "GET /accounts/admin/reports/ HTTP/1.1" 200 29048
+INFO 2025-11-04 03:48:51,233 basehttp 11032 15248 "GET /accounts/admin/analytics/ HTTP/1.1" 200 37731
+INFO 2025-11-04 03:48:53,366 basehttp 11032 15248 "GET /accounts/admin/settings/ HTTP/1.1" 200 41943
+INFO 2025-11-04 03:48:59,054 basehttp 11032 15248 "GET /accounts/admin-panel/ HTTP/1.1" 200 40837
+INFO 2025-11-04 03:49:03,645 basehttp 11032 15248 "GET /accounts/admin/logs/ HTTP/1.1" 200 34764
+INFO 2025-11-04 03:49:05,372 basehttp 11032 15248 "GET /accounts/admin-panel/ HTTP/1.1" 200 40837
+INFO 2025-11-04 03:49:09,170 basehttp 11032 15248 "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:49:09,174 basehttp 11032 15248 "GET /accounts/login/ HTTP/1.1" 200 25365
+INFO 2025-11-04 03:49:17,541 basehttp 11032 15248 "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:49:17,683 basehttp 11032 15248 "GET /accounts/customer-panel/ HTTP/1.1" 200 42358
+INFO 2025-11-04 03:49:22,537 basehttp 11032 15248 "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:49:22,540 basehttp 11032 15248 "GET /accounts/login/ HTTP/1.1" 200 25365
+INFO 2025-11-04 03:50:38,732 autoreload 11032 13708 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py changed, reloading.
+INFO 2025-11-04 03:50:39,290 autoreload 6776 10528 Watching for file changes with StatReloader
+INFO 2025-11-04 03:50:44,859 autoreload 6776 10528 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py changed, reloading.
+INFO 2025-11-04 03:50:45,298 autoreload 18112 22744 Watching for file changes with StatReloader
+INFO 2025-11-04 03:50:45,609 basehttp 18112 15524 "GET /accounts/logout/?id=1df4f5be-cf65-4c51-8742-47602ee50fa3&vscodeBrowserReqId=1762217445595 HTTP/1.1" 302 0
+INFO 2025-11-04 03:50:45,617 basehttp 18112 15524 "GET /accounts/login/ HTTP/1.1" 200 24582
+INFO 2025-11-04 03:50:49,774 basehttp 18112 20088 "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:50:49,821 basehttp 18112 20088 "GET /accounts/admin-panel/ HTTP/1.1" 200 40837
+INFO 2025-11-04 03:50:51,958 basehttp 18112 20088 "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:50:51,961 basehttp 18112 20088 "GET /accounts/login/ HTTP/1.1" 200 24582
+INFO 2025-11-04 03:51:06,493 basehttp 18112 20088 "GET /accounts/signup/ HTTP/1.1" 200 30826
+INFO 2025-11-04 03:51:46,092 views 18112 20088 New user registered and logged in successfully: 'muhasebe' (muhasebe@example.com) - IP: 127.0.0.1
+INFO 2025-11-04 03:51:46,093 basehttp 18112 20088 "POST /accounts/api/signup/ HTTP/1.1" 201 129
+INFO 2025-11-04 03:51:47,763 basehttp 18112 20088 "GET /accounts/customer-panel/ HTTP/1.1" 200 42038
+INFO 2025-11-04 03:51:54,498 basehttp 18112 20088 "GET /accounts/customer/profile-edit/ HTTP/1.1" 200 26973
+INFO 2025-11-04 03:51:58,530 basehttp 18112 20088 "POST /accounts/customer/profile-edit/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:51:58,566 basehttp 18112 20088 "GET /accounts/customer/profile/ HTTP/1.1" 200 26559
+INFO 2025-11-04 03:52:06,088 basehttp 18112 20088 "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:52:06,091 basehttp 18112 20088 "GET /accounts/login/ HTTP/1.1" 200 24582
+INFO 2025-11-04 03:52:08,416 basehttp 18112 20088 "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:52:08,461 basehttp 18112 20088 "GET /accounts/admin-panel/ HTTP/1.1" 200 40837
+INFO 2025-11-04 03:52:11,120 basehttp 18112 20088 "GET /accounts/admin/users/ HTTP/1.1" 200 35116
+INFO 2025-11-04 03:52:18,721 basehttp 18112 20088 "GET /accounts/admin/groups/ HTTP/1.1" 200 31966
+INFO 2025-11-04 03:52:21,023 basehttp 18112 20088 "GET /accounts/admin/groups/create/ HTTP/1.1" 200 29273
+INFO 2025-11-04 03:52:23,314 basehttp 18112 20088 "POST /accounts/admin/groups/create/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:52:23,359 basehttp 18112 20088 "GET /accounts/admin/groups/ HTTP/1.1" 200 33307
+INFO 2025-11-04 03:52:25,021 basehttp 18112 20088 "GET /accounts/admin/users/ HTTP/1.1" 200 35116
+INFO 2025-11-04 03:52:26,865 basehttp 18112 20088 "GET /accounts/admin/users/3/edit/ HTTP/1.1" 200 30884
+INFO 2025-11-04 03:52:29,351 basehttp 18112 20088 "GET /accounts/admin/users/3/assign-groups/ HTTP/1.1" 200 29604
+INFO 2025-11-04 03:52:31,929 basehttp 18112 20088 "POST /accounts/admin/users/3/assign-groups/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:52:31,969 basehttp 18112 20088 "GET /accounts/admin/users/ HTTP/1.1" 200 35794
+INFO 2025-11-04 03:52:38,253 basehttp 18112 20088 "GET /accounts/admin/users/3/edit/ HTTP/1.1" 200 30884
+INFO 2025-11-04 03:52:40,256 basehttp 18112 20088 "GET /accounts/admin/users/3/assign-groups/ HTTP/1.1" 200 29807
+INFO 2025-11-04 03:52:43,062 basehttp 18112 20088 "POST /accounts/admin/users/3/assign-groups/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:52:43,100 basehttp 18112 20088 "GET /accounts/admin/users/ HTTP/1.1" 200 35796
+INFO 2025-11-04 03:53:37,702 autoreload 18112 22744 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\urls.py changed, reloading.
+INFO 2025-11-04 03:53:38,214 autoreload 19272 1880 Watching for file changes with StatReloader
+INFO 2025-11-04 03:53:45,798 autoreload 19272 1880 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\urls.py changed, reloading.
+INFO 2025-11-04 03:53:46,255 autoreload 4316 11144 Watching for file changes with StatReloader
+INFO 2025-11-04 03:53:54,706 autoreload 4316 11144 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py changed, reloading.
+INFO 2025-11-04 03:53:55,188 autoreload 1832 11028 Watching for file changes with StatReloader
+INFO 2025-11-04 03:53:59,705 autoreload 1832 11028 C:\Users\Kurt Ailesi\Desktop\helpDesk\accounts\views.py changed, reloading.
+INFO 2025-11-04 03:54:00,167 autoreload 22896 7552 Watching for file changes with StatReloader
+INFO 2025-11-04 03:55:00,848 basehttp 22896 15312 "GET /accounts/customer-panel/ HTTP/1.1" 200 43486
+INFO 2025-11-04 03:55:01,722 basehttp 22896 15312 "GET /accounts/customer/profile-edit/ HTTP/1.1" 200 28444
+INFO 2025-11-04 03:55:02,896 basehttp 22896 15312 "GET /accounts/customer-panel/ HTTP/1.1" 200 43486
+INFO 2025-11-04 03:55:08,808 basehttp 22896 15312 "GET /accounts/customer/profile-edit/ HTTP/1.1" 200 28444
+INFO 2025-11-04 03:55:10,032 basehttp 22896 15312 "GET /accounts/admin-panel/ HTTP/1.1" 200 40837
+INFO 2025-11-04 03:55:15,892 basehttp 22896 15312 "GET /accounts/admin/users/ HTTP/1.1" 200 35329
+INFO 2025-11-04 03:55:17,106 basehttp 22896 15312 "GET /accounts/admin/users/create/ HTTP/1.1" 200 28321
+INFO 2025-11-04 03:55:18,315 basehttp 22896 15312 "GET /accounts/admin/groups/ HTTP/1.1" 200 32967
+INFO 2025-11-04 03:55:20,620 basehttp 22896 15312 "GET /accounts/admin/permissions/ HTTP/1.1" 200 145280
+INFO 2025-11-04 03:55:22,577 basehttp 22896 15312 "GET /accounts/admin/groups/ HTTP/1.1" 200 32967
+INFO 2025-11-04 03:55:24,041 basehttp 22896 15312 "GET /tickets/admin/ HTTP/1.1" 200 33162
+INFO 2025-11-04 03:55:28,694 basehttp 22896 15312 "GET /tickets/categories/ HTTP/1.1" 200 36290
+INFO 2025-11-04 03:55:32,092 basehttp 22896 8472 "GET /accounts/login/?id=355787bb-042c-4625-82bc-f264be947493&vscodeBrowserReqId=1762217732085 HTTP/1.1" 200 24846
+INFO 2025-11-04 03:55:35,100 basehttp 22896 15312 "GET /accounts/admin/reports/ HTTP/1.1" 200 29048
+INFO 2025-11-04 03:55:36,459 basehttp 22896 15312 "GET /accounts/admin/analytics/ HTTP/1.1" 200 37731
+INFO 2025-11-04 03:55:39,087 basehttp 22896 15312 "GET /accounts/admin/settings/ HTTP/1.1" 200 41943
+INFO 2025-11-04 03:55:42,778 basehttp 22896 8472 "GET /accounts/password-reset/?id=355787bb-042c-4625-82bc-f264be947493&vscodeBrowserReqId=1762217742773 HTTP/1.1" 200 24311
+INFO 2025-11-04 03:55:47,457 basehttp 22896 15312 "GET /accounts/admin/backup/ HTTP/1.1" 200 36733
+INFO 2025-11-04 03:55:49,047 basehttp 22896 15312 "GET /accounts/admin/logs/ HTTP/1.1" 200 34764
+INFO 2025-11-04 03:55:56,385 basehttp 22896 15312 "GET /accounts/logout/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:55:56,389 basehttp 22896 15312 "GET /accounts/login/ HTTP/1.1" 200 24846
+INFO 2025-11-04 03:55:59,421 basehttp 22896 15312 "GET /auth/password_reset/ HTTP/1.1" 200 23217
+INFO 2025-11-04 03:56:10,644 basehttp 22896 15312 "GET /admin/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:56:10,686 basehttp 22896 15312 "GET /admin/login/?next=/admin/ HTTP/1.1" 200 4211
+INFO 2025-11-04 03:56:10,718 basehttp 22896 15312 "GET /static/admin/css/login.css HTTP/1.1" 200 951
+INFO 2025-11-04 03:56:17,078 basehttp 22896 15312 "POST /auth/password_reset/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:56:17,090 basehttp 22896 15312 "GET /auth/password_reset/done/ HTTP/1.1" 200 3747
+INFO 2025-11-04 03:56:22,013 basehttp 22896 15312 "GET /admin/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:56:22,019 basehttp 22896 15312 "GET /admin/login/?next=/admin/ HTTP/1.1" 200 4211
+INFO 2025-11-04 03:56:28,053 basehttp 22896 15312 "GET / HTTP/1.1" 200 24023
+INFO 2025-11-04 03:56:31,089 basehttp 22896 15312 "GET /accounts/login/ HTTP/1.1" 200 24846
+INFO 2025-11-04 03:56:32,539 basehttp 22896 15312 "POST /accounts/login/ HTTP/1.1" 302 0
+INFO 2025-11-04 03:56:32,581 basehttp 22896 15312 "GET /accounts/admin-panel/ HTTP/1.1" 200 40837

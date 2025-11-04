@@ -19,6 +19,13 @@ from django import forms
 from django.db.models import Count
 import json
 
+# Local imports
+from .models import Talep, Comment, Category, SLA
+from .forms import TicketForm, CommentForm
+from accounts.models import CustomUser
+
+User = get_user_model()
+
 # Yerel model ve form importları
 from .models import Talep, Category, Comment
 from .forms import TicketForm
@@ -153,7 +160,7 @@ def ticket_detail(request, pk):
     
     # Atanabilir kullanıcılar (sadece admin/support görebilir)
     if is_support_user(user):
-        assignable_users = User.objects.filter(role__in=['admin', 'support'])
+        assignable_users = CustomUser.objects.filter(role__in=['admin', 'support'])
     else:
         assignable_users = []
 
@@ -351,16 +358,16 @@ def tickets_admin_view(request):
     
     # Ticket istatistikleri
     ticket_stats = {
-        'total_tickets': Ticket.objects.count(),
-        'open_tickets': Ticket.objects.filter(status='open').count(),
-        'in_progress_tickets': Ticket.objects.filter(status='in_progress').count(),
-        'closed_tickets': Ticket.objects.filter(status='closed').count(),
-        'tickets_by_priority': Ticket.objects.values('priority').annotate(count=Count('id')),
-        'tickets_by_category': Ticket.objects.values('category__name').annotate(count=Count('id')),
+        'total_tickets': Talep.objects.count(),
+        'open_tickets': Talep.objects.filter(status='open').count(),
+        'in_progress_tickets': Talep.objects.filter(status='in_progress').count(),
+        'closed_tickets': Talep.objects.filter(status='closed').count(),
+        'tickets_by_priority': Talep.objects.values('priority').annotate(count=Count('id')),
+        'tickets_by_category': Talep.objects.values('category__name').annotate(count=Count('id')),
     }
     
     # Son ticket'lar
-    recent_tickets = Ticket.objects.select_related('user', 'assigned_to', 'category').order_by('-created_at')[:10]
+    recent_tickets = Talep.objects.select_related('user', 'assigned_to', 'category').order_by('-created_at')[:10]
     
     context = {
         'current_user': request.user,
@@ -378,6 +385,56 @@ def ticket_categories_view(request):
     user_role = getattr(request.user, 'role', '').lower()
     if user_role not in ['admin', 'support']:
         return redirect('/accounts/login/')
+    
+    # POST işlemi - Kategori ekleme
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'add':
+            name = request.POST.get('name', '').strip()
+            description = request.POST.get('description', '').strip()
+            
+            if name:
+                if not Category.objects.filter(name=name).exists():
+                    Category.objects.create(name=name, description=description if description else None)
+                    messages.success(request, f'Kategori "{name}" başarıyla eklendi.')
+                else:
+                    messages.error(request, f'"{name}" kategorisi zaten mevcut.')
+            else:
+                messages.error(request, 'Kategori adı gereklidir.')
+                
+        elif action == 'edit':
+            category_id = request.POST.get('category_id')
+            name = request.POST.get('name', '').strip()
+            description = request.POST.get('description', '').strip()
+            
+            try:
+                category = Category.objects.get(id=category_id)
+                if name:
+                    # Aynı isimde başka kategori var mı kontrol et
+                    if not Category.objects.filter(name=name).exclude(id=category_id).exists():
+                        category.name = name
+                        category.description = description if description else None
+                        category.save()
+                        messages.success(request, f'Kategori "{name}" başarıyla güncellendi.')
+                    else:
+                        messages.error(request, f'"{name}" kategorisi zaten mevcut.')
+                else:
+                    messages.error(request, 'Kategori adı gereklidir.')
+            except Category.DoesNotExist:
+                messages.error(request, 'Kategori bulunamadı.')
+                
+        elif action == 'delete':
+            category_id = request.POST.get('category_id')
+            try:
+                category = Category.objects.get(id=category_id)
+                category_name = category.name
+                category.delete()
+                messages.success(request, f'Kategori "{category_name}" başarıyla silindi.')
+            except Category.DoesNotExist:
+                messages.error(request, 'Kategori bulunamadı.')
+        
+        return redirect('ticket_categories')
     
     categories = Category.objects.annotate(ticket_count=Count('talep')).order_by('name')
     

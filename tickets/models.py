@@ -33,6 +33,13 @@ class Category(models.Model):
         verbose_name="Kategori Adı",
         help_text="Talep kategorisinin adı (Donanım, Yazılım vb.)"
     )
+    
+    description = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="Açıklama",
+        help_text="Kategori hakkında detaylı açıklama"
+    )
 
     def __str__(self):
         return self.name

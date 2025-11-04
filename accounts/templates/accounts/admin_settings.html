@@ -34,12 +34,292 @@
 {% endblock %}
 
 {% block page_title %}
-<div class="d-flex justify-content-between align-items-center">
-    <div>
-        <h1 class="page-title"><i class="fas fa-cog text-warning me-3"></i>Sistem Ayarları <span class="badge bg-warning text-dark ms-2">Admin</span></h1>
-        <p class="page-subtitle">Sistem konfigürasyonu ve ayarları</p>
+<div class="admin-header-wrapper mb-4">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <nav aria-label="breadcrumb" class="mb-2">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/" class="text-decoration-none">
+                                <i class="bi bi-house me-1"></i>Ana Sayfa
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="/accounts/admin-panel/" class="text-decoration-none">Admin Panel</a>
+                        </li>
+                        <li class="breadcrumb-item active">Sistem Ayarları</li>
+                    </ol>
+                </nav>
+                <div class="d-flex align-items-center">
+                    <div class="admin-icon-wrapper me-3">
+                        <i class="bi bi-gear-fill text-primary"></i>
+                    </div>
+                    <div>
+                        <h1 class="admin-title mb-1">
+                            Sistem Ayarları
+                            <span class="badge bg-primary ms-2">Admin</span>
+                        </h1>
+                        <p class="admin-subtitle mb-0 text-muted">Sistem konfigürasyonu ve ayarları</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="admin-user-info text-end">
+                    <div class="d-flex align-items-center justify-content-end">
+                        <div class="user-avatar me-2">
+                            <i class="bi bi-person-circle fs-4 text-secondary"></i>
+                        </div>
+                        <div>
+                            <div class="fw-semibold">{{ user.username }}</div>
+                            <small class="text-muted">{{ user_role|default:"Admin" }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Admin Header Styling */
+.admin-header-wrapper {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 2rem;
+  color: white;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+  margin-bottom: 2rem;
+}
+
+.admin-header-wrapper .breadcrumb {
+  background: transparent;
+  padding: 0;
+  margin-bottom: 0.5rem;
+}
+
+.admin-header-wrapper .breadcrumb-item a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+}
+
+.admin-header-wrapper .breadcrumb-item a:hover {
+  color: white;
+}
+
+.admin-header-wrapper .breadcrumb-item.active {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.admin-icon-wrapper {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+}
+
+.admin-icon-wrapper i {
+  color: white !important;
+}
+
+.admin-title {
+  color: white;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.admin-title .badge {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.admin-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.admin-user-info {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-avatar {
+  color: white;
+}
+
+.admin-user-info .fw-semibold {
+  color: white;
+  font-size: 1.1rem;
+}
+
+.admin-user-info .text-muted {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-header-wrapper {
+    padding: 1.5rem;
+  }
+  
+  .admin-title {
+    font-size: 2rem;
+  }
+  
+  .admin-icon-wrapper {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+  
+  .admin-user-info {
+    margin-top: 1rem;
+    text-align: center !important;
+  }
+  
+  .col-md-4 .admin-user-info .d-flex {
+    justify-content: center !important;
+  }
+}
+
+/* Admin Settings Tab Styling */
+.nav-tabs {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.nav-tabs .nav-link {
+  color: #495057;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-top-left-radius: 0.375rem;
+  border-top-right-radius: 0.375rem;
+  font-weight: 500;
+  padding: 0.75rem 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link:hover {
+  color: #0056b3;
+  background-color: rgba(0, 123, 255, 0.1);
+  border-color: #e9ecef #e9ecef #dee2e6;
+}
+
+.nav-tabs .nav-link.active {
+  color: #495057;
+  background-color: #fff;
+  border-color: #dee2e6 #dee2e6 #fff;
+  font-weight: 600;
+}
+
+/* Light theme specific adjustments */
+[data-theme="light"] .nav-tabs .nav-link {
+  color: #2c3e50;
+  background-color: #f8f9fa;
+}
+
+[data-theme="light"] .nav-tabs .nav-link:hover {
+  color: #1c6e8c;
+  background-color: rgba(28, 110, 140, 0.1);
+  border-color: #e9ecef #e9ecef #dee2e6;
+}
+
+[data-theme="light"] .nav-tabs .nav-link.active {
+  color: #2c3e50;
+  background-color: #fff;
+  border-color: #dee2e6 #dee2e6 #fff;
+  font-weight: 600;
+}
+
+/* Dark theme specific adjustments */
+[data-theme="dark"] .nav-tabs {
+  border-bottom: 1px solid #3f3f3f;
+}
+
+[data-theme="dark"] .nav-tabs .nav-link {
+  color: #b0b0b0;
+  background-color: transparent;
+}
+
+[data-theme="dark"] .nav-tabs .nav-link:hover {
+  color: #fff;
+  background-color: rgba(28, 110, 140, 0.2);
+  border-color: #3f3f3f #3f3f3f #2f2c2b;
+}
+
+[data-theme="dark"] .nav-tabs .nav-link.active {
+  color: #fff;
+  background-color: #2f2c2b;
+  border-color: #3f3f3f #3f3f3f #2f2c2b;
+  font-weight: 600;
+}
+
+/* Tab content styling */
+.tab-content {
+  padding: 2rem;
+}
+
+.tab-pane {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Form improvements for better readability */
+.form-label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: inherit;
+}
+
+[data-theme="light"] .form-label {
+  color: #2c3e50;
+}
+
+[data-theme="dark"] .form-label {
+  color: #e9ecef;
+}
+
+/* Tab icon styling */
+.nav-tabs .nav-link i {
+  font-size: 1rem;
+  margin-right: 0.5rem;
+}
+
+[data-theme="light"] .nav-tabs .nav-link i {
+  color: #6c757d;
+}
+
+[data-theme="light"] .nav-tabs .nav-link.active i,
+[data-theme="light"] .nav-tabs .nav-link:hover i {
+  color: #1c6e8c;
+}
+
+[data-theme="dark"] .nav-tabs .nav-link i {
+  color: #8b9dc3;
+}
+
+[data-theme="dark"] .nav-tabs .nav-link.active i,
+[data-theme="dark"] .nav-tabs .nav-link:hover i {
+  color: #fff;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -48,20 +328,20 @@
     <div class="card-header">
       <ul class="nav nav-tabs card-header-tabs" id="settingsTabs" role="tablist">
         <li class="nav-item" role="presentation">
-          <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab"><i class="bi bi-gear me-2"></i>Genel</button>
+          <button class="nav-link {% if active_tab == 'general' %}active{% endif %}" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab"><i class="bi bi-gear me-2"></i>Genel</button>
         </li>
         <li class="nav-item" role="presentation">
-          <button class="nav-link" id="email-tab" data-bs-toggle="tab" data-bs-target="#email" type="button" role="tab"><i class="bi bi-envelope me-2"></i>E-posta</button>
+          <button class="nav-link {% if active_tab == 'email' %}active{% endif %}" id="email-tab" data-bs-toggle="tab" data-bs-target="#email" type="button" role="tab"><i class="bi bi-envelope me-2"></i>E-posta</button>
         </li>
         <li class="nav-item" role="presentation">
-          <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab"><i class="bi bi-shield me-2"></i>Güvenlik</button>
+          <button class="nav-link {% if active_tab == 'security' %}active{% endif %}" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab"><i class="bi bi-shield me-2"></i>Güvenlik</button>
         </li>
       </ul>
     </div>
     <div class="card-body tab-content" id="settingsTabsContent">
 
       <!-- Genel -->
-      <div class="tab-pane fade show active" id="general" role="tabpanel">
+      <div class="tab-pane fade {% if active_tab == 'general' %}show active{% endif %}" id="general" role="tabpanel">
         <form method="post" action="{% url 'admin_settings' %}">{% csrf_token %}
           <input type="hidden" name="tab" value="general">
           <div class="row">
@@ -79,12 +359,20 @@
               </div>
             </div>
           </div>
+          {% if last_updated %}
+          <div class="mb-3">
+            <small class="text-muted">
+              <i class="bi bi-clock me-1"></i>Son güncelleme: {{ last_updated|date:"d.m.Y H:i" }}
+              {% if last_updated_by %} - {{ last_updated_by.username }} tarafından{% endif %}
+            </small>
+          </div>
+          {% endif %}
           <div class="text-end"><button type="submit" class="btn btn-primary"><i class="bi bi-check2 me-2"></i>Genel Ayarları Kaydet</button></div>
         </form>
       </div>
 
       <!-- E-posta -->
-      <div class="tab-pane fade" id="email" role="tabpanel">
+      <div class="tab-pane fade {% if active_tab == 'email' %}show active{% endif %}" id="email" role="tabpanel">
         <form method="post" action="{% url 'admin_settings' %}">{% csrf_token %}
           <input type="hidden" name="tab" value="email">
           <div class="row">
@@ -98,12 +386,20 @@
             </div>
           </div>
           <div class="mb-3 form-check"><input class="form-check-input" type="checkbox" id="smtp_use_tls" name="smtp_use_tls" {% if settings.smtp_use_tls %}checked{% endif %}><label class="form-check-label" for="smtp_use_tls">TLS/SSL Kullan</label></div>
-          <div class="text-end"><button type="button" class="btn btn-outline-primary me-2"><i class="bi bi-envelope-check me-2"></i>Test E-postası Gönder</button><button type="submit" class="btn btn-primary"><i class="bi bi-check2 me-2"></i>E-posta Ayarları Kaydet</button></div>
+          {% if last_updated %}
+          <div class="mb-3">
+            <small class="text-muted">
+              <i class="bi bi-clock me-1"></i>Son güncelleme: {{ last_updated|date:"d.m.Y H:i" }}
+              {% if last_updated_by %} - {{ last_updated_by.username }} tarafından{% endif %}
+            </small>
+          </div>
+          {% endif %}
+          <div class="text-end"><button type="button" class="btn btn-outline-primary me-2" onclick="testEmailSettings()"><i class="bi bi-envelope-check me-2"></i>Test E-postası Gönder</button><button type="submit" class="btn btn-primary"><i class="bi bi-check2 me-2"></i>E-posta Ayarları Kaydet</button></div>
         </form>
       </div>
 
       <!-- Güvenlik -->
-      <div class="tab-pane fade" id="security" role="tabpanel">
+      <div class="tab-pane fade {% if active_tab == 'security' %}show active{% endif %}" id="security" role="tabpanel">
         <form method="post" action="{% url 'admin_settings' %}">{% csrf_token %}
           <input type="hidden" name="tab" value="security">
           <div class="row">
@@ -117,6 +413,14 @@
               <div class="mb-3 form-check"><input class="form-check-input" type="checkbox" id="enable_2fa" name="enable_2fa" {% if settings.enable_2fa %}checked{% endif %}><label class="form-check-label" for="enable_2fa">İki Faktörlü Kimlik Doğrulama (2FA)</label></div>
             </div>
           </div>
+          {% if last_updated %}
+          <div class="mb-3">
+            <small class="text-muted">
+              <i class="bi bi-clock me-1"></i>Son güncelleme: {{ last_updated|date:"d.m.Y H:i" }}
+              {% if last_updated_by %} - {{ last_updated_by.username }} tarafından{% endif %}
+            </small>
+          </div>
+          {% endif %}
           <div class="text-end"><button type="submit" class="btn btn-primary"><i class="bi bi-check2 me-2"></i>Güvenlik Ayarları Kaydet</button></div>
         </form>
       </div>
@@ -127,25 +431,144 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Tab geçişleri
     const tabLinks = document.querySelectorAll('#settingsTabs button[data-bs-toggle="tab"]');
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeTab = urlParams.get('tab') || 'general';
+    
+    // URL'deki tab'a göre aktif tab'ı ayarla
+    tabLinks.forEach(link => {
+        const targetTab = link.getAttribute('data-bs-target').substring(1);
+        if (targetTab === activeTab) {
+            link.classList.add('active');
+            document.querySelector(`#${targetTab}`).classList.add('show', 'active');
+        } else {
+            link.classList.remove('active');
+            document.querySelector(`#${targetTab}`).classList.remove('show', 'active');
+        }
+    });
+    
+    // Tab değişikliklerini dinle
     tabLinks.forEach(link => link.addEventListener('click', function(e){
         e.preventDefault();
         tabLinks.forEach(l=>l.classList.remove('active'));
         document.querySelectorAll('#settingsTabsContent .tab-pane').forEach(p=>p.classList.remove('show','active'));
         this.classList.add('active');
         document.querySelector(this.getAttribute('data-bs-target')).classList.add('show','active');
+        
+        // URL'yi güncelle
+        const targetTab = this.getAttribute('data-bs-target').substring(1);
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.set('tab', targetTab);
+        window.history.pushState({}, '', newUrl);
     }));
 
-    // Kaydedilmemiş değişiklik uyarısı
-    window.addEventListener('beforeunload', function(e){
-        const forms = document.querySelectorAll('form');
+    // Form değişiklik kontrolü
+    const forms = document.querySelectorAll('form');
+    let originalData = {};
+    
+    forms.forEach((form, index) => {
+        const formData = new FormData(form);
+        originalData[index] = {};
+        for (let [key, value] of formData.entries()) {
+            originalData[index][key] = value;
+        }
+    });
+
+    // Sayfadan ayrılma uyarısı
+    window.addEventListener('beforeunload', function(e) {
         let hasChanges = false;
-        forms.forEach(form=>{
-            const formData = new FormData(form);
-            if (Array.from(formData.entries()).some(([k,v])=>v)) hasChanges = true;
+        
+        forms.forEach((form, index) => {
+            const currentData = new FormData(form);
+            for (let [key, value] of currentData.entries()) {
+                if (originalData[index][key] !== value) {
+                    hasChanges = true;
+                    break;
+                }
+            }
         });
-        if(hasChanges){ e.preventDefault(); e.returnValue='Kaydedilmemiş değişiklikler var. Sayfadan ayrılmak istediğinizden emin misiniz?'; }
+        
+        if (hasChanges) {
+            e.preventDefault();
+            e.returnValue = 'Kaydedilmemiş değişiklikler var. Sayfadan ayrılmak istediğinizden emin misiniz?';
+        }
+    });
+    
+    // Form submit edildiğinde uyarıyı kaldır
+    forms.forEach(form => {
+        form.addEventListener('submit', function() {
+            window.removeEventListener('beforeunload', arguments.callee);
+        });
     });
 });
+
+// Test e-postası gönderme fonksiyonu
+function testEmailSettings() {
+    const form = document.querySelector('#email form');
+    const formData = new FormData(form);
+    const button = event.target;
+    const originalText = button.innerHTML;
+    
+    // Button'u devre dışı bırak ve loading göster
+    button.disabled = true;
+    button.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Gönderiliyor...';
+    
+    // AJAX ile test e-postası gönder
+    fetch('{% url "admin_settings" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Başarı mesajı göster
+            showMessage('Test e-postası başarıyla gönderildi!', 'success');
+        } else {
+            // Hata mesajı göster
+            showMessage(data.error || 'Test e-postası gönderilirken hata oluştu.', 'error');
+        }
+    })
+    .catch(error => {
+        showMessage('Bağlantı hatası oluştu.', 'error');
+    })
+    .finally(() => {
+        // Button'u eski haline getir
+        button.disabled = false;
+        button.innerHTML = originalText;
+    });
+}
+
+// Mesaj gösterme fonksiyonu
+function showMessage(message, type) {
+    const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+    const iconClass = type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill';
+    
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert ${alertClass} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        <i class="${iconClass} me-2"></i>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    // Mevcut mesajları temizle
+    const existingAlerts = document.querySelectorAll('.messages-container .alert');
+    existingAlerts.forEach(alert => alert.remove());
+    
+    // Yeni mesajı ekle
+    const container = document.querySelector('.messages-container') || document.querySelector('.container-fluid');
+    container.insertBefore(alertDiv, container.firstChild);
+    
+    // 5 saniye sonra otomatik kapat
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
+}
 </script>
 {% endblock %}
