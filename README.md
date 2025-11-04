@@ -216,7 +216,7 @@ python manage.py runserver
 
 - **GitHub Issues**: Hata raporları ve özellik istekleri
 - **Dokümantasyon**: Sistem içi yardım sistemi
-- **E-posta**: support@yardimmasasi.local
+- **E-posta**: slhkrt333@gmail.com
 
 ## 📄 Lisans
 
