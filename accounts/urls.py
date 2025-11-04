@@ -49,6 +49,7 @@ urlpatterns = [
     path('admin/groups/create/', views.admin_group_create_view, name='admin_group_create'),
     path('admin/groups/<int:group_id>/edit/', views.admin_group_edit_view, name='admin_group_edit'),
     path('admin/groups/<int:group_id>/delete/', views.admin_group_delete_view, name='admin_group_delete'),
+    path('admin/groups/<int:group_id>/users/', views.admin_group_users_api, name='admin_group_users_api'),
     path('admin/permissions/', views.admin_permissions_view, name='admin_permissions'),
     
     # Raporlar ve analitik

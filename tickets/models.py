@@ -1,6 +1,6 @@
 # tickets/models.py
 """
-HelpDesk Ticket Yönetimi - Veri Modelleri
+Yardım Masası Ticket Yönetimi - Veri Modelleri
 =========================================
 
 Bu modül ticket sisteminin temel veri modellerini içerir:

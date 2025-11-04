@@ -138,9 +138,10 @@
       height: 100vh;
       background: #2c3e50;
       color: white;
-      transition: left 0.3s ease;
+      transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 1000;
       overflow-y: auto;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.15);
     }
     
     .sidebar.show {
@@ -148,18 +149,38 @@
     }
     
     .sidebar-header {
-      padding: 20px;
+      padding: 15px 20px;
       background: #34495e;
       border-bottom: 1px solid #4a5f7a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
     
     .sidebar-toggle {
-      background: none;
-      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       color: white;
-      font-size: 1.5rem;
-      margin-right: 10px;
+      font-size: 1.2rem;
       cursor: pointer;
+      padding: 8px 10px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      min-width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .sidebar-toggle:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+    
+    .sidebar-toggle:active {
+      transform: scale(0.95);
     }
     
     .logo {
@@ -193,12 +214,22 @@
       color: #ecf0f1;
       text-decoration: none;
       transition: all 0.3s ease;
+      border-left: 3px solid transparent;
     }
     
-    .nav-link:hover, .nav-link.active {
+    .nav-link:hover {
       background: #3498db;
       color: white;
       text-decoration: none;
+      border-left-color: #ffffff;
+      transform: translateX(5px);
+    }
+    
+    .nav-link.active {
+      background: #3498db;
+      color: white;
+      text-decoration: none;
+      border-left-color: #ffffff;
     }
     
     .nav-link i {
@@ -209,12 +240,45 @@
     
     .main-content {
       margin-left: 0;
-      transition: margin-left 0.3s ease;
+      transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       min-height: 100vh;
+      background: #f8f9fa;
     }
     
     .main-content.sidebar-open {
       margin-left: 280px;
+    }
+    
+    .sidebar-peek-toggle {
+      position: fixed;
+      top: 20px;
+      left: 10px;
+      z-index: 1001;
+      background: #2c3e50;
+      border: 2px solid #3498db;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 10px 8px;
+      border-radius: 0 8px 8px 0;
+      transition: all 0.3s ease;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(-100%);
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    }
+    
+    .sidebar-peek-toggle.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+    
+    .sidebar-peek-toggle:hover {
+      background: #34495e;
+      border-color: #5dade2;
+      transform: translateX(5px);
+      box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
     }
     
     .sidebar-overlay {
@@ -225,11 +289,14 @@
       height: 100%;
       background: rgba(0,0,0,0.5);
       z-index: 999;
-      display: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
     }
     
     .sidebar-overlay.show {
-      display: block;
+      opacity: 1;
+      visibility: visible;
     }
     
     .navbar {
@@ -238,15 +305,47 @@
       padding: 1rem;
     }
     
+    .navbar .btn {
+      transition: all 0.3s ease;
+    }
+    
+    .navbar .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    
     @media (min-width: 768px) {
       .sidebar {
+        left: 0; /* Desktop'ta başlangıçta açık */
+      }
+      .sidebar.show {
         left: 0;
       }
+      .sidebar.closed {
+        left: -280px; /* Kapalı durumda gizli */
+      }
       .main-content {
+        margin-left: 280px; /* Desktop'ta başlangıçta kaydırılmış */
+      }
+      .main-content.sidebar-open {
         margin-left: 280px;
       }
+      .main-content.sidebar-closed {
+        margin-left: 0; /* Sidebar kapalıyken margin yok */
+      }
       .sidebar-overlay {
-        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+      }
+    }
+    
+    @media (max-width: 767.98px) {
+      .sidebar {
+        width: 100%;
+        max-width: 280px;
+      }
+      .main-content.sidebar-open {
+        margin-left: 0;
       }
     }
     
@@ -435,16 +534,21 @@
   <!-- Sidebar Overlay -->
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
   
+  <!-- Sidebar Peek Toggle (desktop'ta sidebar kapalıyken görünür) -->
+  <button class="sidebar-peek-toggle d-none d-md-block" id="sidebar-peek-toggle" title="Menüyü Aç (Ctrl+B)">
+    <i class="bi bi-chevron-right"></i>
+  </button>
+  
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <button class="sidebar-toggle" id="sidebar-toggle">
-        <i class="bi bi-list"></i>
-      </button>
       <div class="logo">
         <i class="bi bi-headset"></i>
-        <span>HelpDesk</span>
+        <span>Yardım Masası</span>
       </div>
+      <button class="sidebar-toggle" id="sidebar-toggle" title="Menüyü Gizle/Göster (Ctrl+B)">
+        <i class="bi bi-chevron-left"></i>
+      </button>
     </div>
 
     <nav class="sidebar-nav">
@@ -568,10 +672,11 @@
     <!-- Top Navbar -->
     <nav class="navbar">
       <div class="d-flex align-items-center">
-        <button class="btn btn-outline-secondary d-md-none me-3" id="mobile-sidebar-toggle">
+        <!-- Mobile Sidebar Toggle -->
+        <button class="btn btn-outline-secondary d-md-none me-3" id="mobile-sidebar-toggle" title="Menüyü Aç/Kapat">
           <i class="bi bi-list"></i>
         </button>
-        <h1 class="h4 mb-0">{% block page_title %}HelpDesk{% endblock %}</h1>
+        <h1 class="h4 mb-0">{% block page_title %}Yardım Masası{% endblock %}</h1>
       </div>
       
       <div class="d-flex align-items-center">
@@ -620,17 +725,68 @@
     const sidebar = document.getElementById('sidebar');
     const sidebarOverlay = document.getElementById('sidebar-overlay');
     const mainContent = document.getElementById('main-content');
+    const peekToggle = document.getElementById('sidebar-peek-toggle');
     
-    // Desktop sidebar toggle
-    document.getElementById('sidebar-toggle').addEventListener('click', function() {
-      if (window.innerWidth >= 768) {
-        sidebar.classList.toggle('show');
-        mainContent.classList.toggle('sidebar-open');
+    // Load saved sidebar state
+    const sidebarState = localStorage.getItem('sidebar-state') || 'open'; // Varsayılan olarak açık
+    const sidebarToggleIcon = document.querySelector('#sidebar-toggle i');
+    
+    if (window.innerWidth >= 768) {
+      if (sidebarState === 'closed') {
+        sidebar.classList.add('closed');
+        mainContent.classList.add('sidebar-closed');
+        peekToggle.classList.add('show');
+        sidebarToggleIcon.className = 'bi bi-chevron-right';
       } else {
+        sidebar.classList.add('show');
+        mainContent.classList.add('sidebar-open');
+        peekToggle.classList.remove('show');
+        sidebarToggleIcon.className = 'bi bi-chevron-left';
+      }
+    }
+    
+    // Peek toggle (sol kenardaki buton)
+    peekToggle.addEventListener('click', function() {
+      toggleSidebar();
+    });
+    
+    // Sidebar internal toggle
+    document.getElementById('sidebar-toggle').addEventListener('click', function() {
+      toggleSidebar();
+    });
+    
+    // Sidebar toggle function
+    function toggleSidebar() {
+      const sidebarToggleIcon = document.querySelector('#sidebar-toggle i');
+      
+      if (window.innerWidth >= 768) {
+        const isClosed = sidebar.classList.contains('closed');
+        
+        if (isClosed) {
+          // Açma
+          sidebar.classList.remove('closed');
+          sidebar.classList.add('show');
+          mainContent.classList.remove('sidebar-closed');
+          mainContent.classList.add('sidebar-open');
+          localStorage.setItem('sidebar-state', 'open');
+          peekToggle.classList.remove('show');
+          sidebarToggleIcon.className = 'bi bi-chevron-left';
+        } else {
+          // Kapatma
+          sidebar.classList.remove('show');
+          sidebar.classList.add('closed');
+          mainContent.classList.remove('sidebar-open');
+          mainContent.classList.add('sidebar-closed');
+          localStorage.setItem('sidebar-state', 'closed');
+          peekToggle.classList.add('show');
+          sidebarToggleIcon.className = 'bi bi-chevron-right';
+        }
+      } else {
+        // Mobile'da localStorage state'ini değiştirme
         sidebar.classList.toggle('show');
         sidebarOverlay.classList.toggle('show');
       }
-    });
+    }
     
     // Mobile sidebar toggle
     const mobileSidebarToggle = document.getElementById('mobile-sidebar-toggle');
@@ -645,6 +801,54 @@
     sidebarOverlay.addEventListener('click', function() {
       sidebar.classList.remove('show');
       sidebarOverlay.classList.remove('show');
+    });
+    
+    // Handle window resize
+    window.addEventListener('resize', function() {
+      const sidebarToggleIcon = document.querySelector('#sidebar-toggle i');
+      
+      if (window.innerWidth >= 768) {
+        sidebarOverlay.classList.remove('show');
+        // Restore sidebar state on desktop
+        const savedState = localStorage.getItem('sidebar-state') || 'open'; // Varsayılan açık
+        
+        // Tüm class'ları temizle
+        sidebar.classList.remove('show', 'closed');
+        mainContent.classList.remove('sidebar-open', 'sidebar-closed');
+        peekToggle.classList.remove('show');
+        
+        if (savedState === 'open') {
+          sidebar.classList.add('show');
+          mainContent.classList.add('sidebar-open');
+          sidebarToggleIcon.className = 'bi bi-chevron-left';
+        } else {
+          sidebar.classList.add('closed');
+          mainContent.classList.add('sidebar-closed');
+          peekToggle.classList.add('show');
+          sidebarToggleIcon.className = 'bi bi-chevron-right';
+        }
+      } else {
+        // Mobile mode - tüm class'ları temizle
+        sidebar.classList.remove('show', 'closed');
+        mainContent.classList.remove('sidebar-open', 'sidebar-closed');
+        sidebarOverlay.classList.remove('show');
+        peekToggle.classList.remove('show');
+        sidebarToggleIcon.className = 'bi bi-chevron-left';
+      }
+    });
+    
+    // Add keyboard support for sidebar
+    document.addEventListener('keydown', function(e) {
+      // ESC key closes sidebar on mobile
+      if (e.key === 'Escape' && window.innerWidth < 768) {
+        sidebar.classList.remove('show');
+        sidebarOverlay.classList.remove('show');
+      }
+      // Ctrl+B toggles sidebar
+      if (e.ctrlKey && e.key === 'b') {
+        e.preventDefault();
+        toggleSidebar();
+      }
     });
     
     // Theme toggle
@@ -672,7 +876,7 @@
     document.documentElement.setAttribute('data-theme', savedTheme);
     const themeIcon = document.querySelector('#theme-toggle i');
     if (themeIcon) {
-      themeIcon.className = savedTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+      themeIcon.className = savedTheme === 'dark' ? 'bi bi-moon-fill' : 'bi bi-sun-fill';
     }
     
     // Check if FontAwesome icons are loaded

@@ -1,6 +1,6 @@
 {% extends 'tickets/base.html' %}
 
-{% block title %}Kullanıcı Yönetimi - HelpDesk{% endblock %}
+{% block title %}Kullanıcı Yönetimi - Yardım Masası{% endblock %}
 
 {% block page_title %}
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -13,14 +13,14 @@
             </ol>
         </nav>
         <h1 class="page-title">
-            <i class="fas fa-users text-primary me-3"></i>Kullanıcı Yönetimi
+            <i class="bi bi-person-lines-fill text-primary me-3"></i>Kullanıcı Yönetimi
             <span class="badge bg-primary ms-2">Admin</span>
         </h1>
         <p class="page-subtitle">Sistem kullanıcılarını yönetin</p>
     </div>
     <div>
         <a href="/accounts/admin/users/create/" class="btn btn-primary">
-            <i class="fas fa-user-plus me-2"></i>Yeni Kullanıcı
+            <i class="bi bi-person-plus-fill me-2"></i>Yeni Kullanıcı
         </a>
     </div>
 </div>
@@ -32,7 +32,7 @@
     <div class="col-lg-3 col-md-6">
         <div class="stat-card bg-primary">
             <div class="stat-card-body">
-                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
                 <div class="stat-content">
                     <h3 class="stat-number">{{ users|length }}</h3>
                     <p class="stat-label">Toplam Kullanıcı</p>
@@ -44,7 +44,7 @@
     <div class="col-lg-3 col-md-6">
         <div class="stat-card bg-success">
             <div class="stat-card-body">
-                <div class="stat-icon"><i class="fas fa-user-check"></i></div>
+                <div class="stat-icon"><i class="bi bi-person-check-fill"></i></div>
                 <div class="stat-content">
                     <h3 class="stat-number">{{ users|length }}</h3>
                     <p class="stat-label">Aktif Kullanıcı</p>
@@ -56,7 +56,7 @@
     <div class="col-lg-3 col-md-6">
         <div class="stat-card bg-warning">
             <div class="stat-card-body">
-                <div class="stat-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="stat-icon"><i class="bi bi-shield-fill-check"></i></div>
                 <div class="stat-content">
                     <h3 class="stat-number">1</h3>
                     <p class="stat-label">Admin Kullanıcı</p>
@@ -68,7 +68,7 @@
     <div class="col-lg-3 col-md-6">
         <div class="stat-card bg-info">
             <div class="stat-card-body">
-                <div class="stat-icon"><i class="fas fa-headset"></i></div>
+                <div class="stat-icon"><i class="bi bi-headset"></i></div>
                 <div class="stat-content">
                     <h3 class="stat-number">0</h3>
                     <p class="stat-label">Support Kullanıcı</p>
@@ -81,10 +81,10 @@
 <!-- Users Table -->
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Kullanıcı Listesi</h5>
+        <h5 class="mb-0"><i class="bi bi-table me-2"></i>Kullanıcı Listesi</h5>
         <div class="input-group" style="max-width: 300px;">
             <input type="text" id="searchInput" class="form-control" placeholder="Kullanıcı ara...">
-            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
         </div>
     </div>
     <div class="card-body">
@@ -109,13 +109,13 @@
                             <div class="d-flex align-items-center">
                                 <div class="me-3">
                                     {% if user.is_superuser %}
-                                        <i class="fas fa-crown text-warning"></i>
+                                        <i class="bi bi-crown-fill text-warning"></i>
                                     {% elif user.role == 'admin' %}
-                                        <i class="fas fa-shield-alt text-danger"></i>
+                                        <i class="bi bi-shield-fill-check text-danger"></i>
                                     {% elif user.role == 'support' %}
-                                        <i class="fas fa-headset text-success"></i>
+                                        <i class="bi bi-headset text-success"></i>
                                     {% else %}
-                                        <i class="fas fa-user text-primary"></i>
+                                        <i class="bi bi-person-fill text-primary"></i>
                                     {% endif %}
                                 </div>
                                 <div>
@@ -155,7 +155,7 @@
                                 </div>
                             {% else %}
                                 <span class="text-muted small">
-                                    <i class="bi bi-dash-circle me-1"></i>Grup yok
+                                    <i class="bi bi-dash-circle-fill me-1"></i>Grup yok
                                 </span>
                             {% endif %}
                         </td>
@@ -169,12 +169,15 @@
                         <td>{{ user.date_joined|date:"d.m.Y H:i" }}</td>
                         <td>
                             <div class="btn-group btn-group-sm">
-                                <a href="/accounts/admin/users/{{ user.id }}/edit/" class="btn btn-outline-primary">
-                                    <i class="fas fa-edit"></i>
+                                <a href="/accounts/admin/users/{{ user.id }}/edit/" class="btn btn-outline-primary" title="Düzenle">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a href="/accounts/admin/users/{{ user.id }}/assign-groups/" class="btn btn-outline-info" title="Grup Ata">
+                                    <i class="bi bi-people-fill"></i>
                                 </a>
                                 {% if not user.is_superuser %}
-                                <button class="btn btn-outline-danger" onclick="deleteUser({{ user.id }}, '{{ user.username }}')">
-                                    <i class="fas fa-trash"></i>
+                                <button class="btn btn-outline-danger" onclick="deleteUser({{ user.id }}, '{{ user.username }}')" title="Sil">
+                                    <i class="bi bi-trash3-fill"></i>
                                 </button>
                                 {% endif %}
                             </div>
@@ -186,10 +189,10 @@
         </div>
         {% else %}
         <div class="text-center py-5">
-            <i class="fas fa-users fa-4x text-muted mb-3"></i>
+            <i class="bi bi-people fs-1 text-muted mb-3"></i>
             <h5 class="text-muted">Henüz kullanıcı bulunmamaktadır</h5>
             <a href="/accounts/admin/users/create/" class="btn btn-primary mt-2">
-                <i class="fas fa-user-plus me-2"></i>İlk Kullanıcıyı Oluşturun
+                <i class="bi bi-person-plus-fill me-2"></i>İlk Kullanıcıyı Oluşturun
             </a>
         </div>
         {% endif %}

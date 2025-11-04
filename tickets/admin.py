@@ -227,4 +227,4 @@ class CommentAdmin(admin.ModelAdmin):
 # -------------------------------------------------------------------------------
 admin.site.site_header = "Yönetim Paneli"
 admin.site.site_title = "Yardım Masası Yönetimi"
-admin.site.index_title = "Hoşgeldiniz - HelpDesk Admin"
+admin.site.index_title = "Hoşgeldiniz - Yardım Masası Admin"

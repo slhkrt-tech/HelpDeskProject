@@ -1,6 +1,6 @@
 {% extends 'tickets/base.html' %}
 
-{% block title %}{{ panel_title }} - HelpDesk{% endblock %}
+{% block title %}{{ panel_title }} - Yardım Masası{% endblock %}
 
 {% block breadcrumb %}
 <ol class="breadcrumb">
@@ -103,7 +103,7 @@
                       </td>
                       <td>
                         <div class="btn-group" role="group">
-                          <button class="btn btn-sm btn-outline-info" onclick="showGroupUsers('{{ group.name }}', '{{ group.customuser_set.count }}')" title="Kullanıcıları Görüntüle"><i class="bi bi-eye"></i></button>
+                          <button class="btn btn-sm btn-outline-info" onclick="showGroupUsers('{{ group.name }}', '{{ group.customuser_set.count }}', '{{ group.id }}')" title="Kullanıcıları Görüntüle"><i class="bi bi-eye"></i></button>
                           <button class="btn btn-sm btn-outline-danger" onclick="deleteGroup('{{ group.id }}', '{{ group.name }}')" title="Grubu Sil"><i class="bi bi-trash"></i></button>
                         </div>
                       </td>
@@ -151,7 +151,64 @@ function showGroupUsers(groupName, userCount){
     document.getElementById('groupUsersModalLabel').innerHTML=`<i class="bi bi-people me-2"></i>${groupName} Grubu (${userCount} kullanıcı)`;
     document.getElementById('groupUsersContent').innerHTML='<div class="text-center"><div class="spinner-border" role="status"></div><p>Kullanıcılar yükleniyor...</p></div>';
     modal.show();
-    setTimeout(()=>{document.getElementById('groupUsersContent').innerHTML='<p class="text-muted">Kullanıcı listesi buraya gelecek...</p>';},1000);
+    
+    // Grup ID'sini tablodan al
+    const groupRow = event.target.closest('tr');
+    const groupId = groupRow.querySelector('button[onclick*="deleteGroup"]').getAttribute('onclick').match(/deleteGroup\('(\d+)'/)[1];
+    
+    // API'den kullanıcıları çek
+    fetch(`/accounts/admin/groups/${groupId}/users/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                let usersHtml = '';
+                if (data.users.length > 0) {
+                    usersHtml = '<div class="row g-3">';
+                    data.users.forEach(user => {
+                        const roleColor = user.role === 'admin' ? 'danger' : user.role === 'support' ? 'warning' : 'primary';
+                        const statusBadge = user.is_active ? '<span class="badge bg-success">Aktif</span>' : '<span class="badge bg-secondary">Pasif</span>';
+                        const fullName = user.first_name || user.last_name ? `${user.first_name} ${user.last_name}` : 'Ad soyad belirtilmemiş';
+                        
+                        usersHtml += `
+                            <div class="col-lg-6">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-circle bg-${roleColor} text-white me-3">
+                                                <i class="bi bi-person-fill"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">${user.username}</h6>
+                                                <small class="text-muted">${fullName}</small>
+                                                <div class="mt-1">
+                                                    <span class="badge bg-${roleColor}">${user.role.charAt(0).toUpperCase() + user.role.slice(1)}</span>
+                                                    ${statusBadge}
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <small class="text-muted d-block">${user.email}</small>
+                                                <small class="text-muted d-block">Kayıt: ${user.date_joined}</small>
+                                                <small class="text-muted d-block">Son: ${user.last_login}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    usersHtml += '</div>';
+                } else {
+                    usersHtml = '<div class="text-center py-4"><i class="bi bi-person-x display-1 text-muted"></i><h5 class="mt-3 text-muted">Bu grupta kullanıcı bulunmuyor</h5></div>';
+                }
+                document.getElementById('groupUsersContent').innerHTML = usersHtml;
+            } else {
+                document.getElementById('groupUsersContent').innerHTML = `<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>${data.error}</div>`;
+            }
+        })
+        .catch(error => {
+            console.error('Hata:', error);
+            document.getElementById('groupUsersContent').innerHTML = '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>Kullanıcılar yüklenirken hata oluştu</div>';
+        });
 }
 
 function deleteGroup(groupId, groupName){

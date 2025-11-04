@@ -1,6 +1,6 @@
 # tickets/views.py
 """
-HelpDesk Ticket Yönetimi - Ana View'lar
+Yardım Masası Ticket Yönetimi - Ana View'lar
 ========================================
 
 Bu modül ticket CRUD işlemleri, yetkilendirme ve durum yönetimi içerir.
@@ -55,7 +55,16 @@ def get_user_tickets_queryset(user):
     elif is_support_user(user):
         return Talep.objects.all()
     else:
-        return Talep.objects.filter(user=user)
+        # Normal kullanıcılar için: kendi talepleri + aynı gruptaki kullanıcıların talepleri
+        user_groups = user.groups.all()
+        if user_groups.exists():
+            # Aynı grupta olan kullanıcıları bul
+            group_users = CustomUser.objects.filter(groups__in=user_groups).distinct()
+            # Bu kullanıcıların taleplerini getir
+            return Talep.objects.filter(user__in=group_users)
+        else:
+            # Grubu yoksa sadece kendi taleplerini görsün
+            return Talep.objects.filter(user=user)
 
 # ================================================================================
 # Ana View'lar

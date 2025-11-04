@@ -1,6 +1,6 @@
 """
 settings.py
-HelpDesk Project - Django yapılandırması
+Yardım Masası Project - Django yapılandırması
 """
 
 import os
@@ -367,7 +367,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Şifre sıfırlama e-postası ayarları
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@helpdesk-alpha.local')
-EMAIL_SUBJECT_PREFIX = '[HelpDesk Alpha] '
+EMAIL_SUBJECT_PREFIX = '[Yardım Masası Alpha] '
 
 # E-posta timeout ayarları
 EMAIL_TIMEOUT = 10  # Daha kısa timeout

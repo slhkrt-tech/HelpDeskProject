@@ -14,7 +14,7 @@ class CustomUserCreationForm(UserCreationForm):
     """
     class Meta(UserCreationForm.Meta):
         model = CustomUser
-        fields = ('username', 'email', 'role')  # Role alanı eklendi
+        fields = ('username', 'email', 'first_name', 'last_name', 'role')  # Ad ve soyad eklendi
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

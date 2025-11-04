@@ -1,137 +1,694 @@
 {% extends 'tickets/base.html' %}
 
-{% block title %}Yeni Kullanıcı - Yardım Masası{% endblock %}
+{% block title %}Yeni Kullanıcı Oluştur - Yardım Masası{% endblock %}
 
-{% block sidebar_nav %}
-<div class="nav-section">
-    <div class="nav-section-title">Kullanıcı Yönetimi</div>
-    <div class="nav-item">
-        <a href="/accounts/admin/users/" class="nav-link">
-            <i class="fas fa-users"></i>
-            <span>Tüm Kullanıcılar</span>
-        </a>
-    </div>
-    <div class="nav-item">
-        <a href="/accounts/admin/users/create/" class="nav-link active">
-            <i class="fas fa-user-plus"></i>
-            <span>Yeni Kullanıcı</span>
-        </a>
-    </div>
-    <div class="nav-item">
-        <a href="/accounts/admin/groups/" class="nav-link">
-            <i class="fas fa-users-cog"></i>
-            <span>Gruplar</span>
-        </a>
-    </div>
+{% block extra_css %}
+<style>
+/* Modern Card Styling */
+.user-create-container {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.modern-form-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    border: none;
+    overflow: hidden;
+    position: relative;
+}
+
+.modern-form-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.form-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2.5rem 2rem 2rem;
+    text-align: center;
+    position: relative;
+}
+
+.form-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: white;
+    border-radius: 20px 20px 0 0;
+}
+
+.form-header-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.form-header h3 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.8rem;
+}
+
+.form-header p {
+    margin: 0.5rem 0 0;
+    opacity: 0.9;
+    font-size: 1rem;
+}
+
+.form-body {
+    padding: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+}
+
+.form-label i {
+    color: #667eea;
+    margin-right: 0.5rem;
+    width: 16px;
+}
+
+.form-control, .form-select {
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8fafc;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    background: white;
+    transform: translateY(-1px);
+}
+
+.form-control.is-invalid {
+    border-color: #e53e3e;
+    background: #fed7d7;
+}
+
+.form-control.is-valid {
+    border-color: #38a169;
+    background: #c6f6d5;
+}
+
+.invalid-feedback, .valid-feedback {
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.invalid-feedback i, .valid-feedback i {
+    margin-right: 0.5rem;
+}
+
+.role-selector {
+    position: relative;
+}
+
+.role-option {
+    padding: 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #f8fafc;
+    margin-bottom: 0.75rem;
+}
+
+.role-option:hover {
+    border-color: #667eea;
+    background: #eef2ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.role-option.selected {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.role-option input[type="radio"] {
+    display: none;
+}
+
+.role-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.btn-modern {
+    padding: 0.875rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.btn-modern:hover::before {
+    left: 100%;
+}
+
+.btn-primary-modern {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+}
+
+.btn-secondary-modern {
+    background: #f7fafc;
+    color: #4a5568;
+    border: 2px solid #e2e8f0;
+}
+
+.btn-secondary-modern:hover {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.password-strength {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+
+.strength-weak { background: #fed7d7; color: #c53030; }
+.strength-medium { background: #fef5e7; color: #d69e2e; }
+.strength-strong { background: #c6f6d5; color: #38a169; }
+
+.form-switch .form-check-input {
+    width: 3rem;
+    height: 1.5rem;
+    border-radius: 3rem;
+    background-color: #cbd5e0;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.form-switch .form-check-input:checked {
+    background-color: #667eea;
+}
+
+.breadcrumb-modern {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 1rem;
+}
+
+.breadcrumb-modern .breadcrumb-item a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.breadcrumb-modern .breadcrumb-item.active {
+    color: #4a5568;
+}
+
+@media (max-width: 768px) {
+    .user-create-container {
+        padding: 1rem 0;
+    }
+    
+    .form-header {
+        padding: 2rem 1rem 1.5rem;
+    }
+    
+    .form-body {
+        padding: 1.5rem;
+    }
+    
+    .form-header h3 {
+        font-size: 1.5rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block page_title %}
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-modern">
+            <li class="breadcrumb-item">
+                <a href="/"><i class="bi bi-house-fill me-1"></i>Ana Sayfa</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="/accounts/admin-panel/"><i class="bi bi-shield-fill-check me-1"></i>Admin Panel</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="/accounts/admin/users/"><i class="bi bi-people-fill me-1"></i>Kullanıcı Yönetimi</a>
+            </li>
+            <li class="breadcrumb-item active">Yeni Kullanıcı</li>
+        </ol>
+    </nav>
 </div>
 {% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-8 col-xl-6">
-        <div class="management-card">
-            <div class="card-header">
-                <h5 class="card-title">
-                    <i class="fas fa-user-plus me-2"></i>Yeni Kullanıcı Oluştur
-                </h5>
-            </div>
-            <div class="card-body">
-                {% if messages %}
-                    {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        <i class="fas fa-{% if message.tags == 'error' %}exclamation-triangle{% elif message.tags == 'success' %}check-circle{% else %}info-circle{% endif %} me-2"></i>
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+<div class="user-create-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+                <div class="modern-form-card">
+                    <!-- Form Header -->
+                    <div class="form-header">
+                        <div class="form-header-icon">
+                            <i class="bi bi-person-plus-fill fs-2"></i>
+                        </div>
+                        <h3>Yeni Kullanıcı Oluştur</h3>
+                        <p>Sisteme yeni bir kullanıcı ekleyin ve rolünü belirleyin</p>
                     </div>
-                    {% endfor %}
-                {% endif %}
 
-                <form method="post" id="userCreateForm">
-                    {% csrf_token %}
-                    
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="username" class="form-label"><i class="fas fa-user me-1"></i>Kullanıcı Adı *</label>
-                            <input type="text" class="form-control" id="username" name="username" required>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="email" class="form-label"><i class="fas fa-envelope me-1"></i>E-posta</label>
-                            <input type="email" class="form-control" id="email" name="email">
-                        </div>
-                    </div>
-                    
-                    <div class="row g-3 mt-2">
-                        <div class="col-md-6">
-                            <label for="first_name" class="form-label"><i class="fas fa-user me-1"></i>Ad</label>
-                            <input type="text" class="form-control" id="first_name" name="first_name">
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="last_name" class="form-label"><i class="fas fa-user me-1"></i>Soyad</label>
-                            <input type="text" class="form-control" id="last_name" name="last_name">
-                        </div>
-                    </div>
-                    
-                    <div class="row g-3 mt-2">
-                        <div class="col-md-6">
-                            <label for="password" class="form-label"><i class="fas fa-key me-1"></i>Şifre *</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="password_confirm" class="form-label"><i class="fas fa-key me-1"></i>Şifre Tekrar *</label>
-                            <input type="password" class="form-control" id="password_confirm" name="password_confirm" required>
-                            <div class="invalid-feedback" id="passwordMismatch">Şifreler eşleşmiyor!</div>
-                        </div>
-                    </div>
-                    
-                    <div class="row g-3 mt-3">
-                        <div class="col-md-6">
-                            <label for="role" class="form-label"><i class="fas fa-shield me-1"></i>Kullanıcı Rolü *</label>
-                            <select class="form-select" id="role" name="role" required>
-                                <option value="">Rol seçin</option>
-                                <option value="admin">Admin</option>
-                                <option value="support">Destek</option>
-                                <option value="customer">Müşteri</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 d-flex align-items-center">
-                            <div class="form-check form-switch mt-2">
-                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" checked>
-                                <label class="form-check-label" for="is_active"><i class="fas fa-toggle-on me-1"></i>Aktif</label>
+                    <!-- Form Body -->
+                    <div class="form-body">
+                        {% if messages %}
+                            {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                <i class="bi bi-{% if message.tags == 'error' %}exclamation-triangle-fill{% elif message.tags == 'success' %}check-circle-fill{% else %}info-circle-fill{% endif %} me-2"></i>
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
-                        </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <form method="post" id="userCreateForm" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Kişisel Bilgiler -->
+                            <h5 class="section-title mb-3">
+                                <i class="bi bi-person-badge me-2 text-primary"></i>Kişisel Bilgiler
+                            </h5>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="username" class="form-label">
+                                            <i class="bi bi-person-fill"></i>Kullanıcı Adı <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="username" name="username" required
+                                               placeholder="benzersiz_kullanici_adi">
+                                        <div class="invalid-feedback">
+                                            <i class="bi bi-exclamation-circle-fill"></i>
+                                            Kullanıcı adı gerekli ve benzersiz olmalı
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="email" class="form-label">
+                                            <i class="bi bi-envelope-fill"></i>E-posta Adresi
+                                        </label>
+                                        <input type="email" class="form-control" id="email" name="email"
+                                               placeholder="kullanici@example.com">
+                                        <div class="invalid-feedback">
+                                            <i class="bi bi-exclamation-circle-fill"></i>
+                                            Geçerli bir e-posta adresi girin
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="first_name" class="form-label">
+                                            <i class="bi bi-person-fill"></i>Ad
+                                        </label>
+                                        <input type="text" class="form-control" id="first_name" name="first_name"
+                                               placeholder="Ad">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="last_name" class="form-label">
+                                            <i class="bi bi-person-fill"></i>Soyad
+                                        </label>
+                                        <input type="text" class="form-control" id="last_name" name="last_name"
+                                               placeholder="Soyad">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Güvenlik Bilgileri -->
+                            <h5 class="section-title mb-3 mt-4">
+                                <i class="bi bi-shield-lock me-2 text-warning"></i>Güvenlik Bilgileri
+                            </h5>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="password" class="form-label">
+                                            <i class="bi bi-key-fill"></i>Şifre <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="password" class="form-control" id="password" name="password" required
+                                               placeholder="Güçlü bir şifre girin">
+                                        <div class="password-strength" id="passwordStrength"></div>
+                                        <div class="invalid-feedback">
+                                            <i class="bi bi-exclamation-circle-fill"></i>
+                                            Şifre en az 8 karakter olmalı
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="password_confirm" class="form-label">
+                                            <i class="bi bi-key-fill"></i>Şifre Tekrar <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="password" class="form-control" id="password_confirm" name="password_confirm" required
+                                               placeholder="Şifreyi tekrar girin">
+                                        <div class="invalid-feedback" id="passwordMismatch">
+                                            <i class="bi bi-exclamation-circle-fill"></i>
+                                            Şifreler eşleşmiyor
+                                        </div>
+                                        <div class="valid-feedback" id="passwordMatch">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            Şifreler eşleşiyor
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Rol ve Yetki -->
+                            <h5 class="section-title mb-3 mt-4">
+                                <i class="bi bi-diagram-3-fill me-2 text-info"></i>Rol ve Yetki
+                            </h5>
+                            
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="bi bi-shield-fill-check"></i>Kullanıcı Rolü <span class="text-danger">*</span>
+                                </label>
+                                <div class="role-selector">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <div class="role-option" data-role="customer">
+                                                <input type="radio" name="role" value="customer" id="role_customer" required>
+                                                <div class="text-center">
+                                                    <div class="role-icon bg-primary text-white mx-auto">
+                                                        <i class="bi bi-person-fill"></i>
+                                                    </div>
+                                                    <h6 class="mb-1">Müşteri</h6>
+                                                    <small>Talep oluşturma ve takip</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="role-option" data-role="support">
+                                                <input type="radio" name="role" value="support" id="role_support" required>
+                                                <div class="text-center">
+                                                    <div class="role-icon bg-success text-white mx-auto">
+                                                        <i class="bi bi-headset"></i>
+                                                    </div>
+                                                    <h6 class="mb-1">Destek</h6>
+                                                    <small>Talepleri yanıtlama</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="role-option" data-role="admin">
+                                                <input type="radio" name="role" value="admin" id="role_admin" required>
+                                                <div class="text-center">
+                                                    <div class="role-icon bg-danger text-white mx-auto">
+                                                        <i class="bi bi-shield-fill-check"></i>
+                                                    </div>
+                                                    <h6 class="mb-1">Admin</h6>
+                                                    <small>Tam yönetim yetkisi</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="form-check form-switch d-flex align-items-center">
+                                    <input class="form-check-input me-3" type="checkbox" id="is_active" name="is_active" checked>
+                                    <label class="form-check-label" for="is_active">
+                                        <i class="bi bi-toggle-on me-1 text-success"></i>
+                                        <strong>Hesap Aktif</strong>
+                                        <br><small class="text-muted">Kullanıcı sisteme giriş yapabilir</small>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Form Actions -->
+                            <div class="d-flex justify-content-between align-items-center mt-5 pt-3 border-top">
+                                <a href="/accounts/admin/users/" class="btn btn-secondary-modern">
+                                    <i class="bi bi-arrow-left me-2"></i>Geri Dön
+                                </a>
+                                <button type="submit" class="btn btn-primary-modern" id="submitBtn">
+                                    <i class="bi bi-person-plus-fill me-2"></i>Kullanıcı Oluştur
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                    
-                    <div class="d-flex justify-content-between align-items-center mt-4">
-                        <a href="/accounts/admin/users/" class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left me-1"></i>Geri Dön
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-plus-circle me-1"></i>Kullanıcı Oluştur
-                        </button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-document.getElementById('userCreateForm').addEventListener('submit', function(e) {
-    const password = document.getElementById('password').value;
-    const passwordConfirm = document.getElementById('password_confirm').value;
-    const mismatchAlert = document.getElementById('passwordMismatch');
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('userCreateForm');
+    const passwordInput = document.getElementById('password');
+    const passwordConfirmInput = document.getElementById('password_confirm');
+    const passwordStrengthDiv = document.getElementById('passwordStrength');
+    const passwordMismatch = document.getElementById('passwordMismatch');
+    const passwordMatch = document.getElementById('passwordMatch');
+    const submitBtn = document.getElementById('submitBtn');
+    const roleOptions = document.querySelectorAll('.role-option');
+    const usernameInput = document.getElementById('username');
+    const emailInput = document.getElementById('email');
 
-    if (password !== passwordConfirm) {
-        e.preventDefault();
-        mismatchAlert.style.display = 'block';
-        document.getElementById('password_confirm').classList.add('is-invalid');
-    } else {
-        mismatchAlert.style.display = 'none';
-        document.getElementById('password_confirm').classList.remove('is-invalid');
+    // Role Selection
+    roleOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove selected class from all options
+            roleOptions.forEach(opt => opt.classList.remove('selected'));
+            // Add selected class to clicked option
+            this.classList.add('selected');
+            // Check corresponding radio button
+            const radioInput = this.querySelector('input[type="radio"]');
+            radioInput.checked = true;
+            validateForm();
+        });
+    });
+
+    // Password Strength Checker
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
+        let strength = '';
+        let className = '';
+        
+        if (password.length === 0) {
+            passwordStrengthDiv.innerHTML = '';
+            passwordStrengthDiv.className = 'password-strength';
+            return;
+        }
+        
+        if (password.length < 6) {
+            strength = '<i class="bi bi-shield-fill-x"></i> Çok zayıf - En az 6 karakter';
+            className = 'password-strength strength-weak';
+        } else if (password.length < 8) {
+            strength = '<i class="bi bi-shield-fill-exclamation"></i> Zayıf - En az 8 karakter önerilir';
+            className = 'password-strength strength-weak';
+        } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+            strength = '<i class="bi bi-shield-fill-minus"></i> Orta - Büyük harf, küçük harf ve rakam ekleyin';
+            className = 'password-strength strength-medium';
+        } else {
+            strength = '<i class="bi bi-shield-fill-check"></i> Güçlü şifre';
+            className = 'password-strength strength-strong';
+        }
+        
+        passwordStrengthDiv.innerHTML = strength;
+        passwordStrengthDiv.className = className;
+        validateForm();
+    });
+
+    // Password Confirmation
+    function checkPasswordMatch() {
+        const password = passwordInput.value;
+        const confirmPassword = passwordConfirmInput.value;
+        
+        if (confirmPassword.length === 0) {
+            passwordConfirmInput.classList.remove('is-valid', 'is-invalid');
+            passwordMismatch.style.display = 'none';
+            passwordMatch.style.display = 'none';
+            return;
+        }
+        
+        if (password === confirmPassword && password.length >= 6) {
+            passwordConfirmInput.classList.remove('is-invalid');
+            passwordConfirmInput.classList.add('is-valid');
+            passwordMismatch.style.display = 'none';
+            passwordMatch.style.display = 'block';
+        } else {
+            passwordConfirmInput.classList.remove('is-valid');
+            passwordConfirmInput.classList.add('is-invalid');
+            passwordMismatch.style.display = 'block';
+            passwordMatch.style.display = 'none';
+        }
+        validateForm();
     }
+
+    passwordConfirmInput.addEventListener('input', checkPasswordMatch);
+    passwordInput.addEventListener('input', checkPasswordMatch);
+
+    // Username validation
+    usernameInput.addEventListener('input', function() {
+        const username = this.value;
+        const isValid = username.length >= 3 && /^[a-zA-Z0-9_-]+$/.test(username);
+        
+        if (username.length === 0) {
+            this.classList.remove('is-valid', 'is-invalid');
+        } else if (isValid) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        } else {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        }
+        validateForm();
+    });
+
+    // Email validation
+    emailInput.addEventListener('input', function() {
+        const email = this.value;
+        const isValid = email.length === 0 || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        
+        if (email.length === 0) {
+            this.classList.remove('is-valid', 'is-invalid');
+        } else if (isValid) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        } else {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        }
+        validateForm();
+    });
+
+    // Form validation
+    function validateForm() {
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+        const confirmPassword = passwordConfirmInput.value;
+        const roleSelected = document.querySelector('input[name="role"]:checked');
+        
+        const isUsernameValid = username.length >= 3 && /^[a-zA-Z0-9_-]+$/.test(username);
+        const isPasswordValid = password.length >= 6;
+        const isPasswordMatch = password === confirmPassword && password.length > 0;
+        const isRoleSelected = roleSelected !== null;
+        
+        const isFormValid = isUsernameValid && isPasswordValid && isPasswordMatch && isRoleSelected;
+        
+        submitBtn.disabled = !isFormValid;
+        
+        if (isFormValid) {
+            submitBtn.classList.remove('btn-secondary-modern');
+            submitBtn.classList.add('btn-primary-modern');
+        } else {
+            submitBtn.classList.remove('btn-primary-modern');
+            submitBtn.classList.add('btn-secondary-modern');
+        }
+    }
+
+    // Form submission
+    form.addEventListener('submit', function(e) {
+        const password = passwordInput.value;
+        const confirmPassword = passwordConfirmInput.value;
+        const username = usernameInput.value.trim();
+        
+        // Final validation
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            passwordConfirmInput.focus();
+            return;
+        }
+        
+        if (username.length < 3) {
+            e.preventDefault();
+            usernameInput.focus();
+            return;
+        }
+        
+        if (!document.querySelector('input[name="role"]:checked')) {
+            e.preventDefault();
+            document.querySelector('.role-option').scrollIntoView();
+            return;
+        }
+
+        // Show loading state
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Oluşturuluyor...';
+        submitBtn.disabled = true;
+    });
+
+    // Initial validation
+    validateForm();
 });
 </script>
 {% endblock %}

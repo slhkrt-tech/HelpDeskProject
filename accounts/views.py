@@ -1,6 +1,6 @@
 # accounts/views.py
 """
-HelpDesk Kullanıcı Yönetimi - Düzenlenmiş ve Yorumlu
+Yardım Masası Kullanıcı Yönetimi - Düzenlenmiş ve Yorumlu
 ========================================
 Session tabanlı kimlik doğrulama, modern UI/UX, role bazlı erişim
 """
@@ -63,7 +63,7 @@ def home_view(request):
             return redirect('/accounts/support-panel/')
         return redirect('/accounts/customer-panel/')
 
-    return render(request, 'tickets/home.html', {'page_title': 'HelpDesk Sistemi', 'is_home': True})
+    return render(request, 'tickets/home.html', {'page_title': 'Yardım Masası Sistemi', 'is_home': True})
 
 def custom_login_view(request):
     """Login sayfası"""
@@ -92,36 +92,83 @@ def custom_login_view(request):
 
 @login_required
 def admin_panel_view(request):
-    """Admin paneli"""
+    """Admin paneli - Güncel dinamik veriler"""
     if getattr(request.user, 'role', '').lower() != 'admin':
         return redirect('/accounts/login/')
 
-    # Kullanıcı istatistikleri
+    from django.utils import timezone
+    from datetime import timedelta
+    from django.db.models import Count, Q
+    
+    now = timezone.now()
+    today = now.date()
+    yesterday = today - timedelta(days=1)
+    week_ago = now - timedelta(days=7)
+    month_ago = now - timedelta(days=30)
+
+    # Kullanıcı istatistikleri (güncel)
     total_users = CustomUser.objects.count()
+    active_users = CustomUser.objects.filter(is_active=True).count()
     admin_users = CustomUser.objects.filter(role='admin').count()
     support_users = CustomUser.objects.filter(role='support').count()
     customer_users = CustomUser.objects.filter(role='customer').count()
     
-    # Talep istatistikleri
+    # Bugün katılan kullanıcılar
+    users_today = CustomUser.objects.filter(date_joined__date=today).count()
+    users_yesterday = CustomUser.objects.filter(date_joined__date=yesterday).count()
+    users_this_week = CustomUser.objects.filter(date_joined__gte=week_ago).count()
+    users_this_month = CustomUser.objects.filter(date_joined__gte=month_ago).count()
+    
+    # Talep istatistikleri (güncel)
     try:
         from tickets.models import Talep
         total_tickets = Talep.objects.count()
+        
+        # Status bazlı sayımlar
         open_tickets = Talep.objects.filter(status='open').count()
         in_progress_tickets = Talep.objects.filter(status='in_progress').count()
         resolved_tickets = Talep.objects.filter(status='resolved').count()
+        closed_tickets = Talep.objects.filter(status='closed').count()
+        pending_tickets = Talep.objects.filter(status='pending').count()
         
-        # Son talepler
-        recent_tickets = Talep.objects.order_by('-created_at')[:5]
+        # Priority bazlı sayımlar
+        high_priority = Talep.objects.filter(priority='high').count()
+        medium_priority = Talep.objects.filter(priority='medium').count()
+        low_priority = Talep.objects.filter(priority='low').count()
         
-        # Bu hafta/ay talepler
-        from django.utils import timezone
-        from datetime import timedelta
-        
-        week_ago = timezone.now() - timedelta(days=7)
-        month_ago = timezone.now() - timedelta(days=30)
-        
+        # Zaman bazlı talepler
+        tickets_today = Talep.objects.filter(created_at__date=today).count()
+        tickets_yesterday = Talep.objects.filter(created_at__date=yesterday).count()
         tickets_this_week = Talep.objects.filter(created_at__gte=week_ago).count()
         tickets_this_month = Talep.objects.filter(created_at__gte=month_ago).count()
+        
+        # Büyüme oranları
+        ticket_daily_growth = ((tickets_today - tickets_yesterday) / max(tickets_yesterday, 1)) * 100
+        
+        # Son talepler (güncel)
+        recent_tickets = Talep.objects.select_related('user', 'category').order_by('-created_at')[:10]
+        
+        # Kritik talepler (yüksek öncelikli ve açık)
+        critical_tickets = Talep.objects.filter(
+            priority='high',
+            status__in=['open', 'in_progress']
+        ).select_related('user').order_by('-created_at')[:5]
+        
+        # Kategori dağılımı
+        category_stats = Talep.objects.values('category__name').annotate(
+            count=Count('id')
+        ).order_by('-count')[:10]
+        
+        # Günlük aktivite (son 7 gün)
+        daily_activity = []
+        for i in range(7):
+            day = today - timedelta(days=i)
+            day_tickets = Talep.objects.filter(created_at__date=day).count()
+            daily_activity.append({
+                'date': day.strftime('%d/%m'),
+                'tickets': day_tickets
+            })
+        daily_activity.reverse()
         
     except ImportError:
         # Tickets app yoksa default değerler
@@ -129,21 +176,56 @@ def admin_panel_view(request):
         open_tickets = 0
         in_progress_tickets = 0
         resolved_tickets = 0
-        recent_tickets = []
+        closed_tickets = 0
+        pending_tickets = 0
+        high_priority = 0
+        medium_priority = 0
+        low_priority = 0
+        tickets_today = 0
+        tickets_yesterday = 0
         tickets_this_week = 0
         tickets_this_month = 0
+        ticket_daily_growth = 0
+        recent_tickets = []
+        critical_tickets = []
+        category_stats = []
+        daily_activity = []
 
-    # Token istatistikleri
-    from django.utils import timezone
-    active_tokens = CustomAuthToken.objects.filter(created__gte=timezone.now() - timedelta(days=30)).count()
-    expired_tokens = CustomAuthToken.objects.filter(created__lt=timezone.now() - timedelta(days=30)).count()
+    # Token istatistikleri (güncel)
+    active_tokens = CustomAuthToken.objects.filter(created__gte=month_ago).count()
+    expired_tokens = CustomAuthToken.objects.filter(created__lt=month_ago).count()
+    tokens_today = CustomAuthToken.objects.filter(created__date=today).count()
     
-    # Grup sayısı
+    # Grup sayısı ve kullanıcı dağılımı
     from django.contrib.auth.models import Group
     total_groups = Group.objects.count()
     
-    # Son kullanıcılar
-    recent_users = CustomUser.objects.order_by('-date_joined')[:5]
+    # Grup başına kullanıcı sayısı
+    group_user_counts = Group.objects.annotate(
+        user_count=Count('customuser_set')
+    ).order_by('-user_count')[:10]
+    
+    # System health metrikleri
+    system_health = {
+        'total_users': total_users,
+        'active_users': active_users,
+        'total_tickets': total_tickets,
+        'active_tickets': open_tickets + in_progress_tickets + pending_tickets,
+        'critical_tickets': high_priority,
+        'user_activity_score': min(100, (users_this_week / max(total_users, 1)) * 1000),  # 0-100 skala
+        'ticket_activity_score': min(100, (tickets_this_week / max(tickets_this_month/4, 1)) * 100),
+    }
+    
+    # Performance indicators
+    performance_indicators = {
+        'resolution_rate': round((resolved_tickets + closed_tickets) / max(total_tickets, 1) * 100, 1),
+        'daily_growth': round(ticket_daily_growth, 1),
+        'user_engagement': round(tickets_this_month / max(active_users, 1), 2),
+        'support_load': round(open_tickets / max(support_users, 1), 2) if support_users > 0 else 0,
+    }
+    
+    # Son kullanıcılar (güncel)
+    recent_users = CustomUser.objects.select_related().order_by('-date_joined')[:10]
 
     context = {
         'current_user': request.user,
@@ -151,26 +233,50 @@ def admin_panel_view(request):
         'panel_title': 'Yönetim Paneli',
         'page_title': 'Admin Panel',
         
-        # Kullanıcı istatistikleri
+        # Kullanıcı istatistikleri (güncel)
         'total_users': total_users,
+        'active_users': active_users,
         'admin_users': admin_users,
         'support_users': support_users,
         'customer_users': customer_users,
+        'users_today': users_today,
+        'users_this_week': users_this_week,
+        'users_this_month': users_this_month,
         'recent_users': recent_users,
         
-        # Talep istatistikleri
+        # Talep istatistikleri (güncel)
         'total_tickets': total_tickets,
         'open_tickets': open_tickets,
         'in_progress_tickets': in_progress_tickets,
         'resolved_tickets': resolved_tickets,
-        'recent_tickets': recent_tickets,
+        'closed_tickets': closed_tickets,
+        'pending_tickets': pending_tickets,
+        'high_priority': high_priority,
+        'medium_priority': medium_priority,
+        'low_priority': low_priority,
+        'tickets_today': tickets_today,
         'tickets_this_week': tickets_this_week,
         'tickets_this_month': tickets_this_month,
+        'ticket_daily_growth': round(ticket_daily_growth, 2),
+        'recent_tickets': recent_tickets,
+        'critical_tickets': critical_tickets,
+        'category_stats': category_stats,
+        'daily_activity': daily_activity,
         
-        # Token ve grup istatistikleri
+        # Token ve grup istatistikleri (güncel)
         'active_tokens': active_tokens,
         'expired_tokens': expired_tokens,
+        'tokens_today': tokens_today,
         'total_groups': total_groups,
+        'group_user_counts': group_user_counts,
+        
+        # System health ve performance
+        'system_health': system_health,
+        'performance_indicators': performance_indicators,
+        
+        # Metadata
+        'last_updated': now.strftime('%d/%m/%Y %H:%M:%S'),
+        'dashboard_period': f"Son 30 gün ({month_ago.strftime('%d/%m')} - {now.strftime('%d/%m')})"
     }
     return render(request, 'accounts/admin_panel.html', context)
 
@@ -193,17 +299,31 @@ def customer_panel_view(request):
     from tickets.models import Talep
     from django.db.models import Count, Q
     
-    # Kullanıcının son 5 talebini al
-    recent_tickets = Talep.objects.filter(user=request.user).order_by('-created_at')[:5]
-    
-    # Ticket istatistiklerini hesapla
-    ticket_stats = Talep.objects.filter(user=request.user).aggregate(
-        total=Count('id'),
-        open=Count('id', filter=Q(status='open')),
-        in_progress=Count('id', filter=Q(status='in_progress')),
-        resolved=Count('id', filter=Q(status='resolved')),
-        closed=Count('id', filter=Q(status='closed'))
-    )
+    # Aynı gruptaki kullanıcıların taleplerini de al
+    user_groups = request.user.groups.all()
+    if user_groups.exists():
+        # Aynı grupta olan kullanıcıları bul
+        group_users = CustomUser.objects.filter(groups__in=user_groups).distinct()
+        # Bu kullanıcıların son 5 talebini al
+        recent_tickets = Talep.objects.filter(user__in=group_users).order_by('-created_at')[:5]
+        # Ticket istatistiklerini hesapla
+        ticket_stats = Talep.objects.filter(user__in=group_users).aggregate(
+            total=Count('id'),
+            open=Count('id', filter=Q(status='open')),
+            in_progress=Count('id', filter=Q(status='in_progress')),
+            resolved=Count('id', filter=Q(status='resolved')),
+            closed=Count('id', filter=Q(status='closed'))
+        )
+    else:
+        # Grubu yoksa sadece kendi taleplerini göster
+        recent_tickets = Talep.objects.filter(user=request.user).order_by('-created_at')[:5]
+        ticket_stats = Talep.objects.filter(user=request.user).aggregate(
+            total=Count('id'),
+            open=Count('id', filter=Q(status='open')),
+            in_progress=Count('id', filter=Q(status='in_progress')),
+            resolved=Count('id', filter=Q(status='resolved')),
+            closed=Count('id', filter=Q(status='closed'))
+        )
     
     context = {
         'current_user': request.user,
@@ -238,20 +358,62 @@ def admin_user_create_view(request):
         return redirect('/accounts/login/')
 
     if request.method == 'POST':
-        data = {k: request.POST.get(k) for k in ['username', 'email', 'password', 'role']}
-        data['is_active'] = request.POST.get('is_active') == 'on'
-        try:
-            CustomUser.objects.create_user(**data)
-            messages.success(request, f'Kullanıcı "{data["username"]}" oluşturuldu.')
-            return redirect('admin_users')
-        except Exception as e:
-            messages.error(request, f'Hata: {e}')
+        # Form verilerini al
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '')
+        password_confirm = request.POST.get('password_confirm', '')
+        first_name = request.POST.get('first_name', '').strip()
+        last_name = request.POST.get('last_name', '').strip()
+        role = request.POST.get('role', 'customer')
+        is_active = request.POST.get('is_active') == 'on'
+        
+        # Basit validasyonlar
+        errors = []
+        if not username:
+            errors.append('Kullanıcı adı gerekli.')
+        if not password:
+            errors.append('Şifre gerekli.')
+        if password != password_confirm:
+            errors.append('Şifreler eşleşmiyor.')
+        if len(password) < 6:
+            errors.append('Şifre en az 6 karakter olmalı.')
+        if CustomUser.objects.filter(username=username).exists():
+            errors.append('Bu kullanıcı adı zaten kullanılıyor.')
+        if email and CustomUser.objects.filter(email=email).exists():
+            errors.append('Bu e-posta adresi zaten kullanılıyor.')
+        
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+        else:
+            try:
+                user_data = {
+                    'username': username,
+                    'email': email,
+                    'password': password,
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'role': role,
+                    'is_active': is_active
+                }
+                
+                user = CustomUser.objects.create_user(**user_data)
+                
+                full_name = f"{first_name} {last_name}".strip()
+                display_name = full_name if full_name else username
+                
+                messages.success(request, f'Kullanıcı "{display_name}" ({username}) başarıyla oluşturuldu.')
+                return redirect('admin_users')
+                
+            except Exception as e:
+                messages.error(request, f'Kullanıcı oluşturulurken hata: {str(e)}')
 
     return render(request, 'accounts/admin_user_create.html', {
         'current_user': request.user,
         'user_role': request.user.get_role_display(),
         'panel_title': 'Yeni Kullanıcı',
-        'page_title': 'Yeni Kullanıcı'
+        'page_title': 'Yeni Kullanıcı Oluştur'
     })
 
 # =========================
@@ -637,6 +799,43 @@ def admin_group_delete_view(request, group_id):
     return redirect('admin_groups')
 
 @login_required
+def admin_group_users_api(request, group_id):
+    """Grup kullanıcılarını JSON formatında döndür"""
+    if getattr(request.user, 'role', '').lower() != 'admin':
+        return JsonResponse({'error': 'Yetkiniz yok'}, status=403)
+    
+    try:
+        from django.contrib.auth.models import Group
+        group = Group.objects.get(id=group_id)
+        users = group.customuser_set.all().order_by('username')
+        
+        users_data = []
+        for user in users:
+            users_data.append({
+                'id': user.id,
+                'username': user.username,
+                'first_name': user.first_name or '',
+                'last_name': user.last_name or '',
+                'email': user.email or '',
+                'role': user.role,
+                'is_active': user.is_active,
+                'date_joined': user.date_joined.strftime('%d.%m.%Y'),
+                'last_login': user.last_login.strftime('%d.%m.%Y %H:%M') if user.last_login else 'Henüz giriş yapılmamış'
+            })
+        
+        return JsonResponse({
+            'success': True,
+            'group_name': group.name,
+            'user_count': len(users_data),
+            'users': users_data
+        })
+        
+    except Group.DoesNotExist:
+        return JsonResponse({'error': 'Grup bulunamadı'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
 def admin_permissions_view(request):
     """Yetki yönetimi sayfası"""
     if getattr(request.user, 'role', '').lower() != 'admin':
@@ -701,60 +900,313 @@ def admin_permissions_view(request):
 @login_required
 @login_required
 def admin_reports_view(request):
-    """Rapor sayfası"""
+    """Rapor sayfası - Güncel dinamik veriler"""
     if getattr(request.user, 'role', '').lower() != 'admin':
         return redirect('/accounts/login/')
     
-    # Ticket modeli varsa raporları oluştur
-    if Ticket:
-        from datetime import datetime
+    from datetime import datetime, timedelta
+    from django.db.models import Count, Q, Avg, Max, Min
+    from tickets.models import Talep
+    
+    now = datetime.now()
+    today = now.date()
+    last_week = now - timedelta(days=7)
+    last_month = now - timedelta(days=30)
+    last_quarter = now - timedelta(days=90)
+    last_year = now - timedelta(days=365)
+    
+    # Temel sayaçlar
+    total_users = CustomUser.objects.count()
+    total_tickets = Talep.objects.count()
+    
+    # Zaman bazlı ticket sayıları
+    tickets_today = Talep.objects.filter(created_at__date=today).count()
+    tickets_last_week = Talep.objects.filter(created_at__gte=last_week).count()
+    tickets_last_month = Talep.objects.filter(created_at__gte=last_month).count()
+    tickets_last_quarter = Talep.objects.filter(created_at__gte=last_quarter).count()
+    tickets_last_year = Talep.objects.filter(created_at__gte=last_year).count()
+    
+    # Status bazlı analizler
+    tickets_by_status = Talep.objects.values('status').annotate(
+        count=Count('id'),
+        percentage=Count('id') * 100.0 / max(total_tickets, 1)
+    ).order_by('-count')
+    
+    # Priority bazlı analizler
+    tickets_by_priority = Talep.objects.values('priority').annotate(
+        count=Count('id'),
+        percentage=Count('id') * 100.0 / max(total_tickets, 1)
+    ).order_by('-count')
+    
+    # Kategori bazlı analizler
+    tickets_by_category = Talep.objects.values('category__name').annotate(
+        count=Count('id'),
+        percentage=Count('id') * 100.0 / max(total_tickets, 1)
+    ).order_by('-count')[:15]  # Top 15 kategori
+    
+    # Kullanıcı rolleri analizi
+    users_by_role = CustomUser.objects.values('role').annotate(
+        count=Count('id'),
+        percentage=Count('id') * 100.0 / max(total_users, 1)
+    ).order_by('-count')
+    
+    # Grup bazlı kullanıcı analizi
+    users_by_group = CustomUser.objects.filter(groups__isnull=False)\
+        .values('groups__name').annotate(
+            count=Count('id')
+        ).order_by('-count')
+    
+    # Günlük aktivite raporu (son 30 gün)
+    daily_activity = []
+    for i in range(30):
+        day = today - timedelta(days=i)
+        day_tickets = Talep.objects.filter(created_at__date=day).count()
+        day_users_joined = CustomUser.objects.filter(date_joined__date=day).count()
         
-        # Rapor verileri
-        now = datetime.now()
-        last_week = now - timedelta(days=7)
-        last_month = now - timedelta(days=30)
+        daily_activity.append({
+            'date': day.strftime('%Y-%m-%d'),
+            'date_display': day.strftime('%d/%m/%Y'),
+            'tickets': day_tickets,
+            'new_users': day_users_joined,
+            'total_activity': day_tickets + day_users_joined
+        })
+    
+    daily_activity.reverse()  # Eskiden yeniye sırala
+    
+    # Aylık özet rapor (son 12 ay)
+    monthly_summary = []
+    for i in range(12):
+        month_start = now.replace(day=1) - timedelta(days=30*i)
+        next_month = month_start.replace(day=28) + timedelta(days=4)
+        next_month = next_month.replace(day=1)
         
-        report_data = {
-            'total_users': CustomUser.objects.count(),
-            'total_tickets': Ticket.objects.count(),
-            'tickets_last_week': Ticket.objects.filter(created_at__gte=last_week).count(),
-            'tickets_last_month': Ticket.objects.filter(created_at__gte=last_month).count(),
-            'tickets_by_status': Ticket.objects.values('status').annotate(count=Count('id')),
-            'tickets_by_priority': Ticket.objects.values('priority').annotate(count=Count('id')),
-            'users_by_role': CustomUser.objects.values('role').annotate(count=Count('id')),
-        }
-    else:
-        # Ticket modeli yoksa temel raporlar
-        report_data = {
-            'total_users': CustomUser.objects.count(),
-            'total_tickets': 0,
-            'tickets_last_week': 0,
-            'tickets_last_month': 0,
-            'tickets_by_status': [],
-            'tickets_by_priority': [],
-            'users_by_role': CustomUser.objects.values('role').annotate(count=Count('id')),
-        }
+        month_tickets = Talep.objects.filter(
+            created_at__gte=month_start,
+            created_at__lt=next_month
+        ).count()
+        
+        month_users = CustomUser.objects.filter(
+            date_joined__gte=month_start,
+            date_joined__lt=next_month
+        ).count()
+        
+        month_closed = Talep.objects.filter(
+            updated_at__gte=month_start,
+            updated_at__lt=next_month,
+            status='closed'
+        ).count()
+        
+        monthly_summary.append({
+            'month': month_start.strftime('%Y-%m'),
+            'month_name': month_start.strftime('%B %Y'),
+            'tickets_created': month_tickets,
+            'users_joined': month_users,
+            'tickets_closed': month_closed,
+            'closure_rate': round((month_closed / max(month_tickets, 1)) * 100, 2)
+        })
+    
+    monthly_summary.reverse()  # Eskiden yeniye sırala
+    
+    # En aktif kullanıcılar
+    most_active_users = Talep.objects.values(
+        'user__username', 
+        'user__first_name', 
+        'user__last_name',
+        'user__email'
+    ).annotate(
+        ticket_count=Count('id')
+    ).order_by('-ticket_count')[:20]
+    
+    # System health metrics
+    system_health = {
+        'total_users': total_users,
+        'active_users': CustomUser.objects.filter(is_active=True).count(),
+        'admin_users': CustomUser.objects.filter(role='admin').count(),
+        'support_users': CustomUser.objects.filter(role='support').count(),
+        'customer_users': CustomUser.objects.filter(role='customer').count(),
+        'total_tickets': total_tickets,
+        'open_tickets': Talep.objects.exclude(status='closed').count(),
+        'closed_tickets': Talep.objects.filter(status='closed').count(),
+        'high_priority_tickets': Talep.objects.filter(priority='high').count(),
+        'overdue_tickets': 0,  # Gelecekte deadline alanı eklenirse güncellenebilir
+    }
+    
+    # Performance indicators
+    performance_indicators = {
+        'daily_avg_tickets': round(tickets_last_month / 30, 2) if tickets_last_month > 0 else 0,
+        'weekly_avg_tickets': round(tickets_last_month / 4, 2) if tickets_last_month > 0 else 0,
+        'monthly_growth': round(((tickets_last_month - tickets_last_quarter/3) / max(tickets_last_quarter/3, 1)) * 100, 2),
+        'user_engagement': round((total_tickets / max(total_users, 1)), 2),
+        'tickets_per_user': round((total_tickets / max(total_users, 1)), 2),
+        'resolution_rate': round((system_health['closed_tickets'] / max(total_tickets, 1)) * 100, 2),
+    }
+    
+    report_data = {
+        'total_users': total_users,
+        'total_tickets': total_tickets,
+        'tickets_today': tickets_today,
+        'tickets_last_week': tickets_last_week,
+        'tickets_last_month': tickets_last_month,
+        'tickets_last_quarter': tickets_last_quarter,
+        'tickets_last_year': tickets_last_year,
+        'tickets_by_status': list(tickets_by_status),
+        'tickets_by_priority': list(tickets_by_priority),
+        'tickets_by_category': list(tickets_by_category),
+        'users_by_role': list(users_by_role),
+        'users_by_group': list(users_by_group),
+        'daily_activity': daily_activity,
+        'monthly_summary': monthly_summary,
+        'most_active_users': list(most_active_users),
+        'system_health': system_health,
+        'performance_indicators': performance_indicators,
+    }
     
     context = {
         'current_user': request.user,
         'user_role': request.user.get_role_display(),
         'report_data': report_data,
         'panel_title': 'Sistem Raporları',
-        'page_title': 'Sistem Raporları'
+        'page_title': 'Sistem Raporları',
+        'generated_at': now.strftime('%d/%m/%Y %H:%M:%S'),
+        'report_period': f"{last_month.strftime('%d/%m/%Y')} - {now.strftime('%d/%m/%Y')}"
     }
     return render(request, 'accounts/admin_reports.html', context)
 
 @login_required
 def admin_analytics_view(request):
-    """Analitik sayfası"""
+    """Analitik sayfası - Gerçek zamanlı veriler"""
     if getattr(request.user, 'role', '').lower() != 'admin':
         return redirect('/accounts/login/')
+    
+    from datetime import datetime, timedelta
+    from django.db.models import Count, Q, Avg
+    from tickets.models import Talep
+    
+    now = datetime.now()
+    today = now.date()
+    yesterday = today - timedelta(days=1)
+    last_week = now - timedelta(days=7)
+    last_month = now - timedelta(days=30)
+    last_year = now - timedelta(days=365)
+    
+    # Temel istatistikler
+    total_tickets = Talep.objects.count()
+    total_users = CustomUser.objects.count()
+    active_tickets = Talep.objects.exclude(status='closed').count()
+    closed_tickets = Talep.objects.filter(status='closed').count()
+    
+    # Zaman bazlı analizler
+    tickets_today = Talep.objects.filter(created_at__date=today).count()
+    tickets_yesterday = Talep.objects.filter(created_at__date=yesterday).count()
+    tickets_this_week = Talep.objects.filter(created_at__gte=last_week).count()
+    tickets_this_month = Talep.objects.filter(created_at__gte=last_month).count()
+    
+    # Büyüme oranları
+    today_growth = ((tickets_today - tickets_yesterday) / max(tickets_yesterday, 1)) * 100 if tickets_yesterday > 0 else 0
+    
+    # Haftalık karşılaştırma
+    previous_week_start = last_week - timedelta(days=7)
+    tickets_previous_week = Talep.objects.filter(
+        created_at__gte=previous_week_start, 
+        created_at__lt=last_week
+    ).count()
+    weekly_growth = ((tickets_this_week - tickets_previous_week) / max(tickets_previous_week, 1)) * 100 if tickets_previous_week > 0 else 0
+    
+    # Status dağılımı
+    status_distribution = Talep.objects.values('status').annotate(count=Count('id')).order_by('-count')
+    
+    # Priority dağılımı  
+    priority_distribution = Talep.objects.values('priority').annotate(count=Count('id')).order_by('-count')
+    
+    # Kategori dağılımı
+    category_distribution = Talep.objects.values('category__name').annotate(count=Count('id')).order_by('-count')[:10]
+    
+    # Kullanıcı rolleri dağılımı
+    user_roles = CustomUser.objects.values('role').annotate(count=Count('id'))
+    
+    # Aylık trend verisi (son 12 ay)
+    monthly_data = []
+    for i in range(12):
+        month_start = now.replace(day=1) - timedelta(days=30*i)
+        next_month = month_start.replace(day=28) + timedelta(days=4)
+        next_month = next_month.replace(day=1)
+        
+        month_tickets = Talep.objects.filter(
+            created_at__gte=month_start,
+            created_at__lt=next_month
+        ).count()
+        
+        monthly_data.append({
+            'month': month_start.strftime('%Y-%m'),
+            'month_name': month_start.strftime('%B %Y'),
+            'count': month_tickets
+        })
+    
+    monthly_data.reverse()  # Eskiden yeniye sırala
+    
+    # Günlük trend (son 30 gün)
+    daily_data = []
+    for i in range(30):
+        day = today - timedelta(days=i)
+        day_tickets = Talep.objects.filter(created_at__date=day).count()
+        daily_data.append({
+            'date': day.strftime('%Y-%m-%d'),
+            'date_display': day.strftime('%d/%m'),
+            'count': day_tickets
+        })
+    
+    daily_data.reverse()  # Eskiden yeniye sırala
+    
+    # En aktif kullanıcılar (talep oluşturanlar)
+    top_users = Talep.objects.values('user__username', 'user__first_name', 'user__last_name')\
+        .annotate(ticket_count=Count('id'))\
+        .order_by('-ticket_count')[:10]
+    
+    # Ortalama çözüm süresi (gün olarak)
+    closed_tickets_with_time = Talep.objects.filter(
+        status='closed',
+        updated_at__isnull=False
+    )
+    
+    avg_resolution_time = 0
+    if closed_tickets_with_time.exists():
+        total_resolution_time = 0
+        count = 0
+        for ticket in closed_tickets_with_time:
+            resolution_time = (ticket.updated_at - ticket.created_at).total_seconds() / 86400  # gün cinsinden
+            total_resolution_time += resolution_time
+            count += 1
+        avg_resolution_time = total_resolution_time / count if count > 0 else 0
+    
+    # Performance metrikleri
+    performance_metrics = {
+        'total_tickets': total_tickets,
+        'active_tickets': active_tickets,
+        'closed_tickets': closed_tickets,
+        'total_users': total_users,
+        'tickets_today': tickets_today,
+        'tickets_this_week': tickets_this_week,
+        'tickets_this_month': tickets_this_month,
+        'today_growth': round(today_growth, 2),
+        'weekly_growth': round(weekly_growth, 2),
+        'avg_resolution_time': round(avg_resolution_time, 2),
+        'closure_rate': round((closed_tickets / max(total_tickets, 1)) * 100, 2),
+    }
     
     context = {
         'current_user': request.user,
         'user_role': request.user.get_role_display(),
         'panel_title': 'Sistem Analitikleri',
-        'page_title': 'Sistem Analitikleri'
+        'page_title': 'Sistem Analitikleri',
+        'performance_metrics': performance_metrics,
+        'status_distribution': list(status_distribution),
+        'priority_distribution': list(priority_distribution),
+        'category_distribution': list(category_distribution),
+        'user_roles': list(user_roles),
+        'monthly_data': monthly_data,
+        'daily_data': daily_data,
+        'top_users': list(top_users),
+        'last_updated': now.strftime('%d/%m/%Y %H:%M')
     }
     return render(request, 'accounts/admin_analytics.html', context)
 
@@ -1032,6 +1484,8 @@ def signup_api_view(request):
         email = request.data.get('email', '').strip()
         password = request.data.get('password', '')
         confirm_password = request.data.get('confirm_password', '')
+        first_name = request.data.get('first_name', '').strip()
+        last_name = request.data.get('last_name', '').strip()
         
         # Validasyon
         if not all([username, email, password, confirm_password]):
@@ -1076,6 +1530,8 @@ def signup_api_view(request):
             username=username,
             email=email,
             password=password,
+            first_name=first_name,
+            last_name=last_name,
             role='customer'  # Varsayılan olarak customer
         )
         

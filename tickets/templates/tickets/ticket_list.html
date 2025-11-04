@@ -1,7 +1,7 @@
 {% extends "tickets/base.html" %}
 {% load static %}
 
-{% block title %}Talep Listesi - HelpDesk{% endblock %}
+{% block title %}Talep Listesi - Yardım Masası{% endblock %}
 
 {% block page_title %}
 {% csrf_token %}
@@ -58,7 +58,7 @@
         <tr>
           <th>#</th>
           <th>Başlık</th>
-          <th>Kullanıcı</th>
+          <th>Oluşturan</th>
           <th>Kategori</th>
           <th>Durum</th>
           <th>Öncelik</th>
@@ -72,7 +72,19 @@
           <tr>
             <td><a href="/tickets/{{ ticket.pk }}/" class="fw-bold text-primary">#{{ ticket.talep_numarasi|default:ticket.pk }}</a></td>
             <td>{{ ticket.title|truncatechars:50 }}</td>
-            <td>{{ ticket.user.username }}</td>
+            <td>
+              <div class="d-flex align-items-center">
+                <div>
+                  <strong>{{ ticket.user.username }}</strong>
+                  {% if ticket.user.first_name or ticket.user.last_name %}
+                    <br><small class="text-muted">{{ ticket.user.first_name }} {{ ticket.user.last_name }}</small>
+                  {% endif %}
+                  {% if ticket.user.username == request.user.username %}
+                    <br><small class="badge bg-primary">Benim</small>
+                  {% endif %}
+                </div>
+              </div>
+            </td>
             <td>{{ ticket.category.name|default:"-" }}</td>
 
             <!-- Durum etiketi: helper partial -->
